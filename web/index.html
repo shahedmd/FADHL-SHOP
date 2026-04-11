@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="FADHL E-Commerce">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="fadhl">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="icon" type="image/png" href="favicon.png" />
+
+  <title>FADHL</title>
+  <link rel="manifest" href="manifest.json">
+
+  <!-- 1. ADD CSS FOR THE LOADER -->
+  <style>
+    body {
+      background-color: #FAFAFA;
+      /* Matches Colors.grey[50] */
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid rgba(10, 31, 19, 0.1);
+      border-top: 5px solid #0A1F13;
+      /* Your Primary Color */
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-text {
+      margin-top: 20px;
+      font-family: sans-serif;
+      color: #0A1F13;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 2. ADD THE HTML LOADER -->
+  <div id="loading-indicator" class="loading-container">
+    <div class="spinner"></div>
+    <div class="loading-text">Loading FADHL...</div>
+  </div>
+
+  <!-- 3. SCRIPT TO HIDE LOADER WHEN FLUTTER STARTS -->
+  <script>
+    window.addEventListener('flutter-first-useful-frame', function () {
+      document.getElementById('loading-indicator').style.display = 'none';
+    });
+  </script>
+
+  <!-- Default Bootstrap Script -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+
+</html>
