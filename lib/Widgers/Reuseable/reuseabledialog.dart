@@ -2,32 +2,34 @@ import 'package:fadhl/Controllers/order_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
 void showTrackOrderDialog() {
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
   final TextEditingController trackCtrl = TextEditingController();
 
   Get.dialog(
     Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pureWhite, // Updated
       child: Container(
         width: 400,
         padding: const EdgeInsets.all(32),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FaIcon(
+            const FaIcon(
               FontAwesomeIcons.magnifyingGlassLocation,
               size: 40,
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
             ),
             const SizedBox(height: 24),
             const Text(
               'Track Your Order',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w900,
+                color: AppColors.textDark, // Updated to brand dark text
+              ),
             ),
             const SizedBox(height: 8),
             const Text(
@@ -49,7 +51,10 @@ void showTrackOrderDialog() {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: brandGold, width: 2),
+                  borderSide: const BorderSide(
+                    color: AppColors.primaryGold, // Updated
+                    width: 2,
+                  ),
                 ),
               ),
             ),
@@ -60,8 +65,8 @@ void showTrackOrderDialog() {
               height: 48,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: brandGreen,
-                  foregroundColor: brandGold,
+                  backgroundColor: AppColors.primaryGreen, // Updated
+                  foregroundColor: AppColors.primaryGold, // Updated
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),

@@ -8,11 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 class ProductDetailsScreen extends StatelessWidget {
   ProductDetailsScreen({super.key});
-
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
 
   final TextEditingController reviewCommentController = TextEditingController();
 
@@ -56,9 +55,11 @@ class ProductDetailsScreen extends StatelessWidget {
     return Obx(() {
       // 1. Loading State
       if (pc.isLoading.value) {
-        return Scaffold(
-          backgroundColor: Colors.grey[50],
-          body: Center(child: CircularProgressIndicator(color: brandGold)),
+        return const Scaffold(
+          backgroundColor: AppColors.backgroundLight, // Updated
+          body: Center(
+            child: CircularProgressIndicator(color: AppColors.primaryGold), // Updated
+          ),
         );
       }
 
@@ -70,11 +71,11 @@ class ProductDetailsScreen extends StatelessWidget {
       // ==========================================
       if (currentProduct == null) {
         return Scaffold(
-          backgroundColor: Colors.grey[50],
+          backgroundColor: AppColors.backgroundLight, // Updated
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children:[
                 Icon(
                   Icons.inventory_2_outlined,
                   size: 60,
@@ -86,14 +87,14 @@ class ProductDetailsScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: AppColors.textDark, // Updated
                   ),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: brandGreen,
-                    foregroundColor: brandGold,
+                    backgroundColor: AppColors.primaryGreen, // Updated
+                    foregroundColor: AppColors.primaryGold, // Updated
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 12,
@@ -118,15 +119,15 @@ class ProductDetailsScreen extends StatelessWidget {
       final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
       return Scaffold(
-        backgroundColor: Colors.grey[50],
+        backgroundColor: AppColors.backgroundLight, // Updated
         body: Column(
-          children: [
-            CustomHeader(),
+          children:[
+            const CustomHeader(),
 
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: [
+                  children:[
                     ResponsiveLayout(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -174,7 +175,7 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _buildDesktopLayout(ProductModel currentProduct) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children:[
         // REDUCED FLEX: Image is now only 35% of the screen width!
         Expanded(
           flex: 35,
@@ -193,7 +194,7 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _buildMobileLayout(ProductModel currentProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children:[
         _buildImageGallery(isDesktop: false, currentProduct: currentProduct),
         const SizedBox(height: 24),
         _buildProductInfo(currentProduct),
@@ -209,12 +210,12 @@ class ProductDetailsScreen extends StatelessWidget {
     required ProductModel currentProduct,
   }) {
     return Column(
-      children: [
+      children:[
         Container(
           height: isDesktop ? 350 : 280,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.pureWhite, // Updated
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey.shade200),
           ),
@@ -248,10 +249,10 @@ class ProductDetailsScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(right: 12),
                       width: 60,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.pureWhite, // Updated
                         borderRadius: BorderRadius.circular(6),
                         border: Border.all(
-                          color: isSelected ? brandGold : Colors.grey.shade300,
+                          color: isSelected ? AppColors.primaryGold : Colors.grey.shade300, // Updated
                           width: isSelected ? 2 : 1,
                         ),
                       ),
@@ -278,17 +279,17 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _buildProductInfo(ProductModel currentProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+      children:[
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: brandGreen.withValues(alpha: 0.1),
+            color: AppColors.primaryGreen.withValues(alpha: 0.1), // Updated
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             currentProduct.category,
-            style: TextStyle(
-              color: brandGreen,
+            style: const TextStyle(
+              color: AppColors.primaryGreen, // Updated
               fontWeight: FontWeight.bold,
               fontSize: 11,
             ),
@@ -302,15 +303,15 @@ class ProductDetailsScreen extends StatelessWidget {
             fontSize: 24,
             fontWeight: FontWeight.w900,
             height: 1.2,
-            color: Colors.black87,
+            color: AppColors.textDark, // Updated to brand dark text
           ),
         ),
         const SizedBox(height: 12),
 
         Text(
           '৳${currentProduct.price.toStringAsFixed(0)}',
-          style: TextStyle(
-            color: brandGold,
+          style: const TextStyle(
+            color: AppColors.primaryGreen, // Updated price color to pop
             fontSize: 26,
             fontWeight: FontWeight.w900,
           ),
@@ -319,11 +320,15 @@ class ProductDetailsScreen extends StatelessWidget {
 
         const Text(
           'Quantity',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          style: TextStyle(
+            fontWeight: FontWeight.bold, 
+            fontSize: 14,
+            color: AppColors.textDark, // Updated
+          ),
         ),
         const SizedBox(height: 8),
         Row(
-          children: [
+          children:[
             _qtyButton(Icons.remove, () {
               if (quantity.value > 1) quantity.value--;
             }),
@@ -340,6 +345,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                    color: AppColors.textDark, // Updated
                   ),
                 ),
               ),
@@ -354,7 +360,8 @@ class ProductDetailsScreen extends StatelessWidget {
           height: 48,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: brandGreen,
+              backgroundColor: AppColors.primaryGreen, // Updated
+              foregroundColor: AppColors.primaryGold, // Updated
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
               ),
@@ -365,11 +372,11 @@ class ProductDetailsScreen extends StatelessWidget {
               cartController.addToCart(currentProduct, quantity.value);
               Get.toNamed('/cart');
             },
-            icon: const Icon(Icons.flash_on, color: Colors.white, size: 18),
+            icon: const Icon(Icons.flash_on, color: AppColors.pureWhite, size: 18), // Updated
             label: const Text(
               'ORDER NOW',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.pureWhite, // Updated
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1,
@@ -380,13 +387,13 @@ class ProductDetailsScreen extends StatelessWidget {
         const SizedBox(height: 12),
 
         Row(
-          children: [
+          children:[
             Expanded(
               child: SizedBox(
                 height: 48,
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: brandGold, width: 2),
+                    side: const BorderSide(color: AppColors.primaryGold, width: 2), // Updated
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -395,15 +402,15 @@ class ProductDetailsScreen extends StatelessWidget {
                     final cartController = Get.find<CartController>();
                     cartController.addToCart(currentProduct, quantity.value);
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.shopping_bag_outlined,
-                    color: brandGold,
+                    color: AppColors.primaryGold, // Updated
                     size: 18,
                   ),
-                  label: Text(
+                  label: const Text(
                     'ADD TO CART',
                     style: TextStyle(
-                      color: brandGold,
+                      color: AppColors.primaryGold, // Updated
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -417,7 +424,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 height: 48,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF25D366),
+                    backgroundColor: const Color(0xFF25D366), // WhatsApp Green
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                     ),
@@ -459,7 +466,7 @@ class ProductDetailsScreen extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Icon(icon, size: 18),
+        child: Icon(icon, size: 18, color: AppColors.textDark), // Updated
       ),
     );
   }
@@ -468,19 +475,19 @@ class ProductDetailsScreen extends StatelessWidget {
   // 3. FIXED-WIDTH TABS SECTION
   // ==========================================
   Widget _buildInfoTabsAndContent(ProductModel currentProduct) {
-    final tabs = ['Description', 'Benefits', 'Usage'];
+    final tabs =['Description', 'Benefits', 'Usage'];
 
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(minHeight: 200),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children:[
           Container(
             decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
@@ -496,7 +503,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: isSelected ? brandGreen : Colors.transparent,
+                          color: isSelected ? AppColors.primaryGreen : Colors.transparent, // Updated
                           borderRadius:
                               index == 0
                                   ? const BorderRadius.only(
@@ -513,7 +520,7 @@ class ProductDetailsScreen extends StatelessWidget {
                             tabs[index],
                             style: TextStyle(
                               color:
-                                  isSelected ? brandGold : Colors.grey.shade600,
+                                  isSelected ? AppColors.primaryGold : Colors.grey.shade600, // Updated
                               fontWeight:
                                   isSelected
                                       ? FontWeight.bold
@@ -564,7 +571,11 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _tabTextContent(String text) {
     return Text(
       text,
-      style: const TextStyle(fontSize: 15, color: Colors.black87, height: 1.6),
+      style: const TextStyle(
+        fontSize: 15, 
+        color: AppColors.textDark, // Updated to brand dark text
+        height: 1.6,
+      ),
     );
   }
 
@@ -574,13 +585,13 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _buildReviewsSection(ProductModel currentProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
+      children:[
+        const Text(
           'Customer Experience',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
-            color: brandGreen,
+            color: AppColors.primaryGreen, // Updated
           ),
         ),
         const SizedBox(height: 24),
@@ -606,10 +617,10 @@ class ProductDetailsScreen extends StatelessWidget {
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: AppColors.pureWhite, // Updated
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.grey.shade200),
-                        boxShadow: [
+                        boxShadow:[
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.02),
                             blurRadius: 10,
@@ -619,17 +630,17 @@ class ProductDetailsScreen extends StatelessWidget {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children:[
                           Row(
-                            children: [
+                            children:[
                               CircleAvatar(
-                                backgroundColor: brandGreen.withValues(
+                                backgroundColor: AppColors.primaryGreen.withValues(
                                   alpha: 0.1,
-                                ),
+                                ), // Updated
                                 radius: 18,
-                                child: FaIcon(
+                                child: const FaIcon(
                                   FontAwesomeIcons.solidUser,
-                                  color: brandGold,
+                                  color: AppColors.primaryGold, // Updated
                                   size: 16,
                                 ),
                               ),
@@ -639,6 +650,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
+                                  color: AppColors.textDark, // Updated
                                 ),
                               ),
                               const Spacer(),
@@ -650,7 +662,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                     starIndex < starCount
                                         ? Icons.star
                                         : Icons.star_border,
-                                    color: Colors.orange,
+                                    color: AppColors.primaryGold, // Updated from generic orange
                                     size: 16,
                                   );
                                 }),
@@ -661,7 +673,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           Text(
                             review['comment'] ?? '',
                             style: const TextStyle(
-                              color: Colors.black87,
+                              color: AppColors.textDark, // Updated
                               height: 1.5,
                             ),
                           ),
@@ -677,9 +689,9 @@ class ProductDetailsScreen extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.pureWhite, // Updated
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: brandGold.withValues(alpha: 0.5)),
+            border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.5)), // Updated
           ),
           child: Obx(() {
             final AuthController authController = Get.find<AuthController>();
@@ -691,7 +703,7 @@ class ProductDetailsScreen extends StatelessWidget {
             if (!isLoggedIn) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+                children:[
                   const SizedBox(height: 16),
                   FaIcon(
                     FontAwesomeIcons.lock,
@@ -701,12 +713,16 @@ class ProductDetailsScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   const Text(
                     'Join the FADHL Family',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18, 
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textDark, // Updated
+                    ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
+                  Text(
                     'You must be logged in to share your experience.',
-                    style: TextStyle(color: Colors.black54),
+                    style: TextStyle(color: AppColors.textDark.withValues(alpha: 0.7)), // Updated
                   ),
                   const SizedBox(height: 24),
                   SizedBox(
@@ -714,8 +730,8 @@ class ProductDetailsScreen extends StatelessWidget {
                     width: 250,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: brandGold,
-                        foregroundColor: brandGreen,
+                        backgroundColor: AppColors.primaryGold, // Updated
+                        foregroundColor: AppColors.primaryGreen, // Updated
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
@@ -741,19 +757,23 @@ class ProductDetailsScreen extends StatelessWidget {
             // =====================================
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children:[
                 const Text(
                   'Share Your Feedback',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18, 
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textDark, // Updated
+                  ),
                 ),
                 const SizedBox(height: 20),
 
-                const Text(
+                Text(
                   'How was your experience?',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black54,
+                    color: AppColors.textDark.withValues(alpha: 0.7), // Updated
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -770,11 +790,11 @@ class ProductDetailsScreen extends StatelessWidget {
                               return ChoiceChip(
                                 label: Text(entry.value),
                                 selected: isSelected,
-                                selectedColor: brandGreen,
+                                selectedColor: AppColors.primaryGreen, // Updated
                                 backgroundColor: Colors.grey.shade100,
                                 labelStyle: TextStyle(
                                   color:
-                                      isSelected ? brandGold : Colors.black87,
+                                      isSelected ? AppColors.primaryGold : AppColors.textDark, // Updated
                                   fontWeight:
                                       isSelected
                                           ? FontWeight.bold
@@ -797,6 +817,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 TextField(
                   controller: reviewCommentController,
                   maxLines: 4,
+                  style: const TextStyle(color: AppColors.textDark), // Updated
                   decoration: InputDecoration(
                     hintText: 'Tell us more about your experience...',
                     filled: true,
@@ -813,8 +834,8 @@ class ProductDetailsScreen extends StatelessWidget {
                   height: 45,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: brandGold,
-                      foregroundColor: brandGreen,
+                      backgroundColor: AppColors.primaryGold, // Updated
+                      foregroundColor: AppColors.primaryGreen, // Updated
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),

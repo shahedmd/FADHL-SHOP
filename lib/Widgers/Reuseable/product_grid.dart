@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 class ProductGrid extends StatelessWidget {
   const ProductGrid({super.key});
 
@@ -17,7 +19,9 @@ class ProductGrid extends StatelessWidget {
         return const Padding(
           padding: EdgeInsets.all(40.0),
           child: Center(
-            child: CircularProgressIndicator(color: Color(0xFFCEAB5F)),
+            child: CircularProgressIndicator(
+              color: AppColors.primaryGold,
+            ), // Updated
           ),
         );
       }
@@ -92,7 +96,7 @@ class ProductCard extends StatelessWidget {
         },
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.pureWhite, // Updated
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: Colors.grey.shade200),
             boxShadow: [
@@ -138,13 +142,14 @@ class ProductCard extends StatelessWidget {
                           vertical: isMobile ? 2 : 4,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF0A1F13).withValues(alpha: 0.9),
+                          // Using your dark text color as a premium dark badge background
+                          color: AppColors.textDark.withValues(alpha: 0.9),
                           borderRadius: BorderRadius.circular(4),
                         ),
                         child: Text(
                           product.category,
                           style: TextStyle(
-                            color: const Color(0xFFCEAB5F),
+                            color: AppColors.primaryGold, // Updated
                             fontSize:
                                 isMobile ? 8 : 10, // Smaller badge on mobile
                             fontWeight: FontWeight.bold,
@@ -169,7 +174,7 @@ class ProductCard extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AppColors.pureWhite, // Updated
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
@@ -211,7 +216,9 @@ class ProductCard extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         fontSize: isMobile ? 12 : 14, // Shrinks on mobile
                         height: 1.2,
-                        color: Colors.black87,
+                        color:
+                            AppColors
+                                .textDark, // Updated to brand dark green instead of black
                       ),
                     ),
                     SizedBox(height: isMobile ? 6 : 10), // Tighter spacing
@@ -219,7 +226,9 @@ class ProductCard extends StatelessWidget {
                     Text(
                       '৳${product.price.toStringAsFixed(0)}',
                       style: TextStyle(
-                        color: const Color(0xFFCEAB5F),
+                        color:
+                            AppColors
+                                .primaryGreen, // Updated to vibrant green for prices
                         fontWeight: FontWeight.w900,
                         fontSize: isMobile ? 14 : 18, // Shrinks on mobile
                       ),
@@ -233,8 +242,8 @@ class ProductCard extends StatelessWidget {
                       height: isMobile ? 32 : 38, // Shorter button on mobile
                       child: ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF0A1F13),
-                          foregroundColor: const Color(0xFFCEAB5F),
+                          backgroundColor: AppColors.primaryGreen, // Updated
+                          foregroundColor: AppColors.primaryGold, // Updated
                           elevation: 0,
                           padding:
                               EdgeInsets

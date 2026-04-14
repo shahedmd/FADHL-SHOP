@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 // Make sure these paths match your folder structure exactly
 import '../../Services/pdf_invoice_services.dart';
-import '../../Utils/global_colours.dart';
+import '../../Utils/global_colours.dart'; // Make sure your AppColors class is in here!
 
 void openOrderProcessingModal(Map<String, dynamic> order) {
   final adminOrderController = Get.find<AdminOrderManagementController>();
@@ -68,7 +68,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
 
   Get.dialog(
     Dialog(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.pureWhite, // Updated to AppColors
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       insetPadding: const EdgeInsets.all(16),
       child: Container(
@@ -82,19 +82,17 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
             // HEADER
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: brandGreen,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
+              decoration: const BoxDecoration(
+                color: AppColors.primaryGreen, // Updated
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     'Order #$orderId',
-                    style: TextStyle(
-                      color: brandGold,
+                    style: const TextStyle(
+                      color: AppColors.primaryGold, // Updated
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
                     ),
@@ -123,8 +121,11 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           height: 45,
                           child: OutlinedButton.icon(
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: brandGreen,
-                              side: BorderSide(color: brandGreen),
+                              foregroundColor:
+                                  AppColors.primaryGreen, // Updated
+                              side: const BorderSide(
+                                color: AppColors.primaryGreen,
+                              ), // Updated
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),
@@ -162,7 +163,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
+                            color: AppColors.backgroundLight, // Updated
                             border: Border.all(color: Colors.grey.shade200),
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -211,8 +212,10 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                       const SizedBox(width: 8),
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: brandGreen,
-                                          foregroundColor: brandGold,
+                                          backgroundColor:
+                                              AppColors.primaryGreen, // Updated
+                                          foregroundColor:
+                                              AppColors.primaryGold, // Updated
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
                                               8,
@@ -253,6 +256,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
+                                        color: AppColors.textDark, // Updated
                                       ),
                                     ),
                                     const SizedBox(height: 8),
@@ -264,7 +268,12 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                           color: Colors.black54,
                                         ),
                                         const SizedBox(width: 8),
-                                        Text(currentCustomerPhone.value),
+                                        Text(
+                                          currentCustomerPhone.value,
+                                          style: const TextStyle(
+                                            color: AppColors.textDark,
+                                          ), // Updated
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -312,7 +321,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade50,
+                            color: AppColors.backgroundLight, // Updated
                             border: Border.all(color: Colors.grey.shade200),
                             borderRadius: BorderRadius.circular(8),
                           ),
@@ -365,8 +374,10 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                       const SizedBox(width: 8),
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: brandGreen,
-                                          foregroundColor: brandGold,
+                                          backgroundColor:
+                                              AppColors.primaryGreen, // Updated
+                                          foregroundColor:
+                                              AppColors.primaryGold, // Updated
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(
                                               8,
@@ -433,7 +444,8 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                                       currentShipping.value ==
                                                           'Not Provided'
                                                   ? Colors.redAccent
-                                                  : Colors.black87,
+                                                  : AppColors
+                                                      .textDark, // Updated
                                         ),
                                       ),
                                       const SizedBox(height: 12),
@@ -456,7 +468,8 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                                       currentBilling.value ==
                                                           'Not Provided'
                                                   ? Colors.redAccent
-                                                  : Colors.black87,
+                                                  : AppColors
+                                                      .textDark, // Updated
                                         ),
                                       ),
                                     ],
@@ -471,7 +484,6 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                   padding: EdgeInsets.zero,
                                   constraints: const BoxConstraints(),
                                   onPressed: () {
-                                    // Don't put 'Not Provided' or 'Pending' in the text field if they click edit
                                     shippingController.text =
                                         (currentShipping.value ==
                                                     'Not Provided' ||
@@ -528,6 +540,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14,
+                                      color: AppColors.textDark, // Updated
                                     ),
                                   ),
                                   subtitle: Text('Qty: ${item['quantity']}'),
@@ -535,6 +548,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                     '৳${item['price']}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      color: AppColors.textDark, // Updated
                                     ),
                                   ),
                                 ),
@@ -542,7 +556,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                               Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade50,
+                                  color: AppColors.backgroundLight, // Updated
                                   border: Border(
                                     top: BorderSide(
                                       color: Colors.grey.shade200,
@@ -575,13 +589,17 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                       children: [
                                         const Text(
                                           'Discount:',
-                                          style: TextStyle(color: Colors.green),
+                                          style: TextStyle(
+                                            color: AppColors.primaryGreen,
+                                          ), // Updated
                                         ),
                                         Obx(
                                           () => Text(
                                             '- ৳${currentDiscount.value}',
                                             style: const TextStyle(
-                                              color: Colors.green,
+                                              color:
+                                                  AppColors
+                                                      .primaryGreen, // Updated
                                             ),
                                           ),
                                         ),
@@ -593,7 +611,9 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                               Container(
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: brandGreen.withValues(alpha: 0.05),
+                                  color: AppColors.primaryGreen.withValues(
+                                    alpha: 0.05,
+                                  ), // Updated
                                   border: Border(
                                     top: BorderSide(
                                       color: Colors.grey.shade200,
@@ -609,15 +629,17 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16,
+                                        color: AppColors.textDark, // Updated
                                       ),
                                     ),
                                     Obx(
                                       () => Text(
                                         '৳${currentGrandTotal.value.toStringAsFixed(0)}',
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.w900,
                                           fontSize: 20,
-                                          color: brandGreen,
+                                          color:
+                                              AppColors.primaryGreen, // Updated
                                         ),
                                       ),
                                     ),
@@ -647,6 +669,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
+                            color: AppColors.textDark, // Updated
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -670,8 +693,10 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                             const SizedBox(width: 8),
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: brandGold,
-                                foregroundColor: brandGreen,
+                                backgroundColor:
+                                    AppColors.primaryGold, // Updated
+                                foregroundColor:
+                                    AppColors.primaryGreen, // Updated
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 18,
                                 ),
@@ -708,6 +733,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
+                            color: AppColors.textDark, // Updated
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -721,7 +747,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                       'Delivered',
                                       'Cancelled',
                                       'Pending - WhatsApp',
-                                      'Return'
+                                      'Return',
                                     ].contains(currentStatus.value)
                                     ? currentStatus.value
                                     : 'Pending',
@@ -741,7 +767,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                       'Shipped',
                                       'Delivered',
                                       'Cancelled',
-                                      'Returned'
+                                      'Returned',
                                     ]
                                     .map(
                                       (s) => DropdownMenuItem(
@@ -772,6 +798,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 13,
+                            color: AppColors.textDark, // Updated
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -780,7 +807,7 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           maxLines: 3,
                           decoration: InputDecoration(
                             filled: true,
-                            fillColor: Colors.grey.shade50,
+                            fillColor: AppColors.backgroundLight, // Updated
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
                               borderSide: BorderSide.none,
@@ -793,8 +820,9 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                           height: 45,
                           child: ElevatedButton.icon(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: brandGreen,
-                              foregroundColor: brandGold,
+                              backgroundColor:
+                                  AppColors.primaryGreen, // Updated
+                              foregroundColor: AppColors.primaryGold, // Updated
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                               ),

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 class PromoCarousel extends StatelessWidget {
   const PromoCarousel({super.key});
-
-  final Color brandGold = const Color(0xFFCEAB5F);
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,11 @@ class PromoCarousel extends StatelessWidget {
             color: Colors.grey[200],
             borderRadius: BorderRadius.circular(isDesktop ? 20 : 12),
           ),
-          child: Center(child: CircularProgressIndicator(color: brandGold)),
+          child: const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.primaryGold,
+            ), // Updated
+          ),
         );
       }
 
@@ -95,12 +99,12 @@ class PromoCarousel extends StatelessWidget {
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  const Color(
-                                    0xFF0A1F13,
-                                  ).withValues(alpha: 0.85),
-                                  const Color(
-                                    0xFF0A1F13,
-                                  ).withValues(alpha: 0.3),
+                                  AppColors.primaryGreen.withValues(
+                                    alpha: 0.85,
+                                  ), // Updated
+                                  AppColors.primaryGreen.withValues(
+                                    alpha: 0.3,
+                                  ), // Updated
                                   Colors.transparent,
                                 ],
                                 begin: Alignment.centerLeft,
@@ -121,7 +125,7 @@ class PromoCarousel extends StatelessWidget {
                                   child: Text(
                                     banner.title,
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: AppColors.pureWhite, // Updated
                                       fontSize: isDesktop ? 42 : 22,
                                       fontWeight: FontWeight.w900,
                                       height: 1.1,
@@ -142,8 +146,10 @@ class PromoCarousel extends StatelessWidget {
                                 SizedBox(height: isDesktop ? 30 : 16),
                                 ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: brandGold,
-                                    foregroundColor: const Color(0xFF0A1F13),
+                                    backgroundColor:
+                                        AppColors.primaryGold, // Updated
+                                    foregroundColor:
+                                        AppColors.primaryGreen, // Updated
                                     padding: EdgeInsets.symmetric(
                                       horizontal: isDesktop ? 30 : 16,
                                       vertical: isDesktop ? 20 : 12,
@@ -201,8 +207,11 @@ class PromoCarousel extends StatelessWidget {
                         decoration: BoxDecoration(
                           color:
                               isActive
-                                  ? brandGold
-                                  : Colors.white.withValues(alpha: 0.5),
+                                  ? AppColors
+                                      .primaryGold // Updated
+                                  : AppColors.pureWhite.withValues(
+                                    alpha: 0.5,
+                                  ), // Updated
                           borderRadius: BorderRadius.circular(4),
                         ),
                       );

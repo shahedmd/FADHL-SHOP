@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../../Models/productmodel.dart';
 import '../../Controllers/admin_product_controller.dart';
-import '../../Utils/global_colours.dart';
+import '../../Utils/global_colours.dart'; // Ensure AppColors is inside this file
 import 'product_form_modal.dart';
 
 class ProductsView extends StatelessWidget {
@@ -31,7 +31,7 @@ class ProductsView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: isDesktop ? 24 : 20,
                     fontWeight: FontWeight.w900,
-                    color: brandGreen,
+                    color: AppColors.primaryGreen, // Updated
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -43,10 +43,12 @@ class ProductsView extends StatelessWidget {
             ),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: brandGreen,
-                foregroundColor: brandGold,
+                backgroundColor: AppColors.primaryGreen, // Updated
+                foregroundColor: AppColors.primaryGold, // Updated
                 elevation: 2,
-                shadowColor: brandGreen.withValues(alpha: 0.3),
+                shadowColor: AppColors.primaryGreen.withValues(
+                  alpha: 0.3,
+                ), // Updated
                 padding: EdgeInsets.symmetric(
                   horizontal: isDesktop ? 24 : 16,
                   vertical: isDesktop ? 18 : 14,
@@ -77,7 +79,7 @@ class ProductsView extends StatelessWidget {
               child: Container(
                 height: 45,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.pureWhite, // Updated
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey.shade300),
                 ),
@@ -102,7 +104,7 @@ class ProductsView extends StatelessWidget {
                 height: 45,
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.pureWhite, // Updated
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey.shade300),
                 ),
@@ -135,8 +137,8 @@ class ProductsView extends StatelessWidget {
             const SizedBox(width: 12),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: brandGold,
-                foregroundColor: brandGreen,
+                backgroundColor: AppColors.primaryGold, // Updated
+                foregroundColor: AppColors.primaryGreen, // Updated
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 18,
@@ -173,9 +175,11 @@ class ProductsView extends StatelessWidget {
 
         Obx(() {
           if (adminController.isLoadingTable.value) {
-            return Padding(
-              padding: const EdgeInsets.all(60.0),
-              child: Center(child: CircularProgressIndicator(color: brandGold)),
+            return const Padding(
+              padding: EdgeInsets.all(60.0),
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.primaryGold),
+              ), // Updated
             );
           }
           if (adminController.tableProducts.isEmpty) return _buildEmptyState();
@@ -184,7 +188,7 @@ class ProductsView extends StatelessWidget {
             decoration:
                 isDesktop
                     ? BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.pureWhite, // Updated
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -226,9 +230,9 @@ class ProductsView extends StatelessWidget {
                             ),
                             child: Text(
                               product.category.toUpperCase(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w900,
-                                color: brandGreen,
+                                color: AppColors.primaryGreen, // Updated
                                 letterSpacing: 1.2,
                               ),
                             ),
@@ -276,15 +280,17 @@ class ProductsView extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: brandGreen.withValues(alpha: 0.05),
+                    color: AppColors.primaryGreen.withValues(
+                      alpha: 0.05,
+                    ), // Updated
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     'Page ${adminController.currentPage.value}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
-                      color: brandGreen,
+                      color: AppColors.primaryGreen, // Updated
                     ),
                   ),
                 ),
@@ -313,7 +319,7 @@ class ProductsView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
+        color: AppColors.backgroundLight, // Updated for brand consistency
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
       ),
@@ -349,7 +355,11 @@ class ProductsView extends StatelessWidget {
             flex: 3,
             child: Text(
               product.name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: AppColors.textDark, // Updated
+              ),
             ),
           ),
           Expanded(
@@ -363,8 +373,8 @@ class ProductsView extends StatelessWidget {
             flex: 2,
             child: Text(
               '৳${product.price.toStringAsFixed(0)}',
-              style: TextStyle(
-                color: brandGreen,
+              style: const TextStyle(
+                color: AppColors.primaryGreen, // Updated
                 fontWeight: FontWeight.w900,
                 fontSize: 15,
               ),
@@ -403,7 +413,7 @@ class ProductsView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -428,6 +438,7 @@ class ProductsView extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
+                    color: AppColors.textDark, // Updated
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -435,8 +446,8 @@ class ProductsView extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   '৳${product.price.toStringAsFixed(0)}',
-                  style: TextStyle(
-                    color: brandGreen,
+                  style: const TextStyle(
+                    color: AppColors.primaryGreen, // Updated
                     fontWeight: FontWeight.w900,
                     fontSize: 16,
                   ),
@@ -503,14 +514,16 @@ class ProductsView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: brandGreen.withValues(alpha: 0.08),
+        color: AppColors.primaryGreen.withValues(alpha: 0.08), // Updated
         borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: brandGreen.withValues(alpha: 0.15)),
+        border: Border.all(
+          color: AppColors.primaryGreen.withValues(alpha: 0.15),
+        ), // Updated
       ),
       child: Text(
         category.toUpperCase(),
-        style: TextStyle(
-          color: brandGreen,
+        style: const TextStyle(
+          color: AppColors.primaryGreen, // Updated
           fontSize: 10,
           fontWeight: FontWeight.w900,
           letterSpacing: 0.5,
@@ -575,17 +588,25 @@ class ProductsView extends StatelessWidget {
   ) {
     Get.defaultDialog(
       title: 'Delete Product?',
-      titleStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+      titleStyle: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        color: AppColors.textDark, // Updated
+      ),
       content: Text(
         'Delete "${product.name}" forever?',
         textAlign: TextAlign.center,
-        style: const TextStyle(fontSize: 14),
+        style: const TextStyle(
+          fontSize: 14,
+          color: AppColors.textDark, // Updated
+        ),
       ),
       textConfirm: 'Delete Permanently',
       textCancel: 'Cancel',
       confirmTextColor: Colors.white,
-      cancelTextColor: brandGreen,
+      cancelTextColor: AppColors.primaryGreen, // Updated
       buttonColor: Colors.redAccent,
+      backgroundColor: AppColors.pureWhite, // Updated
       onConfirm: () {
         adminController.deleteProduct(product.id);
         Get.back();

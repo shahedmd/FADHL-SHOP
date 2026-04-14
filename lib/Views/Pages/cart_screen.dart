@@ -8,15 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 class CartScreen extends StatelessWidget {
   CartScreen({super.key});
-
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
-  // ==========================================
-  // LOCAL CHECKOUT STATE
-  // ==========================================
   final RxString selectedPayment = 'Cash On Delivery'.obs;
   final RxBool isBillingSameAsShipping = true.obs;
   final RxBool agreedToTerms = false.obs;
@@ -39,9 +34,6 @@ class CartScreen extends StatelessWidget {
     'Mohammadpur',
   ];
 
-  // ==========================================
-  // TEXT CONTROLLERS (For User Input)
-  // ==========================================
   final TextEditingController shippingNameCtrl = TextEditingController();
   final TextEditingController shippingPhoneCtrl = TextEditingController();
   final TextEditingController shippingAddressCtrl = TextEditingController();
@@ -87,10 +79,10 @@ class CartScreen extends StatelessWidget {
     _autoFillUserData();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
+      backgroundColor: AppColors.backgroundLight, // Updated to brand background
       body: Column(
         children: [
-          CustomHeader(),
+          const CustomHeader(),
 
           Expanded(
             child: Obx(() {
@@ -230,6 +222,7 @@ class CartScreen extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: isMobile ? 13 : 14,
+                              color: AppColors.textDark, // Updated
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -294,7 +287,7 @@ class CartScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: isMobile ? 13 : 14,
-                                  color: brandGold,
+                                  color: AppColors.primaryGold, // Updated
                                 ),
                               ),
                             ],
@@ -406,7 +399,10 @@ class CartScreen extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(6),
-          borderSide: BorderSide(color: brandGold, width: 2),
+          borderSide: const BorderSide(
+            color: AppColors.primaryGold,
+            width: 2,
+          ), // Updated
         ),
       ),
       keyboardType: TextInputType.phone,
@@ -472,7 +468,7 @@ class CartScreen extends StatelessWidget {
                 children: [
                   Checkbox(
                     value: isBillingSameAsShipping.value,
-                    activeColor: brandGreen,
+                    activeColor: AppColors.primaryGreen, // Updated
                     onChanged: (val) => isBillingSameAsShipping.value = val!,
                   ),
                   const Expanded(
@@ -590,10 +586,15 @@ class CartScreen extends StatelessWidget {
             // Gray out the background if it's not available
             color:
                 isSelected
-                    ? brandGold.withValues(alpha: 0.1)
-                    : (isAvailable ? Colors.white : Colors.grey.shade100),
+                    ? AppColors.primaryGold.withValues(alpha: 0.1) // Updated
+                    : (isAvailable
+                        ? AppColors.pureWhite
+                        : Colors.grey.shade100), // Updated
             border: Border.all(
-              color: isSelected ? brandGold : Colors.grey.shade300,
+              color:
+                  isSelected
+                      ? AppColors.primaryGold
+                      : Colors.grey.shade300, // Updated
               width: isSelected ? 2 : 1,
             ),
             borderRadius: BorderRadius.circular(8),
@@ -614,13 +615,18 @@ class CartScreen extends StatelessWidget {
                     fontSize: 13,
                     color:
                         isAvailable
-                            ? Colors.black87
+                            ? AppColors
+                                .textDark // Updated
                             : Colors.grey.shade500, // Gray out text
                   ),
                 ),
               ),
               if (isSelected)
-                Icon(Icons.check_circle, color: brandGold, size: 18),
+                const Icon(
+                  Icons.check_circle,
+                  color: AppColors.primaryGold,
+                  size: 18,
+                ), // Updated
             ],
           ),
         ),
@@ -638,7 +644,7 @@ class CartScreen extends StatelessWidget {
             'Have any coupon or gift voucher?',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: Colors.black87,
+              color: AppColors.textDark, // Updated
             ),
           ),
           const SizedBox(height: 12),
@@ -654,8 +660,8 @@ class CartScreen extends StatelessWidget {
               const SizedBox(width: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: brandGreen,
-                  foregroundColor: brandGold,
+                  backgroundColor: AppColors.primaryGreen, // Updated
+                  foregroundColor: AppColors.primaryGold, // Updated
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 15,
@@ -688,10 +694,10 @@ class CartScreen extends StatelessWidget {
               ),
               Text(
                 '৳${controller.grandTotal.toStringAsFixed(0)}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
-                  color: brandGold,
+                  color: AppColors.primaryGold, // Updated
                 ),
               ),
             ],
@@ -720,15 +726,18 @@ class CartScreen extends StatelessWidget {
                     width: 24,
                     child: Checkbox(
                       value: agreedToTerms.value,
-                      activeColor: brandGreen,
+                      activeColor: AppColors.primaryGreen, // Updated
                       onChanged: (val) => agreedToTerms.value = val!,
                     ),
                   ),
                   const SizedBox(width: 8),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'I have read and agree to the Terms and Conditions',
-                      style: TextStyle(fontSize: 13, color: Colors.black87),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textDark.withValues(alpha: 0.8),
+                      ), // Updated
                     ),
                   ),
                 ],
@@ -746,8 +755,8 @@ class CartScreen extends StatelessWidget {
             height: 55,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: brandGreen,
-                foregroundColor: brandGold,
+                backgroundColor: AppColors.primaryGreen, // Updated
+                foregroundColor: AppColors.primaryGold, // Updated
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -807,7 +816,7 @@ class CartScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      backgroundColor: Colors.white,
+                      backgroundColor: AppColors.pureWhite, // Updated
                       child: Container(
                         width: 400,
                         padding: const EdgeInsets.all(32.0),
@@ -817,12 +826,14 @@ class CartScreen extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.all(20),
                               decoration: BoxDecoration(
-                                color: brandGreen.withValues(alpha: 0.1),
+                                color: AppColors.primaryGreen.withValues(
+                                  alpha: 0.1,
+                                ), // Updated
                                 shape: BoxShape.circle,
                               ),
-                              child: FaIcon(
+                              child: const FaIcon(
                                 FontAwesomeIcons.circleCheck,
-                                color: brandGreen,
+                                color: AppColors.primaryGreen, // Updated
                                 size: 45,
                               ),
                             ),
@@ -832,17 +843,21 @@ class CartScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w900,
-                                color: Color(0xFF0A1F13),
+                                color:
+                                    AppColors
+                                        .textDark, // Updated to brand dark text
                               ),
                             ),
                             const SizedBox(height: 16),
 
-                            const Text(
+                            Text(
                               'Thank you for shopping with FADHL. Your order has been placed successfully and is being processed.',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.black87,
+                                color: AppColors.textDark.withValues(
+                                  alpha: 0.8,
+                                ), // Updated
                                 height: 1.5,
                               ),
                             ),
@@ -855,10 +870,14 @@ class CartScreen extends StatelessWidget {
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               decoration: BoxDecoration(
-                                color: brandGold.withValues(alpha: 0.1),
+                                color: AppColors.primaryGold.withValues(
+                                  alpha: 0.1,
+                                ), // Updated
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
-                                  color: brandGold.withValues(alpha: 0.5),
+                                  color: AppColors.primaryGold.withValues(
+                                    alpha: 0.5,
+                                  ), // Updated
                                   width: 1,
                                 ),
                               ),
@@ -876,10 +895,10 @@ class CartScreen extends StatelessWidget {
                                   const SizedBox(height: 4),
                                   Text(
                                     generatedOrderId, // The exact ID from Firebase!
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w900,
-                                      color: brandGreen,
+                                      color: AppColors.primaryGreen, // Updated
                                       letterSpacing: 1.5,
                                     ),
                                   ),
@@ -893,8 +912,10 @@ class CartScreen extends StatelessWidget {
                               height: 50,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: brandGreen,
-                                  foregroundColor: brandGold,
+                                  backgroundColor:
+                                      AppColors.primaryGreen, // Updated
+                                  foregroundColor:
+                                      AppColors.primaryGold, // Updated
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -945,7 +966,7 @@ class CartScreen extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(isMobile ? 16 : 24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -960,7 +981,7 @@ class CartScreen extends StatelessWidget {
           width: 4,
           height: 18,
           decoration: BoxDecoration(
-            color: brandGold,
+            color: AppColors.primaryGold, // Updated
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -970,7 +991,7 @@ class CartScreen extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: Colors.black87,
+            color: AppColors.textDark, // Updated
           ),
         ),
       ],
@@ -1005,7 +1026,10 @@ class CartScreen extends StatelessWidget {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(6),
-        borderSide: BorderSide(color: brandGold, width: 2),
+        borderSide: const BorderSide(
+          color: AppColors.primaryGold,
+          width: 2,
+        ), // Updated
       ),
     );
   }
@@ -1035,13 +1059,13 @@ class CartScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: brandGreen.withValues(alpha: 0.05),
+              color: AppColors.primaryGreen.withValues(alpha: 0.05), // Updated
               shape: BoxShape.circle,
             ),
             child: FaIcon(
               FontAwesomeIcons.cartShopping,
               size: 60,
-              color: brandGold.withValues(alpha: 0.5),
+              color: AppColors.primaryGold.withValues(alpha: 0.5), // Updated
             ),
           ),
           const SizedBox(height: 24),
@@ -1050,14 +1074,14 @@ class CartScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: AppColors.textDark, // Updated
             ),
           ),
           const SizedBox(height: 30),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: brandGreen,
-              foregroundColor: brandGold,
+              backgroundColor: AppColors.primaryGreen, // Updated
+              foregroundColor: AppColors.primaryGold, // Updated
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

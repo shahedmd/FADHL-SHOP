@@ -5,13 +5,10 @@ import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
 class OrderTrackingScreen extends StatelessWidget {
   const OrderTrackingScreen({super.key});
-
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +25,10 @@ class OrderTrackingScreen extends StatelessWidget {
     final bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
+      backgroundColor: AppColors.backgroundLight, // Updated to brand background
       body: Column(
         children: [
-          CustomHeader(),
+          const CustomHeader(),
 
           Expanded(
             child: SingleChildScrollView(
@@ -52,17 +49,17 @@ class OrderTrackingScreen extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                FaIcon(
+                                const FaIcon(
                                   FontAwesomeIcons.arrowLeft,
                                   size: 16,
-                                  color: brandGreen,
+                                  color: AppColors.primaryGreen, // Updated
                                 ),
                                 const SizedBox(width: 8),
-                                Text(
+                                const Text(
                                   'Back',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: brandGreen,
+                                    color: AppColors.primaryGreen, // Updated
                                   ),
                                 ),
                               ],
@@ -76,7 +73,9 @@ class OrderTrackingScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w900,
-                              color: Colors.black87,
+                              color:
+                                  AppColors
+                                      .textDark, // Updated to brand dark text
                             ),
                           ),
                           const SizedBox(height: 24),
@@ -88,7 +87,7 @@ class OrderTrackingScreen extends StatelessWidget {
                             width: double.infinity,
                             padding: EdgeInsets.all(isMobile ? 20 : 32),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AppColors.pureWhite, // Updated
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(color: Colors.grey.shade200),
                               boxShadow: [
@@ -127,7 +126,9 @@ class OrderTrackingScreen extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: isMobile ? 18 : 22,
                                             fontWeight: FontWeight.w900,
-                                            color: brandGreen,
+                                            color:
+                                                AppColors
+                                                    .primaryGreen, // Updated
                                           ),
                                         ),
                                       ],
@@ -138,16 +139,19 @@ class OrderTrackingScreen extends StatelessWidget {
                                         vertical: 6,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: brandGold.withValues(
+                                        color: AppColors.primaryGold.withValues(
                                           alpha: 0.15,
-                                        ),
+                                        ), // Updated
                                         borderRadius: BorderRadius.circular(20),
-                                        border: Border.all(color: brandGold),
+                                        border: Border.all(
+                                          color: AppColors.primaryGold,
+                                        ), // Updated
                                       ),
                                       child: Text(
                                         order.status.toUpperCase(),
                                         style: TextStyle(
-                                          color: brandGreen,
+                                          color:
+                                              AppColors.primaryGreen, // Updated
                                           fontWeight: FontWeight.bold,
                                           fontSize: isMobile ? 10 : 12,
                                           letterSpacing: 1,
@@ -230,7 +234,8 @@ class OrderTrackingScreen extends StatelessWidget {
                                         Text(
                                           order.adminFeedback,
                                           style: const TextStyle(
-                                            color: Colors.black87,
+                                            color:
+                                                AppColors.textDark, // Updated
                                           ),
                                         ),
                                       ],
@@ -244,6 +249,7 @@ class OrderTrackingScreen extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
+                                    color: AppColors.textDark, // Updated
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -294,6 +300,9 @@ class OrderTrackingScreen extends StatelessWidget {
                                                   item['name'] ?? 'Product',
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
+                                                    color:
+                                                        AppColors
+                                                            .textDark, // Updated
                                                   ),
                                                 ),
                                                 Text(
@@ -310,6 +319,8 @@ class OrderTrackingScreen extends StatelessWidget {
                                             '৳${item['price']}',
                                             style: const TextStyle(
                                               fontWeight: FontWeight.bold,
+                                              color:
+                                                  AppColors.textDark, // Updated
                                             ),
                                           ),
                                         ],
@@ -343,14 +354,15 @@ class OrderTrackingScreen extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
+                                        color: AppColors.textDark, // Updated
                                       ),
                                     ),
                                     Text(
                                       '৳${order.totalAmount.toStringAsFixed(0)}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.w900,
-                                        color: brandGold,
+                                        color: AppColors.primaryGold, // Updated
                                       ),
                                     ),
                                   ],
@@ -380,7 +392,7 @@ class OrderTrackingScreen extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FaIcon(icon, size: 12, color: brandGold),
+            FaIcon(icon, size: 12, color: AppColors.primaryGold), // Updated
             const SizedBox(width: 6),
             Text(
               title.toUpperCase(),
@@ -399,7 +411,7 @@ class OrderTrackingScreen extends StatelessWidget {
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            color: AppColors.textDark, // Updated
           ),
         ),
       ],
@@ -412,11 +424,18 @@ class OrderTrackingScreen extends StatelessWidget {
       children: [
         Text(
           title,
-          style: const TextStyle(color: Colors.black54, fontSize: 14),
+          style: TextStyle(
+            color: AppColors.textDark.withValues(alpha: 0.7), // Updated
+            fontSize: 14,
+          ),
         ),
         Text(
           '৳${amount.toStringAsFixed(0)}',
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+            color: AppColors.textDark, // Updated
+          ),
         ),
       ],
     );

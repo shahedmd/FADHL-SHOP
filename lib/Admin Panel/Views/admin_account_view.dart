@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controllers/admin_management_controller.dart';
-import '../Utils/global_colours.dart';
+import '../Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
 class AdminManagementView extends StatelessWidget {
   final bool isDesktop;
@@ -30,7 +30,7 @@ class AdminManagementView extends StatelessWidget {
                   style: TextStyle(
                     fontSize: isDesktop ? 24 : 20,
                     fontWeight: FontWeight.w900,
-                    color: brandGreen,
+                    color: AppColors.primaryGreen, // Updated
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -42,8 +42,8 @@ class AdminManagementView extends StatelessWidget {
             ),
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: brandGreen,
-                foregroundColor: brandGold,
+                backgroundColor: AppColors.primaryGreen, // Updated
+                foregroundColor: AppColors.primaryGold, // Updated
                 padding: EdgeInsets.symmetric(
                   horizontal: isDesktop ? 24 : 16,
                   vertical: isDesktop ? 18 : 14,
@@ -71,7 +71,9 @@ class AdminManagementView extends StatelessWidget {
             return const Padding(
               padding: EdgeInsets.all(60.0),
               child: Center(
-                child: CircularProgressIndicator(color: Color(0xFFCEAB5F)),
+                child: CircularProgressIndicator(
+                  color: AppColors.primaryGold,
+                ), // Updated from hardcoded hex
               ),
             );
           }
@@ -80,7 +82,7 @@ class AdminManagementView extends StatelessWidget {
             decoration:
                 isDesktop
                     ? BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.pureWhite, // Updated
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
@@ -105,10 +107,14 @@ class AdminManagementView extends StatelessWidget {
                 return ListTile(
                   contentPadding: EdgeInsets.all(isDesktop ? 16 : 8),
                   leading: CircleAvatar(
-                    backgroundColor: brandGold.withValues(alpha: 0.2),
-                    child: FaIcon(
+                    backgroundColor: AppColors.primaryGold.withValues(
+                      alpha: 0.2,
+                    ), // Updated
+                    child: const FaIcon(
                       FontAwesomeIcons.userShield,
-                      color: brandGold,
+                      color:
+                          AppColors
+                              .primaryGreen, // Updated for better contrast against gold
                       size: 20,
                     ),
                   ),
@@ -119,6 +125,9 @@ class AdminManagementView extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color:
+                              AppColors
+                                  .textDark, // Updated to use dark brand text
                         ),
                       ),
                       if (isMe) ...[
@@ -129,13 +138,13 @@ class AdminManagementView extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: brandGreen,
+                            color: AppColors.primaryGreen, // Updated
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(
                             'YOU',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: AppColors.pureWhite, // Updated
                               fontSize: 10,
                               fontWeight: FontWeight.bold,
                             ),
@@ -144,7 +153,10 @@ class AdminManagementView extends StatelessWidget {
                       ],
                     ],
                   ),
-                  subtitle: Text('${admin['email']}  •  ${admin['phone']}'),
+                  subtitle: Text(
+                    '${admin['email']}  •  ${admin['phone']}',
+                    style: const TextStyle(color: Colors.grey),
+                  ),
                   trailing:
                       isMe
                           ? null
@@ -178,6 +190,7 @@ class AdminManagementView extends StatelessWidget {
 
     Get.dialog(
       Dialog(
+        backgroundColor: AppColors.pureWhite, // Updated
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: Container(
           width: 500,
@@ -186,12 +199,12 @@ class AdminManagementView extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Create New Admin',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
-                  color: brandGreen,
+                  color: AppColors.primaryGreen, // Updated
                 ),
               ),
               const SizedBox(height: 24),
@@ -234,8 +247,8 @@ class AdminManagementView extends StatelessWidget {
                 child: Obx(
                   () => ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: brandGreen,
-                      foregroundColor: brandGold,
+                      backgroundColor: AppColors.primaryGreen, // Updated
+                      foregroundColor: AppColors.primaryGold, // Updated
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -264,7 +277,7 @@ class AdminManagementView extends StatelessWidget {
                     child:
                         adminController.isCreating.value
                             ? const CircularProgressIndicator(
-                              color: Color(0xFFCEAB5F),
+                              color: AppColors.primaryGold, // Updated
                             )
                             : const Text(
                               'AUTHORIZE ADMIN',
@@ -296,6 +309,13 @@ class AdminManagementView extends StatelessWidget {
       textCancel: 'Cancel',
       confirmTextColor: Colors.white,
       buttonColor: Colors.redAccent,
+      backgroundColor:
+          AppColors.pureWhite, // Added to ensure dialog background is clean
+      titleStyle: const TextStyle(
+        color: AppColors.textDark,
+        fontWeight: FontWeight.bold,
+      ), // Updated
+      middleTextStyle: const TextStyle(color: AppColors.textDark), // Updated
       onConfirm: () {
         adminController.revokeAdminAccess(
           admin['uid'],

@@ -3,6 +3,8 @@ import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 // 🚀 1. NEW GETX CONTROLLER: Handles local UI state without setState()
 class AuthUIController extends GetxController {
   final RxBool isLogin = true.obs;
@@ -44,13 +46,8 @@ class AuthUIController extends GetxController {
   }
 }
 
-// 🚀 2. STATELESS WIDGET: Replaced StatefulWidget
 class AuthScreen extends StatelessWidget {
   AuthScreen({super.key});
-
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
   // Initialize the controllers
   final AuthUIController uiController = Get.put(AuthUIController());
   final AuthController authController = Get.find<AuthController>();
@@ -60,7 +57,7 @@ class AuthScreen extends StatelessWidget {
     final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.backgroundLight, // Updated
       body: Center(
         child: SingleChildScrollView(
           child: ResponsiveLayout(
@@ -72,22 +69,17 @@ class AuthScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 // 🚀 3. PERFORMANCE FIX: A hard-stop gradient creates the two-tone background instantly.
                 // No IntrinsicHeight needed, no 'stretch' needed!
-                color: isDesktop ? null : Colors.white,
+                color: isDesktop ? null : AppColors.pureWhite, // Updated
                 gradient:
                     isDesktop
-                        ? LinearGradient(
+                        ? const LinearGradient(
                           colors: [
-                            brandGreen,
-                            brandGreen,
-                            Colors.white,
-                            Colors.white,
+                            AppColors.primaryGreen, // Updated
+                            AppColors.primaryGreen, // Updated
+                            AppColors.pureWhite, // Updated
+                            AppColors.pureWhite, // Updated
                           ],
-                          stops: const [
-                            0.0,
-                            0.5,
-                            0.5,
-                            1.0,
-                          ], // Exactly 50/50 split
+                          stops: [0.0, 0.5, 0.5, 1.0], // Exactly 50/50 split
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         )
@@ -123,10 +115,10 @@ class AuthScreen extends StatelessWidget {
                 errorBuilder: (c, e, s) => const SizedBox(),
               ),
               const SizedBox(height: 24),
-              Text(
+              const Text(
                 'FADHL',
                 style: TextStyle(
-                  color: brandGold,
+                  color: AppColors.primaryGold, // Updated
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 4,
@@ -157,10 +149,10 @@ class AuthScreen extends StatelessWidget {
             errorBuilder: (c, e, s) => const SizedBox(),
           ),
           const SizedBox(height: 16),
-          Text(
+          const Text(
             'FADHL',
             style: TextStyle(
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
               fontSize: 24,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
@@ -184,10 +176,10 @@ class AuthScreen extends StatelessWidget {
         children: [
           Text(
             isLogin ? 'Welcome Back' : 'Create Account',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w900,
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
             ),
           ),
           const SizedBox(height: 32),
@@ -231,8 +223,8 @@ class AuthScreen extends StatelessWidget {
             height: 50,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: brandGreen,
-                foregroundColor: brandGold,
+                backgroundColor: AppColors.primaryGreen, // Updated
+                foregroundColor: AppColors.primaryGold, // Updated
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -261,7 +253,7 @@ class AuthScreen extends StatelessWidget {
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
-                          color: Color(0xFFCEAB5F),
+                          color: AppColors.primaryGold, // Updated
                           strokeWidth: 2,
                         ),
                       )
@@ -283,14 +275,16 @@ class AuthScreen extends StatelessWidget {
                 isLogin
                     ? "Don't have an account? "
                     : "Already have an account? ",
-                style: const TextStyle(color: Colors.black54),
+                style: TextStyle(
+                  color: AppColors.textDark.withValues(alpha: 0.7),
+                ), // Updated
               ),
               InkWell(
                 onTap: uiController.toggleLogin,
                 child: Text(
                   isLogin ? 'Sign Up' : 'Sign In',
-                  style: TextStyle(
-                    color: brandGold,
+                  style: const TextStyle(
+                    color: AppColors.primaryGold, // Updated
                     fontWeight: FontWeight.bold,
                   ),
                 ),

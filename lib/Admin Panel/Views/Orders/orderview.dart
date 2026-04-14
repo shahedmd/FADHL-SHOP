@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../Controllers/admin_order_controller.dart';
-import '../../Utils/global_colours.dart';
+import '../../Utils/global_colours.dart'; // Ensure AppColors is inside this file
 import 'order_processing_modal.dart';
 
 class OrdersView extends StatelessWidget {
@@ -27,9 +27,11 @@ class OrdersView extends StatelessWidget {
         // TABLE VIEW
         Obx(() {
           if (adminOrderController.isLoadingTable.value) {
-            return Padding(
-              padding: const EdgeInsets.all(40),
-              child: Center(child: CircularProgressIndicator(color: brandGold)),
+            return const Padding(
+              padding: EdgeInsets.all(40),
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.primaryGold),
+              ), // Updated
             );
           }
           if (adminOrderController.tableOrders.isEmpty) {
@@ -50,7 +52,7 @@ class OrdersView extends StatelessWidget {
             decoration:
                 isDesktop
                     ? BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.pureWhite, // Updated
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
@@ -174,15 +176,17 @@ class OrdersView extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: brandGreen.withValues(alpha: 0.05),
+                    color: AppColors.primaryGreen.withValues(
+                      alpha: 0.05,
+                    ), // Updated
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     'Page ${adminOrderController.currentPage.value}',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 13,
-                      color: brandGreen,
+                      color: AppColors.primaryGreen, // Updated
                     ),
                   ),
                 ),
@@ -246,7 +250,7 @@ class OrdersView extends StatelessWidget {
     return Container(
       height: 45,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.grey.shade300),
       ),
@@ -278,7 +282,7 @@ class OrdersView extends StatelessWidget {
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(8),
         border: Border.all(color: Colors.grey.shade300),
       ),
@@ -296,7 +300,6 @@ class OrdersView extends StatelessWidget {
               DropdownMenuItem(value: 'Delivered', child: Text('Delivered')),
               DropdownMenuItem(value: 'Cancelled', child: Text('Cancelled')),
               DropdownMenuItem(value: 'Returned', child: Text('Returned')),
-
               DropdownMenuItem(
                 value: 'WhatsApp',
                 child: Text('WhatsApp Orders'),
@@ -322,8 +325,8 @@ class OrdersView extends StatelessWidget {
       height: 45,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: brandGreen,
-          foregroundColor: brandGold,
+          backgroundColor: AppColors.primaryGreen, // Updated
+          foregroundColor: AppColors.primaryGold, // Updated
           padding: const EdgeInsets.symmetric(horizontal: 24),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
@@ -356,7 +359,10 @@ class OrdersView extends StatelessWidget {
             flex: 2,
             child: Text(
               '#$orderId',
-              style: const TextStyle(fontWeight: FontWeight.w900),
+              style: const TextStyle(
+                fontWeight: FontWeight.w900,
+                color: AppColors.textDark, // Updated
+              ),
             ),
           ),
           Expanded(
@@ -370,14 +376,20 @@ class OrdersView extends StatelessWidget {
             flex: 2,
             child: Text(
               order['customerName'] ?? 'Unknown',
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                color: AppColors.textDark, // Updated
+              ),
             ),
           ),
           Expanded(
             flex: 2,
             child: Text(
               '৳${total.toStringAsFixed(0)}',
-              style: TextStyle(color: brandGreen, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: AppColors.primaryGreen, // Updated
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Expanded(
@@ -398,8 +410,8 @@ class OrdersView extends StatelessWidget {
                   height: 36,
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: brandGold,
-                      foregroundColor: brandGreen,
+                      backgroundColor: AppColors.primaryGold, // Updated
+                      foregroundColor: AppColors.primaryGreen, // Updated
                       elevation: 0,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
@@ -438,7 +450,7 @@ class OrdersView extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -449,11 +461,17 @@ class OrdersView extends StatelessWidget {
           children: [
             Text(
               '#$orderId',
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppColors.textDark, // Updated
+              ),
             ),
             Text(
               '৳${total.toStringAsFixed(0)}',
-              style: TextStyle(color: brandGreen, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: AppColors.primaryGreen, // Updated
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -464,7 +482,10 @@ class OrdersView extends StatelessWidget {
             children: [
               Text(
                 order['customerName'] ?? '',
-                style: const TextStyle(fontSize: 12),
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textDark, // Updated
+                ),
               ),
               _statusBadge(
                 order['status'] ?? order['orderstatus'] ?? 'Pending',
@@ -505,7 +526,8 @@ class OrdersView extends StatelessWidget {
 
     if (status.contains('Processing')) statusColor = Colors.blue;
     if (status.contains('Shipped')) statusColor = Colors.purple;
-    if (status.contains('Delivered')) statusColor = Colors.green;
+    // Updated 'Delivered' to use your brand green
+    if (status.contains('Delivered')) statusColor = AppColors.primaryGreen;
     if (status.contains('Cancelled')) statusColor = Colors.red;
 
     return Container(

@@ -34,7 +34,7 @@ class AdminCustomerView extends StatelessWidget {
                     style: TextStyle(
                       fontSize: isDesktop ? 24 : 20,
                       fontWeight: FontWeight.w900,
-                      color: brandGreen,
+                      color: AppColors.primaryGreen,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -84,6 +84,7 @@ class AdminCustomerView extends StatelessWidget {
                                     value,
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      color: AppColors.textDark,
                                     ),
                                   ),
                                 ),
@@ -99,8 +100,8 @@ class AdminCustomerView extends StatelessWidget {
                           builder:
                               (context, child) => Theme(
                                 data: ThemeData.light().copyWith(
-                                  colorScheme: ColorScheme.light(
-                                    primary: brandGreen,
+                                  colorScheme: const ColorScheme.light(
+                                    primary: AppColors.primaryGreen,
                                   ),
                                 ),
                                 child: child!,
@@ -132,7 +133,7 @@ class AdminCustomerView extends StatelessWidget {
             return const Padding(
               padding: EdgeInsets.all(60.0),
               child: Center(
-                child: CircularProgressIndicator(color: Color(0xFFCEAB5F)),
+                child: CircularProgressIndicator(color: AppColors.primaryGold),
               ),
             );
           }
@@ -189,11 +190,13 @@ class AdminCustomerView extends StatelessWidget {
                 return ListTile(
                   contentPadding: EdgeInsets.all(isDesktop ? 16 : 8),
                   leading: CircleAvatar(
-                    backgroundColor: brandGold.withValues(alpha: 0.2),
+                    backgroundColor: AppColors.primaryGold.withValues(
+                      alpha: 0.2,
+                    ),
                     child: Text(
                       customer['name'].toString().substring(0, 1).toUpperCase(),
-                      style: TextStyle(
-                        color: brandGreen,
+                      style: const TextStyle(
+                        color: AppColors.primaryGreen,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -203,6 +206,7 @@ class AdminCustomerView extends StatelessWidget {
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
+                      color: AppColors.textDark,
                     ),
                   ),
                   subtitle: Text(customer['phone'] ?? ''),
@@ -215,8 +219,8 @@ class AdminCustomerView extends StatelessWidget {
                         children: [
                           Text(
                             '৳${customer['totalSpent'].toStringAsFixed(0)}',
-                            style: TextStyle(
-                              color: brandGreen,
+                            style: const TextStyle(
+                              color: AppColors.primaryGreen,
                               fontWeight: FontWeight.w900,
                               fontSize: 16,
                             ),
@@ -233,8 +237,10 @@ class AdminCustomerView extends StatelessWidget {
                       const SizedBox(width: 16),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: brandGreen.withValues(alpha: 0.1),
-                          foregroundColor: brandGreen,
+                          backgroundColor: AppColors.primaryGreen.withValues(
+                            alpha: 0.1,
+                          ),
+                          foregroundColor: AppColors.primaryGreen,
                           elevation: 0,
                         ),
                         onPressed: () => _showCustomerOrdersModal(customer),
@@ -279,11 +285,9 @@ class AdminCustomerView extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: brandGreen,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
+                decoration: const BoxDecoration(
+                  color: AppColors.primaryGreen,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -293,8 +297,8 @@ class AdminCustomerView extends StatelessWidget {
                       children: [
                         Text(
                           '${customer['name']}\'s Orders',
-                          style: TextStyle(
-                            color: brandGold,
+                          style: const TextStyle(
+                            color: AppColors.primaryGold,
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -336,12 +340,15 @@ class AdminCustomerView extends StatelessWidget {
                         children: [
                           Text(
                             '#${order['orderId']}',
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textDark,
+                            ),
                           ),
                           Text(
                             '৳${order['totalAmount']}',
-                            style: TextStyle(
-                              color: brandGreen,
+                            style: const TextStyle(
+                              color: AppColors.primaryGreen,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -381,7 +388,7 @@ class AdminCustomerView extends StatelessWidget {
     Color statusColor = Colors.orange;
     if (status == 'Processing') statusColor = Colors.blue;
     if (status == 'Shipped') statusColor = Colors.purple;
-    if (status == 'Delivered') statusColor = Colors.green;
+    if (status == 'Delivered') statusColor = AppColors.primaryGreen;
     if (status == 'Cancelled') statusColor = Colors.red;
 
     return Container(

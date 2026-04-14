@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Controllers/authcontroller.dart';
-
-import '../Utils/global_colours.dart';
+import '../Utils/global_colours.dart'; // Ensure AppColors is inside this file
 import 'Customer/customer_view.dart';
 import 'Orders/order_processing_modal.dart';
 import 'Orders/orderview.dart';
@@ -34,12 +33,13 @@ class AdminDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: const Color(0xFFF4F7F6),
+      backgroundColor:
+          AppColors.backgroundLight, // Updated to your new light background
       drawer:
           isDesktop
               ? null
               : Drawer(
-                backgroundColor: brandGreen,
+                backgroundColor: AppColors.primaryGreen, // Updated
                 child: _buildSidebarContent(isMobile: true),
               ),
       body: Row(
@@ -47,7 +47,7 @@ class AdminDashboardScreen extends StatelessWidget {
           if (isDesktop)
             Container(
               width: 260,
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
               child: _buildSidebarContent(isMobile: false),
             ),
           Expanded(
@@ -94,10 +94,10 @@ class AdminDashboardScreen extends StatelessWidget {
           'assets/logo.webp',
           height: 80,
           errorBuilder:
-              (c, e, s) => Text(
+              (c, e, s) => const Text(
                 'FADHL',
                 style: TextStyle(
-                  color: brandGold,
+                  color: AppColors.primaryGold, // Updated
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                 ),
@@ -182,26 +182,30 @@ class AdminDashboardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? brandGold.withValues(alpha: 0.15)
+                  ? AppColors.primaryGold.withValues(alpha: 0.15) // Updated
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color:
                 isSelected
-                    ? brandGold.withValues(alpha: 0.5)
+                    ? AppColors.primaryGold.withValues(alpha: 0.5) // Updated
                     : Colors.transparent,
           ),
         ),
         child: ListTile(
           leading: FaIcon(
             icon,
-            color: isSelected ? brandGold : Colors.white70,
+            color:
+                isSelected ? AppColors.primaryGold : Colors.white70, // Updated
             size: 20,
           ),
           title: Text(
             title,
             style: TextStyle(
-              color: isSelected ? brandGold : Colors.white70,
+              color:
+                  isSelected
+                      ? AppColors.primaryGold
+                      : Colors.white70, // Updated
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -222,7 +226,7 @@ class AdminDashboardScreen extends StatelessWidget {
       height: 80,
       padding: EdgeInsets.symmetric(horizontal: isDesktop ? 40 : 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
       ),
       child: Row(
@@ -232,9 +236,9 @@ class AdminDashboardScreen extends StatelessWidget {
             children: [
               if (!isDesktop) ...[
                 IconButton(
-                  icon: FaIcon(
+                  icon: const FaIcon(
                     FontAwesomeIcons.barsStaggered,
-                    color: brandGreen,
+                    color: AppColors.primaryGreen, // Updated
                   ),
                   onPressed: () => _scaffoldKey.currentState!.openDrawer(),
                 ),
@@ -250,7 +254,7 @@ class AdminDashboardScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: isDesktop ? 24 : 18,
                     fontWeight: FontWeight.w900,
-                    color: brandGreen,
+                    color: AppColors.primaryGreen, // Updated
                   ),
                 );
               }),
@@ -261,10 +265,12 @@ class AdminDashboardScreen extends StatelessWidget {
               _buildNotificationCenter(),
               SizedBox(width: isDesktop ? 24 : 16),
               CircleAvatar(
-                backgroundColor: brandGold.withValues(alpha: 0.2),
-                child: FaIcon(
+                backgroundColor: AppColors.primaryGold.withValues(
+                  alpha: 0.2,
+                ), // Updated
+                child: const FaIcon(
                   FontAwesomeIcons.solidUser,
-                  color: brandGold,
+                  color: AppColors.primaryGold, // Updated
                   size: 18,
                 ),
               ),
@@ -279,7 +285,9 @@ class AdminDashboardScreen extends StatelessWidget {
     return MenuAnchor(
       controller: notificationMenuController,
       style: MenuStyle(
-        backgroundColor: WidgetStateProperty.all(Colors.white),
+        backgroundColor: WidgetStateProperty.all(
+          AppColors.pureWhite,
+        ), // Updated
         elevation: WidgetStateProperty.all(12),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -309,12 +317,17 @@ class AdminDashboardScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.redAccent,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1.5),
+                        border: Border.all(
+                          color: AppColors.pureWhite,
+                          width: 1.5,
+                        ), // Updated
                       ),
                       child: Text(
                         '$count',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color:
+                              Colors
+                                  .white, // Keeping plain white for the tiny badge text
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -334,14 +347,14 @@ class AdminDashboardScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Text(
                   'Pending Orders',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: brandGreen,
+                    color: AppColors.primaryGreen, // Updated
                   ),
                 ),
               ),
@@ -382,15 +395,19 @@ class AdminDashboardScreen extends StatelessWidget {
                                   '#${order['orderId']}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
+                                    color:
+                                        AppColors
+                                            .textDark, // Updated to brand dark text
                                   ),
                                 ),
                                 subtitle: Text(
                                   order['customerName'] ?? 'Unknown',
+                                  style: const TextStyle(color: Colors.grey),
                                 ),
                                 trailing: Text(
                                   '৳${(order['totalAmount'] ?? 0).toStringAsFixed(0)}',
-                                  style: TextStyle(
-                                    color: brandGreen,
+                                  style: const TextStyle(
+                                    color: AppColors.primaryGreen, // Updated
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -421,9 +438,9 @@ class AdminDashboardScreen extends StatelessWidget {
     return Obx(
       () => BottomNavigationBar(
         currentIndex: _currentIndex.value,
-        selectedItemColor: brandGreen,
+        selectedItemColor: AppColors.primaryGreen, // Updated
         unselectedItemColor: Colors.grey.shade400,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.pureWhite, // Updated
         elevation: 10,
         onTap: (index) => _currentIndex.value = index,
         items: const [

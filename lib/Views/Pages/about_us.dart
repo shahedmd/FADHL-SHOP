@@ -2,22 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart'; // Adjust path if needed
 import '../../Widgers/responsive_layout.dart';
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
-
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
 
   @override
   Widget build(BuildContext context) {
     final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.backgroundLight, // Updated
       body: Column(
         children: [
-          CustomHeader(),
+          const CustomHeader(),
 
           Expanded(
             child: SingleChildScrollView(
@@ -49,12 +47,12 @@ class AboutUsScreen extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          Text(
+                          const Text(
                             'Why Choose FADHL?',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w900,
-                              color: brandGreen,
+                              color: AppColors.primaryGreen, // Updated
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -93,15 +91,15 @@ class AboutUsScreen extends StatelessWidget {
         horizontal: 20,
       ),
       decoration: BoxDecoration(
-        color: brandGreen,
+        color: AppColors.primaryGreen, // Updated
         image: DecorationImage(
           image: const NetworkImage(
             'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2000&auto=format&fit=crop',
           ),
-           // Abstract luxury dark background
+          // Abstract luxury dark background
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            brandGreen.withValues(alpha: 0.85),
+            AppColors.primaryGreen.withValues(alpha: 0.85), // Updated
             BlendMode.darken,
           ),
         ),
@@ -118,7 +116,7 @@ class AboutUsScreen extends StatelessWidget {
             'Redefining Luxury E-Commerce',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: brandGold,
+              color: AppColors.primaryGold, // Updated
               fontSize: isDesktop ? 42 : 28,
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
@@ -131,7 +129,7 @@ class AboutUsScreen extends StatelessWidget {
               'Providing safe, reliable, and premium goods to every home in Bangladesh.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white.withValues(alpha: 0.8),
+                color: AppColors.pureWhite.withValues(alpha: 0.8), // Updated
                 fontSize: isDesktop ? 18 : 15,
                 height: 1.5,
               ),
@@ -188,10 +186,10 @@ class AboutUsScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Our Story',
           style: TextStyle(
-            color: brandGold,
+            color: AppColors.primaryGold, // Updated
             fontWeight: FontWeight.bold,
             letterSpacing: 2,
           ),
@@ -202,14 +200,18 @@ class AboutUsScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: isDesktop ? 36 : 28,
             fontWeight: FontWeight.w900,
-            color: brandGreen,
+            color: AppColors.primaryGreen, // Updated
             height: 1.2,
           ),
         ),
         const SizedBox(height: 24),
         const Text(
           'FADHL was founded with a singular vision: to bridge the gap between premium quality and everyday accessibility in Bangladesh. We noticed a lack of trust in online shopping, so we built a platform where transparency, authenticity, and customer satisfaction are not just promised, they are guaranteed.\n\nFrom 100% pure organic foods to luxury designer eye ware and premium pet goods, every item in our inventory is strictly vetted. When you shop with FADHL, you aren\'t just buying a product; you are investing in peace of mind.',
-          style: TextStyle(fontSize: 16, color: Colors.black87, height: 1.8),
+          style: TextStyle(
+            fontSize: 16,
+            color: AppColors.textDark, // Updated to brand text color
+            height: 1.8,
+          ),
         ),
       ],
     );
@@ -276,7 +278,7 @@ class AboutUsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
@@ -293,25 +295,29 @@ class AboutUsScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: brandGreen.withValues(alpha: 0.05),
+              color: AppColors.primaryGreen.withValues(alpha: 0.05), // Updated
               shape: BoxShape.circle,
             ),
-            child: FaIcon(icon, color: brandGold, size: 28),
+            child: FaIcon(
+              icon,
+              color: AppColors.primaryGold,
+              size: 28,
+            ), // Updated
           ),
           const SizedBox(height: 24),
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
             ),
           ),
           const SizedBox(height: 12),
           Text(
             description,
-            style: const TextStyle(
-              color: Colors.black54,
+            style: TextStyle(
+              color: AppColors.textDark.withValues(alpha: 0.7), // Updated
               height: 1.5,
               fontSize: 15,
             ),

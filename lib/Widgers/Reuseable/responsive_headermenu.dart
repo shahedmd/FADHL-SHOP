@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 // 🚀 1. GETX UI CONTROLLER (Only handles Search now)
 class HeaderUIController extends GetxController {
   final RxBool isMobileSearchActive = false.obs;
@@ -52,9 +54,6 @@ class CustomHeader extends StatefulWidget {
 }
 
 class _CustomHeaderState extends State<CustomHeader> {
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
   // GetX Controller for Search (Still permanent)
   final HeaderUIController uiController = Get.put(
     HeaderUIController(),
@@ -77,11 +76,13 @@ class _CustomHeaderState extends State<CustomHeader> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: brandGreen,
+        color: AppColors.pureWhite, // 🚀 Changed to pure white background
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.4),
-            blurRadius: 10,
+            color: Colors.black.withValues(
+              alpha: 0.05,
+            ), // Softer shadow for white bg
+            blurRadius: 15,
             offset: const Offset(0, 4),
           ),
         ],
@@ -117,10 +118,10 @@ class _CustomHeaderState extends State<CustomHeader> {
             cacheHeight: 240,
             fit: BoxFit.contain,
             errorBuilder:
-                (context, error, stackTrace) => Text(
+                (context, error, stackTrace) => const Text(
                   'FADHL',
                   style: TextStyle(
-                    color: brandGold,
+                    color: AppColors.primaryGreen, // Contrast against white bg
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
@@ -133,8 +134,12 @@ class _CustomHeaderState extends State<CustomHeader> {
           child: Container(
             height: 48,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color:
+                  AppColors.backgroundLight, // Slightly off-white for contrast
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.grey.shade300,
+              ), // Added border to frame it
             ),
             child: Row(
               children: [
@@ -143,12 +148,15 @@ class _CustomHeaderState extends State<CustomHeader> {
                     controller: uiController.searchController,
                     onChanged: (value) => controller.updateSearch(value),
                     textAlignVertical: TextAlignVertical.center,
-                    style: const TextStyle(fontSize: 15, color: Colors.black87),
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: AppColors.textDark,
+                    ),
                     decoration: InputDecoration(
                       isDense: true,
                       hintText: 'Search for premium products...',
                       hintStyle: TextStyle(
-                        color: Colors.grey[400],
+                        color: Colors.grey[500],
                         fontSize: 14,
                       ),
                       border: InputBorder.none,
@@ -163,9 +171,9 @@ class _CustomHeaderState extends State<CustomHeader> {
                   child: Container(
                     width: 60,
                     height: 48,
-                    decoration: BoxDecoration(
-                      color: brandGold,
-                      borderRadius: const BorderRadius.only(
+                    decoration: const BoxDecoration(
+                      color: AppColors.primaryGreen, // Green search button
+                      borderRadius: BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomRight: Radius.circular(8),
                       ),
@@ -173,7 +181,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                     child: const Center(
                       child: FaIcon(
                         FontAwesomeIcons.magnifyingGlass,
-                        color: Colors.white,
+                        color: AppColors.pureWhite,
                         size: 18,
                       ),
                     ),
@@ -192,7 +200,8 @@ class _CustomHeaderState extends State<CustomHeader> {
           child: _HoverTextButton(
             icon: FontAwesomeIcons.truckFast,
             text: 'Track Order',
-            brandGold: brandGold,
+            defaultColor: AppColors.textDark, // Dark text on white bg
+            hoverColor: AppColors.primaryGreen, // Hover turns green
           ),
         ),
         const SizedBox(width: 24),
@@ -200,20 +209,18 @@ class _CustomHeaderState extends State<CustomHeader> {
         // DYNAMIC LOGIN / USER NAME
         Obx(() {
           final bool isLoggedIn = authController.firebaseUser.value != null;
-          final userData = authController.userData.value; // 🚀 Track user data
+          final userData = authController.userData.value;
 
           if (isLoggedIn) {
-            return _buildUserMenu(
-              authController,
-              userData,
-            ); // Pass userData here
+            return _buildUserMenu(authController, userData);
           } else {
             return InkWell(
               onTap: () => Get.toNamed('/auth'),
               child: _HoverTextButton(
                 icon: FontAwesomeIcons.user,
                 text: 'Login',
-                brandGold: brandGold,
+                defaultColor: AppColors.textDark, // Dark text on white bg
+                hoverColor: AppColors.primaryGreen,
               ),
             );
           }
@@ -233,9 +240,9 @@ class _CustomHeaderState extends State<CustomHeader> {
     Map<String, dynamic>? userData,
   ) {
     return MenuAnchor(
-      controller: userMenuController, // 🚀 Uses local state controller
+      controller: userMenuController,
       style: MenuStyle(
-        backgroundColor: WidgetStateProperty.all(Colors.white),
+        backgroundColor: WidgetStateProperty.all(AppColors.pureWhite),
         elevation: WidgetStateProperty.all(12),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -245,7 +252,7 @@ class _CustomHeaderState extends State<CustomHeader> {
         return MouseRegion(
           onEnter: (_) {
             isHoveringUserMenu = true;
-            if (!controller.isOpen) controller.open(); // 🚀 Safe open check
+            if (!controller.isOpen) controller.open();
           },
           onExit: (_) async {
             isHoveringUserMenu = false;
@@ -257,7 +264,8 @@ class _CustomHeaderState extends State<CustomHeader> {
           child: _HoverTextButton(
             icon: FontAwesomeIcons.solidUser,
             text: 'My Account',
-            brandGold: brandGold,
+            defaultColor: AppColors.textDark,
+            hoverColor: AppColors.primaryGreen,
             hasDropdown: true,
           ),
         );
@@ -280,7 +288,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 child: _menuItemText(
                   FontAwesomeIcons.clipboardList,
                   'My Orders',
-                  Colors.black87,
+                  AppColors.textDark,
                 ),
                 onPressed: () => Get.toNamed('/profile'),
               ),
@@ -293,17 +301,15 @@ class _CustomHeaderState extends State<CustomHeader> {
                 onPressed: () => Get.toNamed('/wishlist'),
               ),
 
-              // 🚀 THE BRIDGE (Website -> Admin Panel)
               if (userData != null && userData['isAdmin'] == true) ...[
                 const Divider(height: 1),
                 MenuItemButton(
                   child: _menuItemText(
                     FontAwesomeIcons.screwdriverWrench,
                     'Admin Panel',
-                    brandGold,
+                    AppColors.primaryGreen, // Updated
                   ),
-                  onPressed:
-                      () => Get.offAllNamed('/admin'), // Routes back to admin!
+                  onPressed: () => Get.offAllNamed('/admin'),
                 ),
               ],
 
@@ -325,9 +331,9 @@ class _CustomHeaderState extends State<CustomHeader> {
 
   Widget _buildContactMenu() {
     return MenuAnchor(
-      controller: contactMenuController, // 🚀 Uses local state controller
+      controller: contactMenuController,
       style: MenuStyle(
-        backgroundColor: WidgetStateProperty.all(Colors.white),
+        backgroundColor: WidgetStateProperty.all(AppColors.pureWhite),
         elevation: WidgetStateProperty.all(12),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -337,7 +343,7 @@ class _CustomHeaderState extends State<CustomHeader> {
         return MouseRegion(
           onEnter: (_) {
             isHoveringContactMenu = true;
-            if (!controller.isOpen) controller.open(); // 🚀 Safe open check
+            if (!controller.isOpen) controller.open();
           },
           onExit: (_) async {
             isHoveringContactMenu = false;
@@ -349,7 +355,8 @@ class _CustomHeaderState extends State<CustomHeader> {
           child: _HoverTextButton(
             icon: FontAwesomeIcons.headset,
             text: 'Contact',
-            brandGold: brandGold,
+            defaultColor: AppColors.textDark,
+            hoverColor: AppColors.primaryGreen,
             hasDropdown: true,
           ),
         );
@@ -372,7 +379,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 child: _menuItemText(
                   FontAwesomeIcons.circleInfo,
                   'About Us',
-                  Colors.black87,
+                  AppColors.textDark,
                 ),
                 onPressed: () => Get.toNamed('/about'),
               ),
@@ -380,7 +387,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 child: _menuItemText(
                   FontAwesomeIcons.phone,
                   'Phone: +880 1946 401297',
-                  Colors.black87,
+                  AppColors.textDark,
                 ),
                 onPressed: () {},
               ),
@@ -396,7 +403,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 child: _menuItemText(
                   FontAwesomeIcons.circleQuestion,
                   'FAQs',
-                  Colors.black87,
+                  AppColors.textDark,
                 ),
                 onPressed: () => Get.toNamed('/faq'),
               ),
@@ -408,7 +415,7 @@ class _CustomHeaderState extends State<CustomHeader> {
   }
 
   // ==========================================
-  // 2. MOBILE HEADER & HELPERS (Unchanged functionality)
+  // 2. MOBILE HEADER
   // ==========================================
   Widget _buildMobileHeader() {
     final ProductController controller = Get.find<ProductController>();
@@ -418,9 +425,9 @@ class _CustomHeaderState extends State<CustomHeader> {
         return Row(
           children: [
             IconButton(
-              icon: FaIcon(
+              icon: const FaIcon(
                 FontAwesomeIcons.arrowLeft,
-                color: brandGold,
+                color: AppColors.primaryGreen, // Updated
                 size: 20,
               ),
               onPressed: () => uiController.closeMobileSearch(controller),
@@ -429,19 +436,25 @@ class _CustomHeaderState extends State<CustomHeader> {
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color:
+                      AppColors
+                          .backgroundLight, // Contrast against white header
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300),
                 ),
                 child: TextField(
                   controller: uiController.searchController,
                   onChanged: (value) => controller.updateSearch(value),
                   autofocus: true,
                   textAlignVertical: TextAlignVertical.center,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textDark,
+                  ),
                   decoration: InputDecoration(
                     isDense: true,
                     hintText: 'Search products...',
-                    hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
+                    hintStyle: TextStyle(color: Colors.grey[500], fontSize: 14),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.only(left: 16),
                     suffixIcon: IconButton(
@@ -467,9 +480,9 @@ class _CustomHeaderState extends State<CustomHeader> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: FaIcon(
+            icon: const FaIcon(
               FontAwesomeIcons.barsStaggered,
-              color: brandGold,
+              color: AppColors.textDark, // Updated for white background
               size: 22,
             ),
             onPressed: () => _showIndependentMobileMenu(),
@@ -482,10 +495,10 @@ class _CustomHeaderState extends State<CustomHeader> {
               cacheHeight: 240,
               fit: BoxFit.contain,
               errorBuilder:
-                  (c, e, s) => Text(
+                  (c, e, s) => const Text(
                     'FADHL',
                     style: TextStyle(
-                      color: brandGold,
+                      color: AppColors.primaryGreen, // Updated
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -495,9 +508,9 @@ class _CustomHeaderState extends State<CustomHeader> {
           Row(
             children: [
               IconButton(
-                icon: FaIcon(
+                icon: const FaIcon(
                   FontAwesomeIcons.magnifyingGlass,
-                  color: brandGold,
+                  color: AppColors.textDark, // Updated
                   size: 20,
                 ),
                 onPressed: () => uiController.isMobileSearchActive.value = true,
@@ -522,15 +535,15 @@ class _CustomHeaderState extends State<CustomHeader> {
           child: Container(
             width: 280,
             height: double.infinity,
-            color: brandGreen,
+            color: AppColors.pureWhite, // 🚀 Fully clean light theme drawer!
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
                 DrawerHeader(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF07140C),
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundLight,
                     border: Border(
-                      bottom: BorderSide(color: Color(0xFFCEAB5F), width: 1),
+                      bottom: BorderSide(color: Colors.grey.shade200, width: 1),
                     ),
                   ),
                   child: Column(
@@ -549,10 +562,10 @@ class _CustomHeaderState extends State<CustomHeader> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
+                      const Text(
                         'FADHL',
                         style: TextStyle(
-                          color: brandGold,
+                          color: AppColors.primaryGreen, // Updated
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2,
@@ -564,8 +577,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 Obx(() {
                   final bool isLoggedIn =
                       authController.firebaseUser.value != null;
-                  final userData =
-                      authController.userData.value; // 🚀 Track user data
+                  final userData = authController.userData.value;
 
                   if (isLoggedIn) {
                     return Column(
@@ -586,8 +598,6 @@ class _CustomHeaderState extends State<CustomHeader> {
                             Get.toNamed('/profile');
                           },
                         ),
-
-                        // 🚀 THE BRIDGE (Website -> Admin Panel) - Mobile
                         if (userData != null && userData['isAdmin'] == true)
                           _mobileMenuLink(
                             FontAwesomeIcons.screwdriverWrench,
@@ -596,9 +606,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                               Get.back();
                               Get.offAllNamed('/admin');
                             },
-                            iconColor: brandGold,
                           ),
-
                         _mobileMenuLink(
                           FontAwesomeIcons.arrowRightFromBracket,
                           'Logout',
@@ -621,7 +629,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                     );
                   }
                 }),
-                const Divider(color: Colors.white24, height: 30),
+                Divider(color: Colors.grey.shade200, height: 30),
                 _mobileMenuLink(FontAwesomeIcons.truckFast, 'Track Order', () {
                   Get.back();
                   showTrackOrderDialog();
@@ -630,7 +638,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                   Get.back();
                   Get.toNamed('/');
                 }),
-                const Divider(color: Colors.white24, height: 30),
+                Divider(color: Colors.grey.shade200, height: 30),
                 Padding(
                   padding: const EdgeInsets.only(left: 16, bottom: 10, top: 10),
                   child: Text(
@@ -679,10 +687,17 @@ class _CustomHeaderState extends State<CustomHeader> {
     Color? iconColor,
   }) {
     return ListTile(
-      leading: FaIcon(icon, color: iconColor ?? brandGold, size: 18),
+      leading: FaIcon(
+        icon,
+        color: iconColor ?? AppColors.primaryGreen, // Default to green
+        size: 18,
+      ),
       title: Text(
         text,
-        style: const TextStyle(color: Colors.white, fontSize: 15),
+        style: const TextStyle(
+          color: AppColors.textDark, // Dark text on white bg
+          fontSize: 15,
+        ),
       ),
       onTap: onTap,
     );
@@ -699,12 +714,12 @@ class _CustomHeaderState extends State<CustomHeader> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: brandGold.withValues(alpha: 0.15),
+              color: AppColors.primaryGreen.withValues(alpha: 0.1), // Updated
               borderRadius: BorderRadius.circular(8),
             ),
-            child: FaIcon(
+            child: const FaIcon(
               FontAwesomeIcons.bagShopping,
-              color: brandGold,
+              color: AppColors.primaryGreen, // Updated
               size: 20,
             ),
           ),
@@ -716,13 +731,16 @@ class _CustomHeaderState extends State<CustomHeader> {
               decoration: BoxDecoration(
                 color: Colors.redAccent,
                 shape: BoxShape.circle,
-                border: Border.all(color: brandGreen, width: 2),
+                border: Border.all(
+                  color: AppColors.pureWhite, // Matched to white header bg
+                  width: 2,
+                ),
               ),
               child: Obx(
                 () => Text(
                   '${cartController.totalItems}',
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.pureWhite,
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
                   ),
@@ -758,13 +776,15 @@ class _CustomHeaderState extends State<CustomHeader> {
 class _HoverTextButton extends StatelessWidget {
   final IconData icon;
   final String text;
-  final Color brandGold;
+  final Color defaultColor; // Added default state color
+  final Color hoverColor;
   final bool hasDropdown;
 
   _HoverTextButton({
     required this.icon,
     required this.text,
-    required this.brandGold,
+    required this.defaultColor,
+    required this.hoverColor,
     this.hasDropdown = false,
   });
 
@@ -777,7 +797,8 @@ class _HoverTextButton extends StatelessWidget {
       onEnter: (_) => isHovered.value = true,
       onExit: (_) => isHovered.value = false,
       child: Obx(() {
-        final color = isHovered.value ? brandGold : Colors.white;
+        final color =
+            isHovered.value ? hoverColor : defaultColor; // Uses passed colors
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),

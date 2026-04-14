@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 class CategorySelector extends StatelessWidget {
   const CategorySelector({super.key});
-
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
   // Helper function to smartly assign icons based on category name
   IconData _getCategoryIcon(String categoryName) {
     final name = categoryName.toLowerCase();
@@ -38,10 +36,10 @@ class CategorySelector extends StatelessWidget {
               controller.selectedCategory.value == 'All'
                   ? 'Explore Our Collections'
                   : '${controller.selectedCategory.value} Collection',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
-                color: brandGreen,
+                color: AppColors.primaryGreen, // Updated
                 letterSpacing: 0.5,
               ),
             ),
@@ -52,16 +50,16 @@ class CategorySelector extends StatelessWidget {
           SizedBox(
             height: 55, // Taller for a premium look
             child: Obx(
-              ()=> ListView.builder(
+              () => ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: controller.categories.length,
                 itemBuilder: (context, index) {
                   final category = controller.categories[index];
-              
+
                   return Obx(() {
                     final isSelected =
                         controller.selectedCategory.value == category;
-              
+
                     return Padding(
                       padding: const EdgeInsets.only(right: 16.0),
                       child: InkWell(
@@ -72,18 +70,25 @@ class CategorySelector extends StatelessWidget {
                           curve: Curves.easeOut,
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           decoration: BoxDecoration(
-                            color: isSelected ? brandGreen : Colors.white,
+                            color:
+                                isSelected
+                                    ? AppColors.primaryGreen
+                                    : AppColors.pureWhite, // Updated
                             borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color:
-                                  isSelected ? brandGreen : Colors.grey.shade300,
+                                  isSelected
+                                      ? AppColors
+                                          .primaryGreen // Updated
+                                      : Colors.grey.shade300,
                               width: 1.5,
                             ),
                             boxShadow:
                                 isSelected
                                     ? [
                                       BoxShadow(
-                                        color: brandGreen.withValues( alpha:  0.3),
+                                        color: AppColors.primaryGreen
+                                            .withValues(alpha: 0.3), // Updated
                                         blurRadius: 10,
                                         offset: const Offset(0, 4),
                                       ),
@@ -96,13 +101,24 @@ class CategorySelector extends StatelessWidget {
                               FaIcon(
                                 _getCategoryIcon(category),
                                 size: 16,
-                                color: isSelected ? brandGold : Colors.black54,
+                                color:
+                                    isSelected
+                                        ? AppColors
+                                            .primaryGold // Updated
+                                        : AppColors.textDark.withValues(
+                                          alpha: 0.6,
+                                        ), // Updated to brand dark green
                               ),
                               const SizedBox(width: 10),
                               Text(
                                 category,
                                 style: TextStyle(
-                                  color: isSelected ? brandGold : Colors.black87,
+                                  color:
+                                      isSelected
+                                          ? AppColors
+                                              .primaryGold // Updated
+                                          : AppColors
+                                              .textDark, // Updated to brand dark green
                                   fontWeight:
                                       isSelected
                                           ? FontWeight.bold

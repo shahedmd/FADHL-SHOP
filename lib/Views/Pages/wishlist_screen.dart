@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 import '../../Controllers/wishlist_controller.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
 import '../../Widgers/responsive_layout.dart';
@@ -10,19 +11,16 @@ import '../../Widgers/Reuseable/product_grid.dart';
 class WishlistScreen extends StatelessWidget {
   const WishlistScreen({super.key});
 
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
   @override
   Widget build(BuildContext context) {
     final WishlistController wishlistController =
         Get.find<WishlistController>();
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.backgroundLight, // Updated to brand background
       body: Column(
         children: [
-          CustomHeader(),
+          const CustomHeader(),
 
           Expanded(
             child: Obx(() {
@@ -52,19 +50,23 @@ class WishlistScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                          color: AppColors.textDark, // Updated to brand text
                         ),
                       ),
                       const SizedBox(height: 12),
-                      const Text(
+                      Text(
                         'Save your favorite premium items here for later.',
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                          color: AppColors.textDark.withValues(
+                            alpha: 0.7,
+                          ), // Updated
+                        ),
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: brandGreen,
-                          foregroundColor: brandGold,
+                          backgroundColor: AppColors.primaryGreen, // Updated
+                          foregroundColor: AppColors.primaryGold, // Updated
                           padding: const EdgeInsets.symmetric(
                             horizontal: 32,
                             vertical: 16,
@@ -104,12 +106,12 @@ class WishlistScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           'My Wishlist',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w900,
-                            color: brandGreen,
+                            color: AppColors.primaryGreen, // Updated
                           ),
                         ),
                         const SizedBox(height: 24),

@@ -9,6 +9,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -17,9 +19,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
   @override
   void initState() {
     super.initState();
@@ -34,10 +33,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6),
+      backgroundColor: AppColors.backgroundLight, // Updated to brand background
       body: Column(
         children: [
-          CustomHeader(),
+          const CustomHeader(),
 
           Expanded(
             child: SingleChildScrollView(
@@ -126,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -134,10 +133,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: brandGreen.withValues(alpha:  0.1),
-            child: FaIcon(
+            backgroundColor: AppColors.primaryGreen.withValues(
+              alpha: 0.1,
+            ), // Updated
+            child: const FaIcon(
               FontAwesomeIcons.solidUser,
-              color: brandGold,
+              color: AppColors.primaryGold, // Updated
               size: 35,
             ),
           ),
@@ -147,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.bold,
-              color: Colors.black87,
+              color: AppColors.textDark, // Updated to brand dark text
             ),
             textAlign: TextAlign.center,
           ),
@@ -187,12 +188,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget _profileInfoRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, color: brandGold, size: 20),
+        Icon(icon, color: AppColors.primaryGold, size: 20), // Updated
         const SizedBox(width: 12),
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(fontSize: 15, color: Colors.black87),
+            style: const TextStyle(
+              fontSize: 15,
+              color: AppColors.textDark, // Updated
+            ),
           ),
         ),
       ],
@@ -207,29 +211,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'My Orders',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w900,
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
             ),
           ),
           const SizedBox(height: 24),
 
           Obx(() {
             if (orderController.isLoadingOrders.value) {
-              return Center(
+              return const Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(40.0),
-                  child: CircularProgressIndicator(color: brandGold),
+                  padding: EdgeInsets.all(40.0),
+                  child: CircularProgressIndicator(
+                    color: AppColors.primaryGold,
+                  ), // Updated
                 ),
               );
             }
@@ -273,7 +279,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Color statusColor = Colors.orange;
     if (status.toLowerCase().contains('delivered') ||
         status.toLowerCase().contains('completed')) {
-      statusColor = Colors.green;
+      statusColor =
+          AppColors.primaryGreen; // Updated success status to brand green
     }
     if (status.toLowerCase().contains('cancelled')) statusColor = Colors.red;
 
@@ -295,6 +302,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
+                  color: AppColors.textDark, // Updated
                 ),
               ),
               Container(
@@ -303,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha:  0.1),
+                  color: statusColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -345,11 +353,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       item['name'] ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.textDark,
+                      ), // Updated
                     ),
                   ),
                   Text(
                     '৳${item['price']}',
-                    style: const TextStyle(fontWeight: FontWeight.w600),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textDark, // Updated
+                    ),
                   ),
                 ],
               ),
@@ -364,14 +378,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               const Text(
                 'Total Amount',
-                style: TextStyle(fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.textDark, // Updated
+                ),
               ),
               Text(
                 '৳${totalAmount.toStringAsFixed(0)}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w900,
                   fontSize: 18,
-                  color: brandGold,
+                  color: AppColors.primaryGold, // Updated
                 ),
               ),
             ],
@@ -399,8 +416,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 24),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: brandGreen,
-              foregroundColor: brandGold,
+              backgroundColor: AppColors.primaryGreen, // Updated
+              foregroundColor: AppColors.primaryGold, // Updated
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
               ),

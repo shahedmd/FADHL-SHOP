@@ -2,8 +2,6 @@ import 'package:fadhl/Admin%20Panel/Views/admin_dashboard_screen.dart';
 import 'package:fadhl/Middleware/admin_middleware.dart';
 import 'package:fadhl/Middleware/auth_guard_middleware.dart';
 import 'package:fadhl/Bindings/initial_binding.dart';
-import 'package:fadhl/Views/Pages/Auth/loginui.dart';
-import 'package:fadhl/Views/Pages/about_us.dart';
 import 'package:fadhl/Views/Pages/cart_screen.dart';
 import 'package:fadhl/Views/Pages/faq_screen.dart';
 import 'package:fadhl/Views/Pages/home.dart';
@@ -14,6 +12,8 @@ import 'package:fadhl/Views/Pages/wishlist_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'Views/Pages/Auth/loginui.dart';
+import 'Views/Pages/about_us.dart';
 import 'firebase_options.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
  

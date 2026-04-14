@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../Models/productmodel.dart';
 import '../../Controllers/admin_product_controller.dart';
-import '../../Utils/global_colours.dart';
+import '../../Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
 void openProductFormModal({ProductModel? existingProduct}) {
   final adminController = Get.find<AdminControllerProductmanagement>();
@@ -55,6 +55,7 @@ void openProductFormModal({ProductModel? existingProduct}) {
   Get.dialog(
     barrierDismissible: false,
     Dialog(
+      backgroundColor: AppColors.pureWhite, // Updated
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       insetPadding: const EdgeInsets.all(16),
       child: Container(
@@ -66,21 +67,19 @@ void openProductFormModal({ProductModel? existingProduct}) {
           children: [
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: brandGreen,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
+              decoration: const BoxDecoration(
+                color: AppColors.primaryGreen, // Updated
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     isEdit ? 'Edit Product' : 'Add New Product',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w900,
-                      color: brandGold,
+                      color: AppColors.primaryGold, // Updated
                     ),
                   ),
                   IconButton(
@@ -113,7 +112,8 @@ void openProductFormModal({ProductModel? existingProduct}) {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.grey,
+                            color:
+                                Colors.grey, // Standard grey structural header
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -148,7 +148,10 @@ void openProductFormModal({ProductModel? existingProduct}) {
                         // 🚀 DROPDOWN & NEW CATEGORY
                         const Text(
                           'Category',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textDark, // Updated
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Obx(() {
@@ -180,7 +183,9 @@ void openProductFormModal({ProductModel? existingProduct}) {
                                   '➕ Create New Category',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.blue,
+                                    color:
+                                        AppColors
+                                            .primaryGreen, // Updated from default blue
                                   ),
                                 ),
                               ),
@@ -205,7 +210,10 @@ void openProductFormModal({ProductModel? existingProduct}) {
                                       decoration: const InputDecoration(
                                         labelText: 'Type New Category Name',
                                         border: OutlineInputBorder(),
-                                        prefixIcon: Icon(Icons.add_box),
+                                        prefixIcon: Icon(
+                                          Icons.add_box,
+                                          color: AppColors.primaryGreen,
+                                        ), // Updated
                                       ),
                                     ),
                                   )
@@ -386,6 +394,7 @@ void openProductFormModal({ProductModel? existingProduct}) {
                                     rev['reviewerName'] ?? 'Anonymous',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
+                                      color: AppColors.textDark, // Updated
                                     ),
                                   ),
                                   subtitle: Column(
@@ -395,7 +404,9 @@ void openProductFormModal({ProductModel? existingProduct}) {
                                       Text(
                                         '⭐ ${rev['rating']} / 5',
                                         style: const TextStyle(
-                                          color: Colors.orange,
+                                          color:
+                                              AppColors
+                                                  .primaryGold, // Updated to your brand gold instead of basic orange
                                           fontSize: 12,
                                         ),
                                       ),
@@ -448,7 +459,7 @@ void openProductFormModal({ProductModel? existingProduct}) {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.pureWhite, // Updated
                 border: Border(top: BorderSide(color: Colors.grey.shade200)),
               ),
               child: SizedBox(
@@ -457,8 +468,8 @@ void openProductFormModal({ProductModel? existingProduct}) {
                 child: Obx(
                   () => ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: brandGreen,
-                      foregroundColor: brandGold,
+                      backgroundColor: AppColors.primaryGreen, // Updated
+                      foregroundColor: AppColors.primaryGold, // Updated
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -516,7 +527,7 @@ void openProductFormModal({ProductModel? existingProduct}) {
                               height: 20,
                               width: 20,
                               child: CircularProgressIndicator(
-                                color: Color(0xFFCEAB5F),
+                                color: AppColors.primaryGold, // Updated
                                 strokeWidth: 2,
                               ),
                             )

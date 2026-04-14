@@ -2,19 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
 import '../../Widgers/responsive_layout.dart';
 // import '../../Widgers/Reuseable/custom_footer.dart'; // Uncomment if using footer
 
 class FaqScreen extends StatelessWidget {
   FaqScreen({super.key});
-
-  final Color brandGreen = const Color(0xFF0A1F13);
-  final Color brandGold = const Color(0xFFCEAB5F);
-
-  // ==========================================
-  // GETX STATE & DATA
-  // ==========================================
   final RxString selectedCategory = 'All'.obs;
   final List<String> categories = [
     'All',
@@ -86,7 +80,7 @@ class FaqScreen extends StatelessWidget {
   // WHATSAPP REDIRECT (Support)
   // ==========================================
   Future<void> _contactSupport() async {
-    final String phoneNumber = "8801946401297";
+    const String phoneNumber = "8801946401297";
     final Uri whatsappUrl = Uri.parse(
       "https://wa.me/$phoneNumber?text=${Uri.encodeComponent('Hello FADHL Support, I have a question regarding...')}",
     );
@@ -102,10 +96,10 @@ class FaqScreen extends StatelessWidget {
     final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.backgroundLight, // Updated to brand background
       body: Column(
         children: [
-          CustomHeader(),
+          const CustomHeader(),
 
           Expanded(
             child: SingleChildScrollView(
@@ -186,27 +180,27 @@ class FaqScreen extends StatelessWidget {
         horizontal: 20,
       ),
       decoration: BoxDecoration(
-        color: brandGreen,
+        color: AppColors.primaryGreen, // Updated
         image: DecorationImage(
           image: const NetworkImage(
             'https://images.unsplash.com/photo-1557425955-df376b5903c8?q=80&w=2000&auto=format&fit=crop',
           ), // Minimalist luxury texture
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            brandGreen.withValues(alpha: 0.9),
+            AppColors.primaryGreen.withValues(alpha: 0.9), // Updated
             BlendMode.darken,
           ),
         ),
       ),
       child: Column(
         children: [
-          FaIcon(FontAwesomeIcons.circleQuestion, color: brandGold, size: 50),
+          const FaIcon(FontAwesomeIcons.circleQuestion, color: AppColors.primaryGold, size: 50), // Updated
           const SizedBox(height: 20),
           Text(
             'How can we help you?',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.pureWhite, // Updated
               fontSize: isDesktop ? 42 : 28,
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
@@ -217,7 +211,7 @@ class FaqScreen extends StatelessWidget {
             'Find answers to frequently asked questions about FADHL.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.white70,
+              color: AppColors.pureWhite.withValues(alpha: 0.7), // Updated
               fontSize: isDesktop ? 16 : 14,
             ),
           ),
@@ -230,19 +224,19 @@ class FaqScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.pureWhite, // Updated
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Categories',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
             ),
           ),
           const SizedBox(height: 20),
@@ -261,17 +255,17 @@ class FaqScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color:
                         isSelected
-                            ? brandGreen.withValues(alpha: 0.05)
+                            ? AppColors.primaryGreen.withValues(alpha: 0.05) // Updated
                             : Colors.transparent,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: isSelected ? brandGold : Colors.transparent,
+                      color: isSelected ? AppColors.primaryGold : Colors.transparent, // Updated
                     ),
                   ),
                   child: Text(
                     category,
                     style: TextStyle(
-                      color: isSelected ? brandGreen : Colors.black87,
+                      color: isSelected ? AppColors.primaryGreen : AppColors.textDark, // Updated
                       fontWeight:
                           isSelected ? FontWeight.bold : FontWeight.w500,
                     ),
@@ -300,16 +294,16 @@ class FaqScreen extends StatelessWidget {
               child: ChoiceChip(
                 label: Text(category),
                 selected: isSelected,
-                selectedColor: brandGreen,
-                backgroundColor: Colors.white,
+                selectedColor: AppColors.primaryGreen, // Updated
+                backgroundColor: AppColors.pureWhite, // Updated
                 labelStyle: TextStyle(
-                  color: isSelected ? brandGold : Colors.black87,
+                  color: isSelected ? AppColors.primaryGold : AppColors.textDark, // Updated
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                   side: BorderSide(
-                    color: isSelected ? brandGreen : Colors.grey.shade300,
+                    color: isSelected ? AppColors.primaryGreen : Colors.grey.shade300, // Updated
                   ),
                 ),
                 onSelected: (selected) {
@@ -356,7 +350,7 @@ class FaqScreen extends StatelessWidget {
 
           return Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.pureWhite, // Updated
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey.shade200),
               boxShadow: [
@@ -373,18 +367,18 @@ class FaqScreen extends StatelessWidget {
                 context,
               ).copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
-                iconColor: brandGold,
-                collapsedIconColor: brandGreen,
+                iconColor: AppColors.primaryGold, // Updated
+                collapsedIconColor: AppColors.primaryGreen, // Updated
                 tilePadding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 8,
                 ),
                 title: Text(
                   faq['q']!,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: brandGreen,
+                    color: AppColors.primaryGreen, // Updated
                   ),
                 ),
                 children: [
@@ -398,7 +392,7 @@ class FaqScreen extends StatelessWidget {
                     child: Text(
                       faq['a']!,
                       style: const TextStyle(
-                        color: Colors.black87,
+                        color: AppColors.textDark, // Updated to brand dark text
                         fontSize: 15,
                         height: 1.6,
                       ),
@@ -418,9 +412,9 @@ class FaqScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: brandGreen.withValues(alpha: 0.05),
+        color: AppColors.primaryGreen.withValues(alpha: 0.05), // Updated
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: brandGold.withValues(alpha: 0.3)),
+        border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.3)), // Updated
       ),
       child:
           isDesktop
@@ -441,18 +435,21 @@ class FaqScreen extends StatelessWidget {
         crossAxisAlignment:
             isDesktop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
         children: [
-          Text(
+          const Text(
             'Still have questions?',
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w900,
-              color: brandGreen,
+              color: AppColors.primaryGreen, // Updated
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Our premium support team is here to help you 24/7.',
-            style: TextStyle(color: Colors.black54, fontSize: 15),
+            style: TextStyle(
+              color: AppColors.textDark.withValues(alpha: 0.7), // Updated
+              fontSize: 15,
+            ),
           ),
         ],
       ),
@@ -461,7 +458,7 @@ class FaqScreen extends StatelessWidget {
         height: 50,
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF25D366), // WhatsApp Green
+            backgroundColor: const Color(0xFF25D366), // WhatsApp Green (Left as is!)
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
