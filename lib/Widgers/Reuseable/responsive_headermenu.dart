@@ -1,15 +1,14 @@
 import 'package:fadhl/Controllers/authcontroller.dart';
 import 'package:fadhl/Controllers/cartcontroller.dart';
 import 'package:fadhl/Controllers/productcontroller.dart';
+import 'package:fadhl/Widgers/Reuseable/responsive_bottomnavbar.dart';
 import 'package:fadhl/Widgers/Reuseable/reuseabledialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../Admin Panel/Utils/global_colours.dart'; 
 
-import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
-
-// 🚀 1. GETX UI CONTROLLER (Only handles Search now)
 class HeaderUIController extends GetxController {
   final RxBool isMobileSearchActive = false.obs;
   late final TextEditingController searchController;
@@ -34,7 +33,7 @@ class HeaderUIController extends GetxController {
 }
 
 Future<void> _contactSupport() async {
-  const String phoneNumber = "8801946401297";
+  const String phoneNumber = "880132540925";
   final Uri whatsappUrl = Uri.parse(
     "https://wa.me/$phoneNumber?text=${Uri.encodeComponent('Hello FADHL Support, I have a question regarding...')}",
   );
@@ -45,7 +44,6 @@ Future<void> _contactSupport() async {
   }
 }
 
-// 🚀 2. STATEFUL WIDGET (Fixes the MenuAnchor Crash!)
 class CustomHeader extends StatefulWidget {
   const CustomHeader({super.key});
 
@@ -54,17 +52,14 @@ class CustomHeader extends StatefulWidget {
 }
 
 class _CustomHeaderState extends State<CustomHeader> {
-  // GetX Controller for Search (Still permanent)
   final HeaderUIController uiController = Get.put(
     HeaderUIController(),
     permanent: true,
   );
 
-  // 🚀 THE FIX: Local UI Controllers bound safely to THIS specific header instance
   final MenuController contactMenuController = MenuController();
   final MenuController userMenuController = MenuController();
 
-  // Safe hover state tracking
   bool isHoveringContactMenu = false;
   bool isHoveringUserMenu = false;
 
@@ -76,7 +71,7 @@ class _CustomHeaderState extends State<CustomHeader> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AppColors.pureWhite, // 🚀 Changed to pure white background
+        color: AppColors.pureWhite,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(
@@ -386,10 +381,12 @@ class _CustomHeaderState extends State<CustomHeader> {
               MenuItemButton(
                 child: _menuItemText(
                   FontAwesomeIcons.phone,
-                  'Phone: +880 1946 401297',
+                  'Phone: +88096977340925',
                   AppColors.textDark,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  makePhoneCall('88096977340925');
+                },
               ),
               MenuItemButton(
                 onPressed: _contactSupport,
@@ -659,7 +656,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 _mobileMenuLink(
                   FontAwesomeIcons.phone,
                   'Call Us',
-                  () => Get.back(),
+                  () => makePhoneCall('+88096977340925'),
                 ),
                 _mobileMenuLink(FontAwesomeIcons.circleInfo, 'About Us', () {
                   Get.back();

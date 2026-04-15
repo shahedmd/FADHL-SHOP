@@ -1,7 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart'; 
+import 'package:url_launcher/url_launcher.dart';
+import '../../Admin Panel/Utils/global_colours.dart'; 
 
-import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is here
+Future<void> _launchSocialMedia(String url) async {
+  if (url.isEmpty) return;
+  final Uri uri = Uri.parse(url);
+  if (await canLaunchUrl(uri)) {
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  } else {
+    debugPrint('Could not launch $url');
+  }
+}
+
+Future<void> sendEmail(String emailAddress) async {
+  final Uri emailUri = Uri(scheme: 'mailto', path: emailAddress);
+
+  try {
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
+    } else {
+      final Uri webMailUri = Uri.parse(
+        'https://mail.google.com/mail/?view=cm&fs=1&to=$emailAddress',
+      );
+      if (await canLaunchUrl(webMailUri)) {
+        await launchUrl(webMailUri, mode: LaunchMode.externalApplication);
+      } else {
+        debugPrint('Could not launch email');
+      }
+    }
+  } catch (e) {
+    debugPrint('Error launching email: $e');
+  }
+}
+
+Future<void> makePhoneCall(String phoneNumber) async {
+  final String cleanNumber = phoneNumber.replaceAll(' ', '');
+  final Uri launchUri = Uri(scheme: 'tel', path: cleanNumber);
+
+  if (await canLaunchUrl(launchUri)) {
+    await launchUrl(launchUri);
+  } else {
+    debugPrint('Could not launch $launchUri');
+  }
+}
 
 class CustomFooter extends StatelessWidget {
   const CustomFooter({super.key});
@@ -12,14 +55,10 @@ class CustomFooter extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      // Using a slightly deeper green overlay or pure primaryGreen
-      decoration: const BoxDecoration(
-        color: AppColors.primaryGreen,
-        // Optional: Add a subtle background pattern or gradient here if desired
-      ),
+      decoration: const BoxDecoration(color: AppColors.textDark),
       padding: EdgeInsets.symmetric(
         horizontal: isMobile ? 24.0 : 60.0,
-        vertical: 60.0,
+        vertical: 70.0,
       ),
       child: Center(
         child: ConstrainedBox(
@@ -30,23 +69,23 @@ class CustomFooter extends StatelessWidget {
               // MAIN FOOTER CONTENT
               isMobile ? _buildMobileLayout() : _buildDesktopLayout(),
 
-              const SizedBox(height: 50),
+              const SizedBox(height: 60),
 
-              // LUXURY GRADIENT DIVIDER
+              // DIVIDER
               Container(
                 height: 1,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.primaryGold.withValues(alpha: 0.05),
-                      AppColors.primaryGold.withValues(alpha: 0.5),
-                      AppColors.primaryGold.withValues(alpha: 0.05),
+                      Colors.white.withValues(alpha: 0.0),
+                      Colors.white.withValues(alpha: 0.15),
+                      Colors.white.withValues(alpha: 0.0),
                     ],
                   ),
                 ),
               ),
 
-              const SizedBox(height: 24),
+              const SizedBox(height: 30),
 
               // BOTTOM STRIP (Copyright & Payments)
               isMobile ? _buildMobileBottomStrip() : _buildDesktopBottomStrip(),
@@ -66,11 +105,8 @@ class CustomFooter extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        // Col 1: Brand Info & Newsletter (Takes more space)
         Expanded(flex: 4, child: _buildBrandAndNewsletter()),
-        const SizedBox(width: 40),
-
-        // Col 2: Information
+        const SizedBox(width: 60),
         Expanded(
           flex: 2,
           child: _buildLinkColumn('INFORMATION', [
@@ -80,8 +116,6 @@ class CustomFooter extends StatelessWidget {
             'Privacy Policy',
           ]),
         ),
-
-        // Col 3: Shop By
         Expanded(
           flex: 2,
           child: _buildLinkColumn('SHOP BY', [
@@ -91,8 +125,6 @@ class CustomFooter extends StatelessWidget {
             'New Arrivals',
           ]),
         ),
-
-        // Col 4: Support
         Expanded(
           flex: 2,
           child: _buildLinkColumn('SUPPORT', [
@@ -102,8 +134,6 @@ class CustomFooter extends StatelessWidget {
             'FAQ',
           ]),
         ),
-
-        // Col 5: Consumer Policy
         Expanded(
           flex: 2,
           child: _buildLinkColumn('POLICY', [
@@ -122,9 +152,7 @@ class CustomFooter extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildBrandAndNewsletter(),
-        const SizedBox(height: 40),
-
-        // Use a Wrap for mobile links to save vertical space
+        const SizedBox(height: 50),
         Wrap(
           spacing: 40,
           runSpacing: 40,
@@ -179,88 +207,113 @@ class CustomFooter extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Logo
-        Image.asset(
-          'assets/logo.webp',
-          height: 50,
-          errorBuilder:
-              (context, error, stackTrace) => const Text(
-                'FADHL',
-                style: TextStyle(
-                  color: AppColors.primaryGold,
-                  fontSize: 32,
-                  letterSpacing: 2.0,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+        // Logo with White Circle Background
+        Container(
+          height: 130,
+          width: 130,
+          decoration: const BoxDecoration(
+            color: AppColors.pureWhite,
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(12.0),
+          child: Center(
+            child: Image.asset(
+              'assets/logo.webp',
+              fit: BoxFit.contain,
+              errorBuilder:
+                  (context, error, stackTrace) => const Text(
+                    'FADHL',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: AppColors.textDark,
+                      fontSize: 12,
+                      letterSpacing: 1.0,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+            ),
+          ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 24),
 
         // Description
-        const Text(
+        Text(
           'A premium e-commerce platform dedicated to providing safe, reliable, and luxury goods to every home.',
           style: TextStyle(
-            color: Colors.white70,
+            color: Colors.white.withValues(alpha: 0.6),
             fontSize: 14,
-            height: 1.6,
+            height: 1.8,
             letterSpacing: 0.3,
           ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 36),
 
-        // Premium Newsletter Box
+        // NEWSLETTER BOX
         const Text(
           'SUBSCRIBE TO OUR NEWSLETTER',
           style: TextStyle(
-            color: AppColors.primaryGold,
+            color: AppColors.pureWhite,
             fontSize: 12,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 2.0,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
         Container(
-          height: 48,
+          height: 50,
           decoration: BoxDecoration(
-            color: AppColors.pureWhite.withValues(alpha: 0.05),
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(
-              color: AppColors.primaryGold.withValues(alpha: 0.3),
-            ),
+            color: Colors.white.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(6),
           ),
           child: Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: TextField(
-                    style: TextStyle(color: Colors.white, fontSize: 14),
+                    style: const TextStyle(color: Colors.white, fontSize: 14),
                     decoration: InputDecoration(
                       hintText: 'Enter your email address',
-                      hintStyle: TextStyle(color: Colors.white38, fontSize: 14),
+                      hintStyle: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.4),
+                        fontSize: 14,
+                      ),
                       border: InputBorder.none,
                       isDense: true,
                     ),
                   ),
                 ),
               ),
-              Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                decoration: const BoxDecoration(
-                  color: AppColors.primaryGold,
-                  borderRadius: BorderRadius.horizontal(
-                    right: Radius.circular(3),
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'SUBSCRIBE',
-                    style: TextStyle(
-                      color: AppColors.textDark,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      letterSpacing: 1.0,
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () {},
+                  child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 28),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryGold,
+                      borderRadius: const BorderRadius.horizontal(
+                        right: Radius.circular(6),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primaryGold.withValues(alpha: 0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Center(
+                      child: Text(
+                        'SUBSCRIBE',
+                        style: TextStyle(
+                          color: AppColors.textDark,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 12,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -268,44 +321,75 @@ class CustomFooter extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 36),
 
         // Contact Details
-        _iconText(FontAwesomeIcons.locationDot, 'Rampura, Dhaka, Bangladesh'),
-        const SizedBox(height: 12),
-        _iconText(FontAwesomeIcons.phone, '+88 0123 456 789'),
-        const SizedBox(height: 12),
-        _iconText(FontAwesomeIcons.envelope, 'contact@fadhl.com'),
-        const SizedBox(height: 30),
+        _iconText(
+          FontAwesomeIcons.locationDot,
+          'Supermarket, Munshiganj Sadar-1500',
+        ),
+        const SizedBox(height: 16),
+        _iconText(
+          FontAwesomeIcons.phone,
+          '+880 96997 340925',
+          onTap: () => makePhoneCall('+88096997340925'),
+        ),
+        const SizedBox(height: 16),
+        _iconText(
+          FontAwesomeIcons.envelope,
+          'fadhlshop013@gmail.com',
+          onTap: () => sendEmail("fadhlshop013@gmail.com"),
+        ),
+        const SizedBox(height: 36),
 
         // Social Icons
         Row(
-          children: const [
-            _HoverSocialIcon(icon: FontAwesomeIcons.facebookF),
-            _HoverSocialIcon(icon: FontAwesomeIcons.twitter),
-            _HoverSocialIcon(icon: FontAwesomeIcons.instagram),
-            _HoverSocialIcon(icon: FontAwesomeIcons.youtube),
+          children: [
+            _HoverSocialIcon(
+              icon: FontAwesomeIcons.facebookF,
+              url: 'https://www.facebook.com/profile.php?id=61573352996622',
+            ),
+             _HoverSocialIcon(
+              icon: FontAwesomeIcons.tiktok,
+              url: 'https://www.twitter.com/yourprofile',
+            ),
+             _HoverSocialIcon(
+              icon: FontAwesomeIcons.instagram,
+              url: 'https://www.instagram.com/fadhl_shop',
+            ),
+             _HoverSocialIcon(
+              icon: FontAwesomeIcons.youtube,
+              url: '', // Fixed typo here
+            ),
           ],
         ),
       ],
     );
   }
 
-  Widget _iconText(IconData icon, String text) {
-    return Row(
+  Widget _iconText(IconData icon, String text, {VoidCallback? onTap}) {
+    Widget content = Row(
       children: [
-        FaIcon(icon, color: AppColors.primaryGold, size: 14),
+        FaIcon(icon, color: AppColors.primaryGold, size: 16),
         const SizedBox(width: 16),
         Text(
           text,
-          style: const TextStyle(
-            color: Colors.white70,
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.7),
             fontSize: 14,
             letterSpacing: 0.3,
           ),
         ),
       ],
     );
+
+    if (onTap != null) {
+      return MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(onTap: onTap, child: content),
+      );
+    }
+    return content;
   }
 
   Widget _buildLinkColumn(String title, List<String> links) {
@@ -317,11 +401,11 @@ class CustomFooter extends StatelessWidget {
           style: const TextStyle(
             color: AppColors.pureWhite,
             fontSize: 14,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w800,
             letterSpacing: 1.5,
           ),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 28),
         ...links.map((link) => _HoverLink(text: link)),
       ],
     );
@@ -331,10 +415,10 @@ class CustomFooter extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        const Text(
+        Text(
           '© 2026 FADHL. All Rights Reserved.',
           style: TextStyle(
-            color: Colors.white54,
+            color: Colors.white.withValues(alpha: 0.5),
             fontSize: 13,
             letterSpacing: 0.5,
           ),
@@ -352,11 +436,11 @@ class CustomFooter extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: _buildPaymentIcons(),
         ),
-        const SizedBox(height: 20),
-        const Text(
+        const SizedBox(height: 24),
+        Text(
           '© 2026 FADHL. All Rights Reserved.',
           style: TextStyle(
-            color: Colors.white54,
+            color: Colors.white.withValues(alpha: 0.5),
             fontSize: 13,
             letterSpacing: 0.5,
           ),
@@ -367,56 +451,89 @@ class CustomFooter extends StatelessWidget {
 
   List<Widget> _buildPaymentIcons() {
     return [
-      const FaIcon(FontAwesomeIcons.ccVisa, color: Colors.white54, size: 28),
-      const SizedBox(width: 16),
-      const FaIcon(
-        FontAwesomeIcons.ccMastercard,
-        color: Colors.white54,
-        size: 28,
+      FaIcon(
+        FontAwesomeIcons.ccVisa,
+        color: Colors.white.withValues(alpha: 0.4),
+        size: 32,
       ),
-      const SizedBox(width: 16),
-      const FaIcon(FontAwesomeIcons.ccAmex, color: Colors.white54, size: 28),
-      const SizedBox(width: 16),
-      const FaIcon(FontAwesomeIcons.ccStripe, color: Colors.white54, size: 28),
+      const SizedBox(width: 20),
+      FaIcon(
+        FontAwesomeIcons.ccMastercard,
+        color: Colors.white.withValues(alpha: 0.4),
+        size: 32,
+      ),
+      const SizedBox(width: 20),
+      FaIcon(
+        FontAwesomeIcons.ccAmex,
+        color: Colors.white.withValues(alpha: 0.4),
+        size: 32,
+      ),
+      const SizedBox(width: 20),
+      FaIcon(
+        FontAwesomeIcons.ccStripe,
+        color: Colors.white.withValues(alpha: 0.4),
+        size: 32,
+      ),
     ];
   }
 }
 
 // ==========================================
-// INTERACTIVE COMPONENTS (For Hover Effects)
+// INTERACTIVE COMPONENTS (Refactored to GetX)
 // ==========================================
 
-class _HoverLink extends StatefulWidget {
+class _HoverLink extends StatelessWidget {
   final String text;
-  const _HoverLink({required this.text});
 
-  @override
-  State<_HoverLink> createState() => _HoverLinkState();
-}
+  // Localized reactive state for this specific widget instance
+  final RxBool _isHovered = false.obs;
 
-class _HoverLinkState extends State<_HoverLink> {
-  bool _isHovered = false;
+  _HoverLink({required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: InkWell(
-          onTap: () {},
-          hoverColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          child: AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
-            style: TextStyle(
-              color: _isHovered ? AppColors.primaryGold : Colors.white70,
-              fontSize: 14,
-              letterSpacing: 0.3,
+    return MouseRegion(
+      onEnter: (_) => _isHovered.value = true,
+      onExit: (_) => _isHovered.value = false,
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {},
+        // Wrap only the reactive part with Obx
+        child: Obx(
+          () => AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeOut,
+            margin: EdgeInsets.only(
+              bottom: 18.0,
+              left: _isHovered.value ? 8.0 : 0.0,
             ),
-            child: Text(widget.text),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (_isHovered.value) ...[
+                  const FaIcon(
+                    FontAwesomeIcons.angleRight,
+                    color: AppColors.primaryGold,
+                    size: 12,
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 250),
+                  style: TextStyle(
+                    color:
+                        _isHovered.value
+                            ? AppColors.primaryGold
+                            : Colors.white.withValues(alpha: 0.6),
+                    fontSize: 14,
+                    fontWeight:
+                        _isHovered.value ? FontWeight.w600 : FontWeight.w400,
+                    letterSpacing: 0.3,
+                  ),
+                  child: Text(text),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -424,41 +541,45 @@ class _HoverLinkState extends State<_HoverLink> {
   }
 }
 
-class _HoverSocialIcon extends StatefulWidget {
+class _HoverSocialIcon extends StatelessWidget {
   final IconData icon;
-  const _HoverSocialIcon({required this.icon});
+  final String url;
 
-  @override
-  State<_HoverSocialIcon> createState() => _HoverSocialIconState();
-}
+  // Localized reactive state for this specific widget instance
+  final RxBool _isHovered = false.obs;
 
-class _HoverSocialIconState extends State<_HoverSocialIcon> {
-  bool _isHovered = false;
+  _HoverSocialIcon({required this.icon, required this.url});
 
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
+      onEnter: (_) => _isHovered.value = true,
+      onExit: (_) => _isHovered.value = false,
+      cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {},
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          margin: const EdgeInsets.only(right: 12),
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: _isHovered ? AppColors.primaryGold : Colors.transparent,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: AppColors.primaryGold.withValues(
-                alpha: _isHovered ? 1.0 : 0.4,
+        onTap: () => _launchSocialMedia(url),
+        // Wrap only the reactive part with Obx
+        child: Obx(
+          () => AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            margin: const EdgeInsets.only(right: 16),
+            height: 42,
+            width: 42,
+            decoration: BoxDecoration(
+              color:
+                  _isHovered.value
+                      ? AppColors.primaryGold
+                      : Colors.white.withValues(alpha: 0.05),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: FaIcon(
+                icon,
+                color:
+                    _isHovered.value ? AppColors.textDark : AppColors.pureWhite,
+                size: 18,
               ),
             ),
-          ),
-          child: FaIcon(
-            widget.icon,
-            color: _isHovered ? AppColors.textDark : AppColors.primaryGold,
-            size: 16,
           ),
         ),
       ),

@@ -3,7 +3,7 @@ import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import '../../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is here
 
 // 🚀 1. NEW GETX CONTROLLER: Handles local UI state without setState()
 class AuthUIController extends GetxController {
@@ -57,7 +57,7 @@ class AuthScreen extends StatelessWidget {
     final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight, // Updated
+      backgroundColor: AppColors.backgroundLight,
       body: Center(
         child: SingleChildScrollView(
           child: ResponsiveLayout(
@@ -67,19 +67,18 @@ class AuthScreen extends StatelessWidget {
               margin: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                // 🚀 3. PERFORMANCE FIX: A hard-stop gradient creates the two-tone background instantly.
-                // No IntrinsicHeight needed, no 'stretch' needed!
-                color: isDesktop ? null : AppColors.pureWhite, // Updated
+                color: isDesktop ? null : AppColors.pureWhite,
                 gradient:
                     isDesktop
                         ? const LinearGradient(
+                          // 🚀 SWAPPED GRADIENT: Left is White, Right is Green
                           colors: [
-                            AppColors.primaryGreen, // Updated
-                            AppColors.primaryGreen, // Updated
-                            AppColors.pureWhite, // Updated
-                            AppColors.pureWhite, // Updated
+                            AppColors.pureWhite,
+                            AppColors.pureWhite,
+                            AppColors.primaryGreen,
+                            AppColors.primaryGreen,
                           ],
-                          stops: [0.0, 0.5, 0.5, 1.0], // Exactly 50/50 split
+                          stops: [0.0, 0.5, 0.5, 1.0],
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
                         )
@@ -102,12 +101,12 @@ class AuthScreen extends StatelessWidget {
 
   Widget _buildDesktopLayout() {
     return Row(
-      // Default crossAxisAlignment is center, so children will just center vertically
       children: [
+        // LEFT SIDE: White Background
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min, // Takes minimal height
+            mainAxisSize: MainAxisSize.min,
             children: [
               Image.asset(
                 'assets/logo.webp',
@@ -118,7 +117,8 @@ class AuthScreen extends StatelessWidget {
               const Text(
                 'FADHL',
                 style: TextStyle(
-                  color: AppColors.primaryGold, // Updated
+                  // Changed to green so it's readable on the white background
+                  color: AppColors.primaryGreen,
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 4,
@@ -127,10 +127,12 @@ class AuthScreen extends StatelessWidget {
             ],
           ),
         ),
+        // RIGHT SIDE: Green Background
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 60),
-            child: _buildForm(),
+            // Pass 'true' because desktop right side is green
+            child: _buildForm(isGreenBg: true),
           ),
         ),
       ],
@@ -152,21 +154,22 @@ class AuthScreen extends StatelessWidget {
           const Text(
             'FADHL',
             style: TextStyle(
-              color: AppColors.primaryGreen, // Updated
+              color: AppColors.primaryGreen,
               fontSize: 24,
               fontWeight: FontWeight.bold,
               letterSpacing: 2,
             ),
           ),
           const SizedBox(height: 40),
-          _buildForm(),
+          // Pass 'false' because mobile background is entirely white
+          _buildForm(isGreenBg: false),
         ],
       ),
     );
   }
 
-  Widget _buildForm() {
-    // 🚀 4. OBX WRAPPER: Reactively builds the form based on state changes.
+  // 🚀 Added 'isGreenBg' parameter to adapt text/colors dynamically
+  Widget _buildForm({required bool isGreenBg}) {
     return Obx(() {
       final isLogin = uiController.isLogin.value;
 
@@ -176,10 +179,11 @@ class AuthScreen extends StatelessWidget {
         children: [
           Text(
             isLogin ? 'Welcome Back' : 'Create Account',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w900,
-              color: AppColors.primaryGreen, // Updated
+              // Title becomes white on green bg, green on white bg
+              color: isGreenBg ? AppColors.pureWhite : AppColors.primaryGreen,
             ),
           ),
           const SizedBox(height: 32),
@@ -190,6 +194,7 @@ class AuthScreen extends StatelessWidget {
               Icons.person_outline,
               uiController.nameController,
               false,
+              isGreenBg: isGreenBg,
             ),
             const SizedBox(height: 16),
             _customTextField(
@@ -198,6 +203,7 @@ class AuthScreen extends StatelessWidget {
               uiController.phoneController,
               false,
               isPhone: true,
+              isGreenBg: isGreenBg,
             ),
             const SizedBox(height: 16),
           ],
@@ -207,6 +213,7 @@ class AuthScreen extends StatelessWidget {
             Icons.email_outlined,
             uiController.emailController,
             false,
+            isGreenBg: isGreenBg,
           ),
           const SizedBox(height: 16),
           _customTextField(
@@ -214,6 +221,7 @@ class AuthScreen extends StatelessWidget {
             Icons.lock_outline,
             uiController.passwordController,
             true,
+            isGreenBg: isGreenBg,
           ),
 
           const SizedBox(height: 24),
@@ -223,8 +231,11 @@ class AuthScreen extends StatelessWidget {
             height: 50,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryGreen, // Updated
-                foregroundColor: AppColors.primaryGold, // Updated
+                // 🚀 Button pops as Gold when on Green Bg, Green when on White Bg
+                backgroundColor:
+                    isGreenBg ? AppColors.primaryGold : AppColors.primaryGreen,
+                foregroundColor:
+                    isGreenBg ? AppColors.textDark : AppColors.primaryGold,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -249,11 +260,15 @@ class AuthScreen extends StatelessWidget {
               },
               child:
                   authController.isLoading.value
-                      ? const SizedBox(
+                      ? SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
-                          color: AppColors.primaryGold, // Updated
+                          // Loading indicator matches the text color
+                          color:
+                              isGreenBg
+                                  ? AppColors.textDark
+                                  : AppColors.primaryGold,
                           strokeWidth: 2,
                         ),
                       )
@@ -276,15 +291,19 @@ class AuthScreen extends StatelessWidget {
                     ? "Don't have an account? "
                     : "Already have an account? ",
                 style: TextStyle(
-                  color: AppColors.textDark.withValues(alpha: 0.7),
-                ), // Updated
+                  // Soft white on green bg, dark text on white bg
+                  color:
+                      isGreenBg
+                          ? Colors.white70
+                          : AppColors.textDark.withValues(alpha: 0.7),
+                ),
               ),
               InkWell(
                 onTap: uiController.toggleLogin,
                 child: Text(
                   isLogin ? 'Sign Up' : 'Sign In',
                   style: const TextStyle(
-                    color: AppColors.primaryGold, // Updated
+                    color: AppColors.primaryGold,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -302,8 +321,8 @@ class AuthScreen extends StatelessWidget {
     TextEditingController controller,
     bool isPassword, {
     bool isPhone = false,
+    required bool isGreenBg, // 🚀 Requires background context to adjust styling
   }) {
-    // Only elements that need independent observation are wrapped in Obx.
     return Obx(() {
       final isHidden = uiController.isPasswordHidden.value;
 
@@ -314,20 +333,27 @@ class AuthScreen extends StatelessWidget {
             isPhone ? TextInputType.phone : TextInputType.emailAddress,
         decoration: InputDecoration(
           hintText: hint,
-          prefixIcon: Icon(icon, color: Colors.black38, size: 20),
+          // Icons become bright green if on green bg, standard grey on white bg
+          prefixIcon: Icon(
+            icon,
+            color: isGreenBg ? AppColors.primaryGreen : Colors.black38,
+            size: 20,
+          ),
           suffixIcon:
               isPassword
                   ? IconButton(
                     icon: Icon(
                       isHidden ? Icons.visibility_off : Icons.visibility,
-                      color: Colors.black38,
+                      color:
+                          isGreenBg ? AppColors.primaryGreen : Colors.black38,
                       size: 20,
                     ),
                     onPressed: uiController.togglePassword,
                   )
                   : null,
           filled: true,
-          fillColor: Colors.grey.shade50,
+          // Solid white looks amazing as an input field on a green background
+          fillColor: isGreenBg ? AppColors.pureWhite : Colors.grey.shade50,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide.none,

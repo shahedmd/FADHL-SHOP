@@ -3,23 +3,17 @@ import 'package:fadhl/Controllers/productcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import '../../Admin Panel/Utils/global_colours.dart'; 
 
 class PromoCarousel extends StatelessWidget {
   const PromoCarousel({super.key});
-
   @override
   Widget build(BuildContext context) {
-    // Inject the Controller
     final ProductController productController = Get.find<ProductController>();
     final BannerController controller = Get.find<BannerController>();
-
     final screenWidth = MediaQuery.of(context).size.width;
     final bool isDesktop = screenWidth >= 900;
-
-    // Responsive Heights: Big for PC, compact for Mobile
-    final double carouselHeight = isDesktop ? 480.0 : 220.0;
+    final double carouselHeight = isDesktop ? 500.0 : 220.0;
 
     return Obx(() {
       // 1. Loading State
@@ -77,12 +71,10 @@ class PromoCarousel extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final banner = controller.banners[index];
 
-                  // SMART LOGIC: Check if Firebase text is empty
                   final bool hasText = banner.title.trim().isNotEmpty;
 
                   return InkWell(
                     onTap: () {
-                      // If user clicks the banner, automatically filter the products!
                       if (banner.targetCategory != 'All') {
                         productController.updateCategory(banner.targetCategory);
                       }
@@ -90,20 +82,17 @@ class PromoCarousel extends StatelessWidget {
                     child: Stack(
                       fit: StackFit.expand,
                       children: [
-                        // Background Image
                         Image.network(banner.image, fit: BoxFit.cover),
-
-                        // Only show the dark gradient and text if you typed a Title in Firebase
                         if (hasText) ...[
                           Container(
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  AppColors.primaryGreen.withValues(
-                                    alpha: 0.85,
+                                  AppColors.textDark.withValues(
+                                    alpha: 0.6,
                                   ), // Updated
-                                  AppColors.primaryGreen.withValues(
-                                    alpha: 0.3,
+                                  AppColors.textDark.withValues(
+                                    alpha: 0.2,
                                   ), // Updated
                                   Colors.transparent,
                                 ],

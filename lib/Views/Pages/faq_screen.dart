@@ -180,14 +180,14 @@ class FaqScreen extends StatelessWidget {
         horizontal: 20,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen, // Updated
+        color: AppColors.textDark, // Updated
         image: DecorationImage(
           image: const NetworkImage(
             'https://images.unsplash.com/photo-1557425955-df376b5903c8?q=80&w=2000&auto=format&fit=crop',
-          ), // Minimalist luxury texture
+          ),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            AppColors.primaryGreen.withValues(alpha: 0.9), // Updated
+            AppColors.textDark.withValues(alpha: 0.9), // Updated
             BlendMode.darken,
           ),
         ),

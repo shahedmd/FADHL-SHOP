@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Controllers/authcontroller.dart';
 import '../Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import 'Banner/banner_view.dart';
 import 'Customer/customer_view.dart';
 import 'Orders/order_processing_modal.dart';
 import 'Orders/orderview.dart';
@@ -33,13 +34,13 @@ class AdminDashboardScreen extends StatelessWidget {
 
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor:
-          AppColors.backgroundLight, // Updated to your new light background
+      backgroundColor: AppColors.backgroundLight,
       drawer:
           isDesktop
               ? null
               : Drawer(
-                backgroundColor: AppColors.primaryGreen, // Updated
+                // 🚀 CHANGED: Mobile Drawer is now Pure White
+                backgroundColor: AppColors.pureWhite,
                 child: _buildSidebarContent(isMobile: true),
               ),
       body: Row(
@@ -47,7 +48,13 @@ class AdminDashboardScreen extends StatelessWidget {
           if (isDesktop)
             Container(
               width: 260,
-              color: AppColors.primaryGreen, // Updated
+              // 🚀 CHANGED: Desktop Sidebar is now Pure White with a soft right border
+              decoration: BoxDecoration(
+                color: AppColors.pureWhite,
+                border: Border(
+                  right: BorderSide(color: Colors.grey.shade200, width: 1),
+                ),
+              ),
               child: _buildSidebarContent(isMobile: false),
             ),
           Expanded(
@@ -57,7 +64,6 @@ class AdminDashboardScreen extends StatelessWidget {
                 Expanded(
                   child: SingleChildScrollView(
                     padding: EdgeInsets.all(isDesktop ? 40.0 : 16.0),
-                    // 🚀 MUCH CLEANER VIEW SWITCHING
                     child: Obx(() {
                       if (_currentIndex.value == 0) {
                         return OrdersView(isDesktop: isDesktop);
@@ -68,9 +74,10 @@ class AdminDashboardScreen extends StatelessWidget {
                       if (_currentIndex.value == 2) {
                         return AdminCustomerView(isDesktop: isDesktop);
                       }
-                      return AdminManagementView(
-                        isDesktop: isDesktop,
-                      ); // 🚀 The New Tab!
+                      if (_currentIndex.value == 3) {
+                        return AdminBannerView(isDesktop: isDesktop,);
+                      }
+                      return AdminManagementView(isDesktop: isDesktop);
                     }),
                   ),
                 ),
@@ -97,9 +104,11 @@ class AdminDashboardScreen extends StatelessWidget {
               (c, e, s) => const Text(
                 'FADHL',
                 style: TextStyle(
-                  color: AppColors.primaryGold, // Updated
+                  // 🚀 CHANGED: Logo text is Green so it pops on the white background
+                  color: AppColors.primaryGreen,
                   fontSize: 32,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 2.0,
                 ),
               ),
         ),
@@ -107,7 +116,8 @@ class AdminDashboardScreen extends StatelessWidget {
         const Text(
           'ADMIN PANEL',
           style: TextStyle(
-            color: Colors.white54,
+            // 🚀 CHANGED: Subtitle color adjusted for white background
+            color: Colors.grey,
             letterSpacing: 2,
             fontSize: 12,
             fontWeight: FontWeight.bold,
@@ -127,32 +137,37 @@ class AdminDashboardScreen extends StatelessWidget {
           'Products Inventory',
           isMobile,
         ),
+
         _sidebarItem(2, FontAwesomeIcons.users, 'Customers', isMobile),
+        _sidebarItem(3, FontAwesomeIcons.sliders, 'Homepage Banners', isMobile),
         _sidebarItem(
-          3,
+          4,
           FontAwesomeIcons.userShield,
           'Staff & Admins',
           isMobile,
         ),
 
         const Spacer(),
-        const Divider(color: Colors.white12),
+
+        // 🚀 CHANGED: Divider made darker so it is visible on white
+        Divider(color: Colors.grey.shade200, height: 1),
 
         ListTile(
-          leading: const FaIcon(
+          leading: FaIcon(
             FontAwesomeIcons.store,
-            color: Colors.white70,
+            // 🚀 CHANGED: Icon color adjusted
+            color: Colors.grey.shade700,
             size: 20,
           ),
-          title: const Text(
+          title: Text(
             'View Store',
             style: TextStyle(
-              color: Colors.white70,
+              // 🚀 CHANGED: Text color adjusted
+              color: Colors.grey.shade800,
               fontWeight: FontWeight.bold,
             ),
           ),
-          onTap:
-              () => Get.offAllNamed('/'), // Safely routes to the main website!
+          onTap: () => Get.offAllNamed('/'),
         ),
         ListTile(
           leading: const FaIcon(
@@ -182,36 +197,39 @@ class AdminDashboardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? AppColors.primaryGold.withValues(alpha: 0.15) // Updated
+                  // 🚀 CHANGED: Selected item has a soft green background
+                  ? AppColors.primaryGreen.withValues(alpha: 0.1)
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color:
                 isSelected
-                    ? AppColors.primaryGold.withValues(alpha: 0.5) // Updated
+                    // 🚀 CHANGED: Border is a slightly darker green for depth
+                    ? AppColors.primaryGreen.withValues(alpha: 0.3)
                     : Colors.transparent,
           ),
         ),
         child: ListTile(
           leading: FaIcon(
             icon,
-            color:
-                isSelected ? AppColors.primaryGold : Colors.white70, // Updated
+            // 🚀 CHANGED: Icons are green when selected, grey when unselected
+            color: isSelected ? AppColors.primaryGreen : Colors.grey.shade600,
             size: 20,
           ),
           title: Text(
             title,
             style: TextStyle(
+              // 🚀 CHANGED: Text is green when selected, dark text when unselected
               color:
                   isSelected
-                      ? AppColors.primaryGold
-                      : Colors.white70, // Updated
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      ? AppColors.primaryGreen
+                      : AppColors.textDark.withValues(alpha: 0.8),
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
             ),
           ),
           onTap: () {
             _currentIndex.value = index;
-            if (isMobile) Get.back(); // Close drawer on mobile
+            if (isMobile) Get.back();
           },
         ),
       );
@@ -219,14 +237,14 @@ class AdminDashboardScreen extends StatelessWidget {
   }
 
   // ==========================================
-  // TOP HEADER & NOTIFICATIONS
+  // TOP HEADER & NOTIFICATIONS (Unchanged)
   // ==========================================
   Widget _buildTopHeader(bool isDesktop) {
     return Container(
       height: 80,
       padding: EdgeInsets.symmetric(horizontal: isDesktop ? 40 : 16),
       decoration: BoxDecoration(
-        color: AppColors.pureWhite, // Updated
+        color: AppColors.pureWhite,
         border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
       ),
       child: Row(
@@ -238,7 +256,7 @@ class AdminDashboardScreen extends StatelessWidget {
                 IconButton(
                   icon: const FaIcon(
                     FontAwesomeIcons.barsStaggered,
-                    color: AppColors.primaryGreen, // Updated
+                    color: AppColors.primaryGreen,
                   ),
                   onPressed: () => _scaffoldKey.currentState!.openDrawer(),
                 ),
@@ -254,7 +272,7 @@ class AdminDashboardScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: isDesktop ? 24 : 18,
                     fontWeight: FontWeight.w900,
-                    color: AppColors.primaryGreen, // Updated
+                    color: AppColors.primaryGreen,
                   ),
                 );
               }),
@@ -265,12 +283,10 @@ class AdminDashboardScreen extends StatelessWidget {
               _buildNotificationCenter(),
               SizedBox(width: isDesktop ? 24 : 16),
               CircleAvatar(
-                backgroundColor: AppColors.primaryGold.withValues(
-                  alpha: 0.2,
-                ), // Updated
+                backgroundColor: AppColors.primaryGold.withValues(alpha: 0.2),
                 child: const FaIcon(
                   FontAwesomeIcons.solidUser,
-                  color: AppColors.primaryGold, // Updated
+                  color: AppColors.primaryGold,
                   size: 18,
                 ),
               ),
@@ -285,9 +301,7 @@ class AdminDashboardScreen extends StatelessWidget {
     return MenuAnchor(
       controller: notificationMenuController,
       style: MenuStyle(
-        backgroundColor: WidgetStateProperty.all(
-          AppColors.pureWhite,
-        ), // Updated
+        backgroundColor: WidgetStateProperty.all(AppColors.pureWhite),
         elevation: WidgetStateProperty.all(12),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -320,14 +334,12 @@ class AdminDashboardScreen extends StatelessWidget {
                         border: Border.all(
                           color: AppColors.pureWhite,
                           width: 1.5,
-                        ), // Updated
+                        ),
                       ),
                       child: Text(
                         '$count',
                         style: const TextStyle(
-                          color:
-                              Colors
-                                  .white, // Keeping plain white for the tiny badge text
+                          color: Colors.white,
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
@@ -354,7 +366,7 @@ class AdminDashboardScreen extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: AppColors.primaryGreen, // Updated
+                    color: AppColors.primaryGreen,
                   ),
                 ),
               ),
@@ -395,9 +407,7 @@ class AdminDashboardScreen extends StatelessWidget {
                                   '#${order['orderId']}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color:
-                                        AppColors
-                                            .textDark, // Updated to brand dark text
+                                    color: AppColors.textDark,
                                   ),
                                 ),
                                 subtitle: Text(
@@ -407,15 +417,13 @@ class AdminDashboardScreen extends StatelessWidget {
                                 trailing: Text(
                                   '৳${(order['totalAmount'] ?? 0).toStringAsFixed(0)}',
                                   style: const TextStyle(
-                                    color: AppColors.primaryGreen, // Updated
+                                    color: AppColors.primaryGreen,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 onTap: () {
                                   notificationMenuController.close();
-                                  openOrderProcessingModal(
-                                    order,
-                                  ); // 🚀 Opens the extracted modal!
+                                  openOrderProcessingModal(order);
                                 },
                               );
                             }).toList(),
@@ -438,9 +446,9 @@ class AdminDashboardScreen extends StatelessWidget {
     return Obx(
       () => BottomNavigationBar(
         currentIndex: _currentIndex.value,
-        selectedItemColor: AppColors.primaryGreen, // Updated
+        selectedItemColor: AppColors.primaryGreen,
         unselectedItemColor: Colors.grey.shade400,
-        backgroundColor: AppColors.pureWhite, // Updated
+        backgroundColor: AppColors.pureWhite,
         elevation: 10,
         onTap: (index) => _currentIndex.value = index,
         items: const [
@@ -455,7 +463,7 @@ class AdminDashboardScreen extends StatelessWidget {
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.users, size: 20),
             label: 'Customers',
-          ), // 🚀 CUSTOMER TAB
+          ),
 
           BottomNavigationBarItem(
             icon: FaIcon(FontAwesomeIcons.userShield, size: 20),

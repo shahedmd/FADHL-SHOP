@@ -10,13 +10,13 @@ import 'package:flutter/material.dart';
 class ProductController extends GetxController {
   final RxList<ProductModel> products = <ProductModel>[].obs;
   final RxBool isLoading = true.obs;
+
   final RxString searchQuery = ''.obs;
   final RxString selectedCategory = 'All'.obs;
+  final RxList<String> categories = ['All'].obs;
 
-  // ==========================================
-  // 🚀 THE FIX: REACTIVE DYNAMIC CATEGORIES
-  // ==========================================
-  final RxList<String> categories = ['All'].obs; // Starts with just 'All'
+  // 🚀 NEW: UI Pagination State
+  final RxInt visibleProductCount = 12.obs;
 
   @override
   void onInit() {
@@ -24,35 +24,30 @@ class ProductController extends GetxController {
     fetchProducts();
   }
 
-  // 3. Fetch Data from Firebase
   Future<void> fetchProducts() async {
     try {
       isLoading.value = true;
       QuerySnapshot snapshot =
           await FirebaseFirestore.instance.collection('Products').get();
 
-      products.value =
-          snapshot.docs.map((doc) {
-            return ProductModel.fromMap(
-              doc.data() as Map<String, dynamic>,
-              doc.id,
-            );
-          }).toList();
+      products.assignAll(
+        snapshot.docs.map((doc) {
+          return ProductModel.fromMap(
+            doc.data() as Map<String, dynamic>,
+            doc.id,
+          );
+        }).toList(),
+      );
 
-      // ==========================================
-      // 🚀 WORLD-CLASS DYNAMIC EXTRACTION
-      // Extracts unique categories from the database automatically!
-      // ==========================================
-      final Set<String> uniqueCategories = {'All'}; // 'All' stays at the front
+      final Set<String> uniqueCategories = {'All'};
       for (var product in products) {
         if (product.category.isNotEmpty) {
-          uniqueCategories.add(
-            product.category,
-          ); // Adds it to the set (prevents duplicates)
+          uniqueCategories.add(product.category);
         }
       }
-      categories.value = uniqueCategories.toList(); // Updates the UI instantly!
+      categories.assignAll(uniqueCategories.toList());
     } catch (e) {
+      debugPrint("Error fetching products: $e");
       Get.snackbar(
         'Error',
         'Could not load products. Check your internet connection.',
@@ -62,9 +57,42 @@ class ProductController extends GetxController {
     }
   }
 
-  // ==========================================
-  // WORLD-CLASS BUSINESS LOGIC (WhatsApp Order)
-  // ==========================================
+  // 🔥 1. Get ALL matching products (Used for length logic)
+  List<ProductModel> get filteredProducts {
+    return products.where((product) {
+      final matchesSearch =
+          product.name.toLowerCase().contains(searchQuery.value) ||
+          product.category.toLowerCase().contains(searchQuery.value);
+      final matchesCategory =
+          selectedCategory.value == 'All' ||
+          product.category == selectedCategory.value;
+      return matchesSearch && matchesCategory;
+    }).toList();
+  }
+
+  // 🔥 2. Get ONLY the visible products (Prevents rendering crashes)
+  List<ProductModel> get displayedProducts {
+    return filteredProducts.take(visibleProductCount.value).toList();
+  }
+
+  // 🔥 3. Load More Action
+  void loadMore() {
+    visibleProductCount.value += 12; // Load 12 more products when clicked
+  }
+
+  // 🔥 4. Update Methods (Reset view count when user filters)
+  void updateSearch(String query) {
+    searchQuery.value = query.toLowerCase();
+    visibleProductCount.value = 12; // Reset pagination
+  }
+
+  void updateCategory(String category) {
+    selectedCategory.value = category;
+    visibleProductCount.value = 12; // Reset pagination
+  }
+
+
+
   Future<void> orderViaWhatsApp(ProductModel product, int quantity) async {
     Get.dialog(
       const Center(child: CircularProgressIndicator(color: Color(0xFFCEAB5F))),
@@ -103,11 +131,10 @@ class ProductController extends GetxController {
       customerPhone: cPhone,
     );
 
-    if (Get.isDialogOpen == true) {
-      Navigator.of(Get.overlayContext!).pop();
-    }
+    // ✅ NATIVE GETX ROUTING (Production Safe)
+    if (Get.isDialogOpen ?? false) Get.back();
 
-    final String phoneNumber = "8801946401297";
+    final String phoneNumber = "8801325540925";
     final String productUrl = "https://fadhlshop.web.app/product/${product.id}";
 
     String message =
@@ -198,9 +225,7 @@ class ProductController extends GetxController {
                       elevation: 0,
                     ),
                     onPressed: () {
-                      if (Get.isDialogOpen == true) {
-                        Navigator.of(Get.overlayContext!).pop();
-                      }
+                      if (Get.isDialogOpen ?? false) Get.back();
                     },
                     child: const Text(
                       'GOT IT',
@@ -227,23 +252,7 @@ class ProductController extends GetxController {
     }
   }
 
-  // 4. The Magic Filter (Getter)
-  List<ProductModel> get filteredProducts {
-    return products.where((product) {
-      final matchesSearch =
-          product.name.toLowerCase().contains(searchQuery.value) ||
-          product.category.toLowerCase().contains(searchQuery.value);
-      final matchesCategory =
-          selectedCategory.value == 'All' ||
-          product.category == selectedCategory.value;
-      return matchesSearch && matchesCategory;
-    }).toList();
-  }
-
-  // 5. Update Methods
-  void updateSearch(String query) => searchQuery.value = query.toLowerCase();
-  void updateCategory(String category) => selectedCategory.value = category;
-
+ 
   Future<bool> submitReview({
     required String productId,
     required int rating,
@@ -302,7 +311,7 @@ class ProductController extends GetxController {
         products.refresh();
       }
 
-      if (Get.isDialogOpen == true) Navigator.of(Get.overlayContext!).pop();
+      if (Get.isDialogOpen ?? false) Get.back();
       Get.snackbar(
         'Thank You!',
         'Your review has been submitted.',
@@ -312,7 +321,7 @@ class ProductController extends GetxController {
 
       return true;
     } catch (e) {
-      if (Get.isDialogOpen == true) Navigator.of(Get.overlayContext!).pop();
+      if (Get.isDialogOpen ?? false) Get.back();
       Get.snackbar(
         'Error',
         'Failed to submit review. $e',

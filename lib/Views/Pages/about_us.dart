@@ -91,7 +91,7 @@ class AboutUsScreen extends StatelessWidget {
         horizontal: 20,
       ),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen, // Updated
+        color: AppColors.textDark, // Updated
         image: DecorationImage(
           image: const NetworkImage(
             'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2000&auto=format&fit=crop',
@@ -99,7 +99,7 @@ class AboutUsScreen extends StatelessWidget {
           // Abstract luxury dark background
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            AppColors.primaryGreen.withValues(alpha: 0.85), // Updated
+            AppColors.textDark.withValues(alpha: 0.85), // Updated
             BlendMode.darken,
           ),
         ),

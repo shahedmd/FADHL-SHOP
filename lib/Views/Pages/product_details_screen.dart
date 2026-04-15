@@ -7,24 +7,32 @@ import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // 🚀 Added for Performance
 
-import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import '../../Admin Panel/Utils/global_colours.dart';
 
 class ProductDetailsScreen extends StatelessWidget {
   ProductDetailsScreen({super.key});
 
   final TextEditingController reviewCommentController = TextEditingController();
+  final RxInt selectedImageIndex = 0.obs;
+  final RxInt quantity = 1.obs;
+  final RxInt selectedTab = 0.obs;
+  final RxInt selectedRating = 5.obs;
+
+  final Map<int, String> ratingOptions = {
+    1: 'Poor',
+    2: 'Fair',
+    3: 'Average',
+    4: 'Good',
+    5: 'Great',
+  };
 
   ProductModel? _getSmartProduct(ProductController pc) {
-    // 1. Find the target ID (Either from URL or Get.arguments)
     String? targetId = Get.parameters['id'];
-
     if (targetId == null && Get.arguments != null) {
       targetId = (Get.arguments as ProductModel).id;
     }
-
-    // 2. ALWAYS pull from the LIVE Controller memory!
-    // This guarantees that when a review is added to the controller, the UI instantly repaints!
     if (targetId != null) {
       try {
         return pc.products.firstWhere((p) => p.id == targetId);
@@ -35,47 +43,30 @@ class ProductDetailsScreen extends StatelessWidget {
     return null;
   }
 
-  final RxInt selectedImageIndex = 0.obs;
-  final RxInt quantity = 1.obs;
-  final RxInt selectedTab = 0.obs;
-
-  final RxInt selectedRating = 5.obs;
-  final Map<int, String> ratingOptions = {
-    1: 'Poor',
-    2: 'Fair',
-    3: 'Average',
-    4: 'Good',
-    5: 'Great',
-  };
-
   @override
   Widget build(BuildContext context) {
     final ProductController pc = Get.find<ProductController>();
 
     return Obx(() {
-      // 1. Loading State
       if (pc.isLoading.value) {
         return const Scaffold(
-          backgroundColor: AppColors.backgroundLight, // Updated
+          backgroundColor: AppColors.backgroundLight,
           body: Center(
-            child: CircularProgressIndicator(color: AppColors.primaryGold), // Updated
+            child: CircularProgressIndicator(color: AppColors.primaryGold),
           ),
         );
       }
 
-      // 2. Fetch the LIVE product using our Smart Deep-Link logic
       final ProductModel? currentProduct = _getSmartProduct(pc);
 
-      // ==========================================
-      // 🚀 THE FIX: Graceful Fallback (Prevents Chrome Back-Button Crash!)
-      // ==========================================
+      // Fallback if product is missing or deleted
       if (currentProduct == null) {
         return Scaffold(
-          backgroundColor: AppColors.backgroundLight, // Updated
+          backgroundColor: AppColors.backgroundLight,
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children:[
+              children: [
                 Icon(
                   Icons.inventory_2_outlined,
                   size: 60,
@@ -87,14 +78,14 @@ class ProductDetailsScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark, // Updated
+                    color: AppColors.textDark,
                   ),
                 ),
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryGreen, // Updated
-                    foregroundColor: AppColors.primaryGold, // Updated
+                    backgroundColor: AppColors.primaryGreen,
+                    foregroundColor: AppColors.primaryGold,
                     padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 12,
@@ -103,7 +94,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: () => Get.offAllNamed('/'), // Safe manual click
+                  onPressed: () => Get.offAllNamed('/'),
                   icon: const Icon(Icons.arrow_back),
                   label: const Text(
                     'Back to Store',
@@ -119,15 +110,14 @@ class ProductDetailsScreen extends StatelessWidget {
       final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
       return Scaffold(
-        backgroundColor: AppColors.backgroundLight, // Updated
+        backgroundColor: AppColors.backgroundLight,
         body: Column(
-          children:[
+          children: [
             const CustomHeader(),
-
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children:[
+                  children: [
                     ResponsiveLayout(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -140,14 +130,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                 : _buildMobileLayout(currentProduct),
                       ),
                     ),
-
                     ResponsiveLayout(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: _buildInfoTabsAndContent(currentProduct),
                       ),
                     ),
-
                     ResponsiveLayout(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -157,7 +145,6 @@ class ProductDetailsScreen extends StatelessWidget {
                         child: _buildReviewsSection(currentProduct),
                       ),
                     ),
-
                     const SizedBox(height: 40),
                   ],
                 ),
@@ -169,24 +156,19 @@ class ProductDetailsScreen extends StatelessWidget {
     });
   }
 
-  // ==========================================
-  // LAYOUTS (Desktop Image Made MUCH Smaller)
-  // ==========================================
   Widget _buildDesktopLayout(ProductModel currentProduct) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
-        // REDUCED FLEX: Image is now only 35% of the screen width!
+      children: [
         Expanded(
-          flex: 35,
+          flex: 40,
           child: _buildImageGallery(
             isDesktop: true,
             currentProduct: currentProduct,
           ),
         ),
-        const SizedBox(width: 60), // More breathing room
-        // INCREASED FLEX: Text gets 65% of the screen width!
-        Expanded(flex: 65, child: _buildProductInfo(currentProduct)),
+        const SizedBox(width: 50),
+        Expanded(flex: 60, child: _buildProductInfo(currentProduct)),
       ],
     );
   }
@@ -194,7 +176,7 @@ class ProductDetailsScreen extends StatelessWidget {
   Widget _buildMobileLayout(ProductModel currentProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
+      children: [
         _buildImageGallery(isDesktop: false, currentProduct: currentProduct),
         const SizedBox(height: 24),
         _buildProductInfo(currentProduct),
@@ -203,64 +185,123 @@ class ProductDetailsScreen extends StatelessWidget {
   }
 
   // ==========================================
-  // 1. IMAGE GALLERY
+  // 1. HIGH-PERFORMANCE IMAGE GALLERY & ZOOM
   // ==========================================
   Widget _buildImageGallery({
     required bool isDesktop,
     required ProductModel currentProduct,
   }) {
     return Column(
-      children:[
-        Container(
-          height: isDesktop ? 350 : 280,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: AppColors.pureWhite, // Updated
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Obx(
-              () => Image.network(
-                currentProduct.images.isNotEmpty
-                    ? currentProduct.images[selectedImageIndex.value]
-                    : 'https://via.placeholder.com/500',
-                fit: BoxFit.contain,
+      children: [
+        // MAIN IMAGE WITH ZOOM FEATURE
+        MouseRegion(
+          cursor: SystemMouseCursors.zoomIn,
+          child: GestureDetector(
+            onTap: () {
+              if (currentProduct.images.isNotEmpty) {
+                _showZoomDialog(
+                  currentProduct.images[selectedImageIndex.value],
+                );
+              }
+            },
+            child: Container(
+              height: isDesktop ? 450 : 350,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: AppColors.pureWhite,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey.shade200),
+              ),
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Obx(
+                      () => CachedNetworkImage(
+                        imageUrl:
+                            currentProduct.images.isNotEmpty
+                                ? currentProduct.images[selectedImageIndex
+                                    .value]
+                                : 'https://via.placeholder.com/500',
+                        fit: BoxFit.contain,
+                        memCacheWidth: 800, // 🚀 Prevents OutOfMemory crashes
+                        placeholder:
+                            (context, url) => const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.primaryGold,
+                              ),
+                            ),
+                      ),
+                    ),
+                  ),
+                  // Premium Zoom Indicator
+                  Positioned(
+                    bottom: 16,
+                    right: 16,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.textDark.withValues(alpha: 0.8),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.2),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.zoom_in,
+                        color: AppColors.primaryGold,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
 
+        // THUMBNAILS ROW
         if (currentProduct.images.isNotEmpty)
           SizedBox(
-            height: 60,
+            height: 70,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: currentProduct.images.length,
               itemBuilder: (context, index) {
                 return Obx(() {
                   final isSelected = selectedImageIndex.value == index;
-                  return GestureDetector(
-                    onTap: () => selectedImageIndex.value = index,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      margin: const EdgeInsets.only(right: 12),
-                      width: 60,
-                      decoration: BoxDecoration(
-                        color: AppColors.pureWhite, // Updated
-                        borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: isSelected ? AppColors.primaryGold : Colors.grey.shade300, // Updated
-                          width: isSelected ? 2 : 1,
+                  return MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => selectedImageIndex.value = index,
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        margin: const EdgeInsets.only(right: 12),
+                        width: 70,
+                        decoration: BoxDecoration(
+                          color: AppColors.pureWhite,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color:
+                                isSelected
+                                    ? AppColors.primaryGold
+                                    : Colors.grey.shade300,
+                            width: isSelected ? 2 : 1,
+                          ),
                         ),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: Image.network(
-                          currentProduct.images[index],
-                          fit: BoxFit.cover,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: CachedNetworkImage(
+                            imageUrl: currentProduct.images[index],
+                            fit: BoxFit.cover,
+                            memCacheWidth:
+                                150, // 🚀 Keeps memory super light for thumbnails
+                          ),
                         ),
                       ),
                     ),
@@ -274,22 +315,71 @@ class ProductDetailsScreen extends StatelessWidget {
   }
 
   // ==========================================
+  // 🚀 FULLSCREEN ZOOM MODAL
+  // ==========================================
+  void _showZoomDialog(String imageUrl) {
+    Get.dialog(
+      Dialog.fullscreen(
+        backgroundColor: Colors.black.withValues(alpha: 0.95),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // INTERACTIVE VIEWER FOR PINCH & PAN
+            InteractiveViewer(
+              panEnabled: true,
+              boundaryMargin: const EdgeInsets.all(20),
+              minScale: 1.0, // Standard size
+              maxScale: 4.0, // Allow 400% zoom
+              child: Center(
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.contain,
+                  placeholder:
+                      (context, url) => const CircularProgressIndicator(
+                        color: AppColors.primaryGold,
+                      ),
+                ),
+              ),
+            ),
+
+            // CLOSE BUTTON
+            Positioned(
+              top: 24,
+              right: 24,
+              child: IconButton(
+                onPressed: () => Get.back(),
+                icon: const Icon(Icons.close, color: Colors.white, size: 32),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.black.withValues(alpha: 0.5),
+                  padding: const EdgeInsets.all(12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      barrierColor: Colors.black,
+      useSafeArea: false,
+    );
+  }
+
+  // ==========================================
   // 2. PRODUCT INFO & BUTTONS
   // ==========================================
   Widget _buildProductInfo(ProductModel currentProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
+      children: [
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: AppColors.primaryGreen.withValues(alpha: 0.1), // Updated
+            color: AppColors.primaryGreen.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             currentProduct.category,
             style: const TextStyle(
-              color: AppColors.primaryGreen, // Updated
+              color: AppColors.primaryGreen,
               fontWeight: FontWeight.bold,
               fontSize: 11,
             ),
@@ -300,41 +390,41 @@ class ProductDetailsScreen extends StatelessWidget {
         Text(
           currentProduct.name,
           style: const TextStyle(
-            fontSize: 24,
+            fontSize: 28,
             fontWeight: FontWeight.w900,
             height: 1.2,
-            color: AppColors.textDark, // Updated to brand dark text
+            color: AppColors.textDark,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
 
         Text(
           '৳${currentProduct.price.toStringAsFixed(0)}',
           style: const TextStyle(
-            color: AppColors.primaryGreen, // Updated price color to pop
-            fontSize: 26,
+            color: AppColors.primaryGreen,
+            fontSize: 32,
             fontWeight: FontWeight.w900,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 30),
 
         const Text(
           'Quantity',
           style: TextStyle(
-            fontWeight: FontWeight.bold, 
+            fontWeight: FontWeight.bold,
             fontSize: 14,
-            color: AppColors.textDark, // Updated
+            color: AppColors.textDark,
           ),
         ),
         const SizedBox(height: 8),
         Row(
-          children:[
+          children: [
             _qtyButton(Icons.remove, () {
               if (quantity.value > 1) quantity.value--;
             }),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              margin: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              margin: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey.shade300),
                 borderRadius: BorderRadius.circular(6),
@@ -343,9 +433,9 @@ class ProductDetailsScreen extends StatelessWidget {
                 () => Text(
                   '${quantity.value}',
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark, // Updated
+                    color: AppColors.textDark,
                   ),
                 ),
               ),
@@ -353,49 +443,59 @@ class ProductDetailsScreen extends StatelessWidget {
             _qtyButton(Icons.add, () => quantity.value++),
           ],
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 30),
 
+        // MAIN ORDER BUTTON
         SizedBox(
           width: double.infinity,
-          height: 48,
+          height: 54,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryGreen, // Updated
-              foregroundColor: AppColors.primaryGold, // Updated
+              backgroundColor: AppColors.primaryGreen,
+              foregroundColor: AppColors.primaryGold,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(8),
               ),
-              elevation: 0,
+              elevation: 4,
+              shadowColor: AppColors.primaryGreen.withValues(alpha: 0.4),
             ),
             onPressed: () {
               final cartController = Get.find<CartController>();
               cartController.addToCart(currentProduct, quantity.value);
               Get.toNamed('/cart');
             },
-            icon: const Icon(Icons.flash_on, color: AppColors.pureWhite, size: 18), // Updated
+            icon: const Icon(
+              Icons.flash_on,
+              color: AppColors.pureWhite,
+              size: 20,
+            ),
             label: const Text(
               'ORDER NOW',
               style: TextStyle(
-                color: AppColors.pureWhite, // Updated
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
+                color: AppColors.pureWhite,
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
                 letterSpacing: 1,
               ),
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 16),
 
+        // SECONDARY BUTTONS
         Row(
-          children:[
+          children: [
             Expanded(
               child: SizedBox(
-                height: 48,
+                height: 50,
                 child: OutlinedButton.icon(
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.primaryGold, width: 2), // Updated
+                    side: const BorderSide(
+                      color: AppColors.primaryGold,
+                      width: 2,
+                    ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   onPressed: () {
@@ -404,13 +504,13 @@ class ProductDetailsScreen extends StatelessWidget {
                   },
                   icon: const Icon(
                     Icons.shopping_bag_outlined,
-                    color: AppColors.primaryGold, // Updated
+                    color: AppColors.primaryGold,
                     size: 18,
                   ),
                   label: const Text(
                     'ADD TO CART',
                     style: TextStyle(
-                      color: AppColors.primaryGold, // Updated
+                      color: AppColors.primaryGold,
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                     ),
@@ -418,15 +518,15 @@ class ProductDetailsScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: SizedBox(
-                height: 48,
+                height: 50,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF25D366), // WhatsApp Green
+                    backgroundColor: const Color(0xFF25D366),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     elevation: 0,
                   ),
@@ -461,33 +561,32 @@ class ProductDetailsScreen extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(6),
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Colors.grey.shade200,
           borderRadius: BorderRadius.circular(6),
         ),
-        child: Icon(icon, size: 18, color: AppColors.textDark), // Updated
+        child: Icon(icon, size: 20, color: AppColors.textDark),
       ),
     );
   }
 
   // ==========================================
-  // 3. FIXED-WIDTH TABS SECTION
+  // 3. TABS & REVIEWS (Remains mostly unchanged)
   // ==========================================
   Widget _buildInfoTabsAndContent(ProductModel currentProduct) {
-    final tabs =['Description', 'Benefits', 'Usage'];
-
+    final tabs = ['Description', 'Benefits', 'Usage'];
     return Container(
       width: double.infinity,
       constraints: const BoxConstraints(minHeight: 200),
       decoration: BoxDecoration(
-        color: AppColors.pureWhite, // Updated
+        color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:[
+        children: [
           Container(
             decoration: BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
@@ -503,7 +602,10 @@ class ProductDetailsScreen extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.primaryGreen : Colors.transparent, // Updated
+                          color:
+                              isSelected
+                                  ? AppColors.primaryGreen
+                                  : Colors.transparent,
                           borderRadius:
                               index == 0
                                   ? const BorderRadius.only(
@@ -520,7 +622,9 @@ class ProductDetailsScreen extends StatelessWidget {
                             tabs[index],
                             style: TextStyle(
                               color:
-                                  isSelected ? AppColors.primaryGold : Colors.grey.shade600, // Updated
+                                  isSelected
+                                      ? AppColors.primaryGold
+                                      : Colors.grey.shade600,
                               fontWeight:
                                   isSelected
                                       ? FontWeight.bold
@@ -572,31 +676,26 @@ class ProductDetailsScreen extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(
-        fontSize: 15, 
-        color: AppColors.textDark, // Updated to brand dark text
+        fontSize: 15,
+        color: AppColors.textDark,
         height: 1.6,
       ),
     );
   }
 
-  // ==========================================
-  // 4. REVIEWS (NOW WITH VISUAL STARS!)
-  // ==========================================
   Widget _buildReviewsSection(ProductModel currentProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:[
+      children: [
         const Text(
           'Customer Experience',
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w900,
-            color: AppColors.primaryGreen, // Updated
+            color: AppColors.primaryGreen,
           ),
         ),
         const SizedBox(height: 24),
-
-        // DISPLAYING REVIEWS WITH GOLDEN STARS
         currentProduct.reviews.isEmpty
             ? const Text(
               'Be the first to share your experience with this product.',
@@ -605,42 +704,30 @@ class ProductDetailsScreen extends StatelessWidget {
             : Column(
               children:
                   currentProduct.reviews.map((review) {
-                    // ==========================================
-                    // 🚀 CRITICAL FIX: Safe conversion for Double vs Int!
-                    // ==========================================
                     final int starCount =
                         (review['rating'] != null)
                             ? (review['rating'] as num).toInt()
                             : 5;
-
                     return Container(
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppColors.pureWhite, // Updated
+                        color: AppColors.pureWhite,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.grey.shade200),
-                        boxShadow:[
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.02),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children:[
+                        children: [
                           Row(
-                            children:[
+                            children: [
                               CircleAvatar(
-                                backgroundColor: AppColors.primaryGreen.withValues(
-                                  alpha: 0.1,
-                                ), // Updated
+                                backgroundColor: AppColors.primaryGreen
+                                    .withValues(alpha: 0.1),
                                 radius: 18,
                                 child: const FaIcon(
                                   FontAwesomeIcons.solidUser,
-                                  color: AppColors.primaryGold, // Updated
+                                  color: AppColors.primaryGold,
                                   size: 16,
                                 ),
                               ),
@@ -650,22 +737,21 @@ class ProductDetailsScreen extends StatelessWidget {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 15,
-                                  color: AppColors.textDark, // Updated
+                                  color: AppColors.textDark,
                                 ),
                               ),
                               const Spacer(),
-
-                              // MAGIC: Converts the database number (e.g. 5) into 5 Golden Stars!
                               Row(
-                                children: List.generate(5, (starIndex) {
-                                  return Icon(
+                                children: List.generate(
+                                  5,
+                                  (starIndex) => Icon(
                                     starIndex < starCount
                                         ? Icons.star
                                         : Icons.star_border,
-                                    color: AppColors.primaryGold, // Updated from generic orange
+                                    color: AppColors.primaryGold,
                                     size: 16,
-                                  );
-                                }),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -673,7 +759,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           Text(
                             review['comment'] ?? '',
                             style: const TextStyle(
-                              color: AppColors.textDark, // Updated
+                              color: AppColors.textDark,
                               height: 1.5,
                             ),
                           ),
@@ -682,29 +768,23 @@ class ProductDetailsScreen extends StatelessWidget {
                     );
                   }).toList(),
             ),
-
         const SizedBox(height: 40),
-
-        // WRITE A REVIEW SECTION
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.pureWhite, // Updated
+            color: AppColors.pureWhite,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.5)), // Updated
+            border: Border.all(
+              color: AppColors.primaryGold.withValues(alpha: 0.5),
+            ),
           ),
           child: Obx(() {
             final AuthController authController = Get.find<AuthController>();
             final bool isLoggedIn = authController.firebaseUser.value != null;
-
-            // =====================================
-            // STATE A: USER IS NOT LOGGED IN
-            // =====================================
             if (!isLoggedIn) {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children:[
-                  const SizedBox(height: 16),
+                children: [
                   FaIcon(
                     FontAwesomeIcons.lock,
                     size: 40,
@@ -714,15 +794,17 @@ class ProductDetailsScreen extends StatelessWidget {
                   const Text(
                     'Join the FADHL Family',
                     style: TextStyle(
-                      fontSize: 18, 
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textDark, // Updated
+                      color: AppColors.textDark,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     'You must be logged in to share your experience.',
-                    style: TextStyle(color: AppColors.textDark.withValues(alpha: 0.7)), // Updated
+                    style: TextStyle(
+                      color: AppColors.textDark.withValues(alpha: 0.7),
+                    ),
                   ),
                   const SizedBox(height: 24),
                   SizedBox(
@@ -730,14 +812,13 @@ class ProductDetailsScreen extends StatelessWidget {
                     width: 250,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primaryGold, // Updated
-                        foregroundColor: AppColors.primaryGreen, // Updated
+                        backgroundColor: AppColors.primaryGold,
+                        foregroundColor: AppColors.primaryGreen,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(6),
                         ),
                       ),
-                      onPressed:
-                          () => Get.toNamed('/auth'), // Takes them to Login!
+                      onPressed: () => Get.toNamed('/auth'),
                       child: const Text(
                         'Login to Review',
                         style: TextStyle(
@@ -747,37 +828,21 @@ class ProductDetailsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
                 ],
               );
             }
-
-            // =====================================
-            // STATE B: USER IS LOGGED IN (SHOW FORM)
-            // =====================================
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:[
+              children: [
                 const Text(
                   'Share Your Feedback',
                   style: TextStyle(
-                    fontSize: 18, 
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textDark, // Updated
+                    color: AppColors.textDark,
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                Text(
-                  'How was your experience?',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textDark.withValues(alpha: 0.7), // Updated
-                  ),
-                ),
-                const SizedBox(height: 10),
-
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,
@@ -790,11 +855,13 @@ class ProductDetailsScreen extends StatelessWidget {
                               return ChoiceChip(
                                 label: Text(entry.value),
                                 selected: isSelected,
-                                selectedColor: AppColors.primaryGreen, // Updated
+                                selectedColor: AppColors.primaryGreen,
                                 backgroundColor: Colors.grey.shade100,
                                 labelStyle: TextStyle(
                                   color:
-                                      isSelected ? AppColors.primaryGold : AppColors.textDark, // Updated
+                                      isSelected
+                                          ? AppColors.primaryGold
+                                          : AppColors.textDark,
                                   fontWeight:
                                       isSelected
                                           ? FontWeight.bold
@@ -802,8 +869,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                 ),
                                 onSelected: (bool selected) {
                                   if (selected) {
-                                    selectedRating.value =
-                                        entry.key; // Saves the number (e.g. 5)
+                                    selectedRating.value = entry.key;
                                   }
                                 },
                               );
@@ -811,13 +877,11 @@ class ProductDetailsScreen extends StatelessWidget {
                           )
                           .toList(),
                 ),
-
                 const SizedBox(height: 20),
-
                 TextField(
                   controller: reviewCommentController,
                   maxLines: 4,
-                  style: const TextStyle(color: AppColors.textDark), // Updated
+                  style: const TextStyle(color: AppColors.textDark),
                   decoration: InputDecoration(
                     hintText: 'Tell us more about your experience...',
                     filled: true,
@@ -829,13 +893,12 @@ class ProductDetailsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 SizedBox(
                   height: 45,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryGold, // Updated
-                      foregroundColor: AppColors.primaryGreen, // Updated
+                      backgroundColor: AppColors.primaryGold,
+                      foregroundColor: AppColors.primaryGreen,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -843,13 +906,11 @@ class ProductDetailsScreen extends StatelessWidget {
                     onPressed: () async {
                       final ProductController pc =
                           Get.find<ProductController>();
-
                       bool success = await pc.submitReview(
                         productId: currentProduct.id,
                         rating: selectedRating.value,
                         comment: reviewCommentController.text,
                       );
-
                       if (success) {
                         reviewCommentController.clear();
                         selectedRating.value = 5;
