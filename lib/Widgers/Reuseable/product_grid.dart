@@ -5,7 +5,6 @@ import 'package:fadhl/Models/productmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:cached_network_image/cached_network_image.dart'; // 🚀 ADDED CACHE MANAGER
 
 import '../../Admin Panel/Utils/global_colours.dart';
 
@@ -161,18 +160,22 @@ class ProductCard extends StatelessWidget {
                           top: Radius.circular(12),
                         ),
                         // 🚀 MAGIC BULLET: CachedNetworkImage + memCacheWidth
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              product.images.isNotEmpty
-                                  ? product.images[0]
-                                  : 'https://via.placeholder.com/300',
-                          fit: BoxFit.cover,
-                          memCacheWidth:
-                              400, // Downsizes 4K images in RAM to prevent crashes
-                          fadeInDuration: const Duration(milliseconds: 300),
-                          placeholder:
-                              (context, url) => Container(
-                                color: Colors.grey[50],
+                        child: // 🚀 THE FIX: Native Image.network with Premium Loading Builder
+                            ClipRRect(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(12),
+                          ),
+                          child: Image.network(
+                            product.images.isNotEmpty
+                                ? product.images[0]
+                                : 'https://via.placeholder.com/300',
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child; // Image is fully loaded
+                              }
+                              return Container(
+                                color: Colors.grey.shade50,
                                 child: const Center(
                                   child: SizedBox(
                                     height: 24,
@@ -183,17 +186,19 @@ class ProductCard extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              ),
-                          errorWidget:
-                              (context, url, error) => Container(
-                                color: Colors.grey[100],
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.broken_image,
-                                    color: Colors.grey,
+                              );
+                            },
+                            errorBuilder:
+                                (context, error, stackTrace) => Container(
+                                  color: Colors.grey[100],
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      color: Colors.grey,
+                                    ),
                                   ),
                                 ),
-                              ),
+                          ),
                         ),
                       ),
 

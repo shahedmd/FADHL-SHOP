@@ -2,85 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import '../../Admin Panel/Utils/global_colours.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
 import '../../Widgers/responsive_layout.dart';
-// import '../../Widgers/Reuseable/custom_footer.dart'; // Uncomment if using footer
+import '../../Controllers/faq_controller.dart'; // 🚀 IMPORT CONTROLLER
 
 class FaqScreen extends StatelessWidget {
   FaqScreen({super.key});
-  final RxString selectedCategory = 'All'.obs;
-  final List<String> categories = [
-    'All',
-    'Shipping & Delivery',
-    'Payments',
-    'Returns & Refunds',
-    'Products',
-  ];
 
-  final List<Map<String, String>> faqs = [
-    // Shipping
-    {
-      'category': 'Shipping & Delivery',
-      'q': 'How much does delivery cost?',
-      'a':
-          'Standard delivery is ৳120 across all districts in Bangladesh. We occasionally offer free shipping during special promotional events.',
-    },
-    {
-      'category': 'Shipping & Delivery',
-      'q': 'How long will my order take to arrive?',
-      'a':
-          'Orders inside Dhaka are typically delivered within 24-48 hours. Deliveries outside Dhaka usually take 3-5 business days depending on the courier service.',
-    },
-    {
-      'category': 'Shipping & Delivery',
-      'q': 'Can I track my order?',
-      'a':
-          'Absolutely. Once your order is dispatched, you will receive an Order ID. You can click "Track Order" in the top menu to see its live status.',
-    },
-
-    // Payments
-    {
-      'category': 'Payments',
-      'q': 'Do you offer Cash on Delivery (COD)?',
-      'a':
-          'Yes! We offer Cash on Delivery for all orders across Bangladesh. You can inspect your package before handing the cash to the delivery agent.',
-    },
-    {
-      'category': 'Payments',
-      'q': 'Can I pay using bKash or Nagad?',
-      'a':
-          'Yes, we accept secure mobile banking payments including bKash, Nagad, and Rocket during the checkout process.',
-    },
-
-    // Returns
-    {
-      'category': 'Returns & Refunds',
-      'q': 'What is your return policy?',
-      'a':
-          'We offer a 3-day hassle-free return policy. If your product is damaged or incorrect, keep the original packaging and contact us immediately for a free replacement.',
-    },
-    {
-      'category': 'Returns & Refunds',
-      'q': 'How do I request a refund?',
-      'a':
-          'To request a refund, please contact our WhatsApp support team with your Order ID and a photo of the item. Refunds are processed within 3-5 working days.',
-    },
-
-    // Products
-    {
-      'category': 'Products',
-      'q': 'Are your organic foods 100% authentic?',
-      'a':
-          'Yes. Our organic products are sourced directly from trusted local farmers and are strictly quality-tested to ensure zero chemical adulteration.',
-    },
-  ];
+  // 🚀 INITIALIZE CONTROLLER
+  final FaqController faqController = Get.put(FaqController());
 
   // ==========================================
   // WHATSAPP REDIRECT (Support)
   // ==========================================
   Future<void> _contactSupport() async {
-    const String phoneNumber = "8801946401297";
+    const String phoneNumber = "880132540925";
     final Uri whatsappUrl = Uri.parse(
       "https://wa.me/$phoneNumber?text=${Uri.encodeComponent('Hello FADHL Support, I have a question regarding...')}",
     );
@@ -96,7 +33,7 @@ class FaqScreen extends StatelessWidget {
     final bool isDesktop = MediaQuery.of(context).size.width >= 900;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight, // Updated to brand background
+      backgroundColor: AppColors.backgroundLight,
       body: Column(
         children: [
           const CustomHeader(),
@@ -105,10 +42,8 @@ class FaqScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // 1. HERO SECTION
                   _buildHeroSection(isDesktop),
 
-                  // 2. MAIN CONTENT AREA
                   ResponsiveLayout(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -122,7 +57,6 @@ class FaqScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // 3. STILL NEED HELP CTA
                   ResponsiveLayout(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -134,7 +68,6 @@ class FaqScreen extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 60),
-                  // const CustomFooter(), // Uncomment to add footer!
                 ],
               ),
             ),
@@ -162,7 +95,7 @@ class FaqScreen extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildCategoryDropdown(), // Uses horizontal scroll on mobile
+        _buildCategoryDropdown(),
         const SizedBox(height: 30),
         _buildFaqList(),
       ],
@@ -180,27 +113,31 @@ class FaqScreen extends StatelessWidget {
         horizontal: 20,
       ),
       decoration: BoxDecoration(
-        color: AppColors.textDark, // Updated
+        color: AppColors.textDark,
         image: DecorationImage(
           image: const NetworkImage(
             'https://images.unsplash.com/photo-1557425955-df376b5903c8?q=80&w=2000&auto=format&fit=crop',
           ),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            AppColors.textDark.withValues(alpha: 0.9), // Updated
+            AppColors.textDark.withValues(alpha: 0.9),
             BlendMode.darken,
           ),
         ),
       ),
       child: Column(
         children: [
-          const FaIcon(FontAwesomeIcons.circleQuestion, color: AppColors.primaryGold, size: 50), // Updated
+          const FaIcon(
+            FontAwesomeIcons.circleQuestion,
+            color: AppColors.primaryGold,
+            size: 50,
+          ),
           const SizedBox(height: 20),
           Text(
             'How can we help you?',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.pureWhite, // Updated
+              color: AppColors.pureWhite,
               fontSize: isDesktop ? 42 : 28,
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
@@ -211,7 +148,7 @@ class FaqScreen extends StatelessWidget {
             'Find answers to frequently asked questions about FADHL.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.pureWhite.withValues(alpha: 0.7), // Updated
+              color: AppColors.pureWhite.withValues(alpha: 0.7),
               fontSize: isDesktop ? 16 : 14,
             ),
           ),
@@ -224,7 +161,7 @@ class FaqScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: AppColors.pureWhite, // Updated
+        color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -236,44 +173,63 @@ class FaqScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
-              color: AppColors.primaryGreen, // Updated
+              color: AppColors.primaryGreen,
             ),
           ),
           const SizedBox(height: 20),
-          ...categories.map(
-            (category) => Obx(() {
-              final isSelected = selectedCategory.value == category;
-              return InkWell(
-                onTap: () => selectedCategory.value = category,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 16,
-                  ),
-                  margin: const EdgeInsets.only(bottom: 8),
-                  decoration: BoxDecoration(
-                    color:
-                        isSelected
-                            ? AppColors.primaryGreen.withValues(alpha: 0.05) // Updated
-                            : Colors.transparent,
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: isSelected ? AppColors.primaryGold : Colors.transparent, // Updated
-                    ),
-                  ),
-                  child: Text(
-                    category,
-                    style: TextStyle(
-                      color: isSelected ? AppColors.primaryGreen : AppColors.textDark, // Updated
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.w500,
-                    ),
-                  ),
-                ),
+
+          Obx(() {
+            if (faqController.isLoading.value) {
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primaryGold),
               );
-            }),
-          ),
+            }
+            return Column(
+              children:
+                  faqController.categories.map((category) {
+                    final isSelected =
+                        faqController.selectedCategory.value == category;
+                    return InkWell(
+                      onTap:
+                          () => faqController.selectedCategory.value = category,
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 16,
+                        ),
+                        margin: const EdgeInsets.only(bottom: 8),
+                        decoration: BoxDecoration(
+                          color:
+                              isSelected
+                                  ? AppColors.primaryGreen.withValues(
+                                    alpha: 0.05,
+                                  )
+                                  : Colors.transparent,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color:
+                                isSelected
+                                    ? AppColors.primaryGold
+                                    : Colors.transparent,
+                          ),
+                        ),
+                        child: Text(
+                          category,
+                          style: TextStyle(
+                            color:
+                                isSelected
+                                    ? AppColors.primaryGreen
+                                    : AppColors.textDark,
+                            fontWeight:
+                                isSelected ? FontWeight.bold : FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+            );
+          }),
         ],
       ),
     );
@@ -282,49 +238,65 @@ class FaqScreen extends StatelessWidget {
   Widget _buildCategoryDropdown() {
     return SizedBox(
       height: 45,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories[index];
-          return Obx(() {
-            final isSelected = selectedCategory.value == category;
+      child: Obx(() {
+        if (faqController.isLoading.value) return const SizedBox();
+        return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: faqController.categories.length,
+          itemBuilder: (context, index) {
+            final category = faqController.categories[index];
+            final isSelected = faqController.selectedCategory.value == category;
             return Padding(
               padding: const EdgeInsets.only(right: 12.0),
               child: ChoiceChip(
                 label: Text(category),
                 selected: isSelected,
-                selectedColor: AppColors.primaryGreen, // Updated
-                backgroundColor: AppColors.pureWhite, // Updated
+                selectedColor: AppColors.primaryGreen,
+                backgroundColor: AppColors.pureWhite,
                 labelStyle: TextStyle(
-                  color: isSelected ? AppColors.primaryGold : AppColors.textDark, // Updated
+                  color:
+                      isSelected ? AppColors.primaryGold : AppColors.textDark,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                   side: BorderSide(
-                    color: isSelected ? AppColors.primaryGreen : Colors.grey.shade300, // Updated
+                    color:
+                        isSelected
+                            ? AppColors.primaryGreen
+                            : Colors.grey.shade300,
                   ),
                 ),
                 onSelected: (selected) {
-                  if (selected) selectedCategory.value = category;
+                  if (selected) faqController.selectedCategory.value = category;
                 },
               ),
             );
-          });
-        },
-      ),
+          },
+        );
+      }),
     );
   }
 
   Widget _buildFaqList() {
     return Obx(() {
-      // Filter logic
+      if (faqController.isLoading.value) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(40.0),
+            child: CircularProgressIndicator(color: AppColors.primaryGold),
+          ),
+        );
+      }
+
       final filteredFaqs =
-          selectedCategory.value == 'All'
-              ? faqs
-              : faqs
-                  .where((faq) => faq['category'] == selectedCategory.value)
+          faqController.selectedCategory.value == 'All'
+              ? faqController.faqs
+              : faqController.faqs
+                  .where(
+                    (faq) =>
+                        faq['category'] == faqController.selectedCategory.value,
+                  )
                   .toList();
 
       if (filteredFaqs.isEmpty) {
@@ -341,8 +313,7 @@ class FaqScreen extends StatelessWidget {
 
       return ListView.separated(
         shrinkWrap: true,
-        physics:
-            const NeverScrollableScrollPhysics(), // Important to prevent scrolling conflicts
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: filteredFaqs.length,
         separatorBuilder: (_, __) => const SizedBox(height: 16),
         itemBuilder: (context, index) {
@@ -350,7 +321,7 @@ class FaqScreen extends StatelessWidget {
 
           return Container(
             decoration: BoxDecoration(
-              color: AppColors.pureWhite, // Updated
+              color: AppColors.pureWhite,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: Colors.grey.shade200),
               boxShadow: [
@@ -362,23 +333,22 @@ class FaqScreen extends StatelessWidget {
               ],
             ),
             child: Theme(
-              // Removes the default ugly lines around ExpansionTile
               data: Theme.of(
                 context,
               ).copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
-                iconColor: AppColors.primaryGold, // Updated
-                collapsedIconColor: AppColors.primaryGreen, // Updated
+                iconColor: AppColors.primaryGold,
+                collapsedIconColor: AppColors.primaryGreen,
                 tilePadding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 8,
                 ),
                 title: Text(
-                  faq['q']!,
+                  faq['q'] ?? '',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: AppColors.primaryGreen, // Updated
+                    color: AppColors.primaryGreen,
                   ),
                 ),
                 children: [
@@ -390,9 +360,9 @@ class FaqScreen extends StatelessWidget {
                       bottom: 24,
                     ),
                     child: Text(
-                      faq['a']!,
+                      faq['a'] ?? '',
                       style: const TextStyle(
-                        color: AppColors.textDark, // Updated to brand dark text
+                        color: AppColors.textDark,
                         fontSize: 15,
                         height: 1.6,
                       ),
@@ -412,9 +382,9 @@ class FaqScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen.withValues(alpha: 0.05), // Updated
+        color: AppColors.primaryGreen.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.3)), // Updated
+        border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.3)),
       ),
       child:
           isDesktop
@@ -440,14 +410,14 @@ class FaqScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w900,
-              color: AppColors.primaryGreen, // Updated
+              color: AppColors.primaryGreen,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Our premium support team is here to help you 24/7.',
             style: TextStyle(
-              color: AppColors.textDark.withValues(alpha: 0.7), // Updated
+              color: AppColors.textDark.withValues(alpha: 0.7),
               fontSize: 15,
             ),
           ),
@@ -458,7 +428,7 @@ class FaqScreen extends StatelessWidget {
         height: 50,
         child: ElevatedButton.icon(
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFF25D366), // WhatsApp Green (Left as is!)
+            backgroundColor: const Color(0xFF25D366),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),

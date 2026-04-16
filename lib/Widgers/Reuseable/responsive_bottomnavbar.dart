@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get.dart'; 
+import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../Admin Panel/Utils/global_colours.dart'; 
+import '../../Admin Panel/Utils/global_colours.dart';
 
 Future<void> _launchSocialMedia(String url) async {
   if (url.isEmpty) return;
@@ -48,6 +48,37 @@ Future<void> makePhoneCall(String phoneNumber) async {
 
 class CustomFooter extends StatelessWidget {
   const CustomFooter({super.key});
+
+  // ==========================================
+  // ROUTE MAPPINGS
+  // ==========================================
+  static const Map<String, String> infoLinks = {
+    'About Us': '/about',
+    'Login / Register': '/auth',
+    'Terms & Conditions': '/terms', // Add route when built
+    'Privacy Policy': '/policy', // Add route when built
+  };
+
+  static const Map<String, String> quickLinks = {
+    'My Account': '/profile',
+    'Shopping Cart': '/cart',
+    'My Wishlist': '/wishlist',
+    'All Products': '/',
+  };
+
+  static const Map<String, String> supportLinks = {
+    'Order Tracking': '/track-order',
+    'FAQ': '/faq',
+    'How to Order': '/faq',
+    'Support Center': '/about',
+  };
+
+  static const Map<String, String> policyLinks = {
+    'Happy Return': '/policy',
+    'Refund Policy': '/policy',
+    'Exchange': '/policy',
+    'Cancellation': '/policy',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -107,42 +138,10 @@ class CustomFooter extends StatelessWidget {
       children: [
         Expanded(flex: 4, child: _buildBrandAndNewsletter()),
         const SizedBox(width: 60),
-        Expanded(
-          flex: 2,
-          child: _buildLinkColumn('INFORMATION', [
-            'About Us',
-            'Contact Us',
-            'Terms & Conditions',
-            'Privacy Policy',
-          ]),
-        ),
-        Expanded(
-          flex: 2,
-          child: _buildLinkColumn('SHOP BY', [
-            'Eye Ware',
-            'Organic Foods',
-            'Pet Goods',
-            'New Arrivals',
-          ]),
-        ),
-        Expanded(
-          flex: 2,
-          child: _buildLinkColumn('SUPPORT', [
-            'Support Center',
-            'How to Order',
-            'Order Tracking',
-            'FAQ',
-          ]),
-        ),
-        Expanded(
-          flex: 2,
-          child: _buildLinkColumn('POLICY', [
-            'Happy Return',
-            'Refund Policy',
-            'Exchange',
-            'Cancellation',
-          ]),
-        ),
+        Expanded(flex: 2, child: _buildLinkColumn('INFORMATION', infoLinks)),
+        Expanded(flex: 2, child: _buildLinkColumn('QUICK LINKS', quickLinks)),
+        Expanded(flex: 2, child: _buildLinkColumn('SUPPORT', supportLinks)),
+        Expanded(flex: 2, child: _buildLinkColumn('POLICY', policyLinks)),
       ],
     );
   }
@@ -159,39 +158,19 @@ class CustomFooter extends StatelessWidget {
           children: [
             SizedBox(
               width: 140,
-              child: _buildLinkColumn('INFORMATION', [
-                'About Us',
-                'Contact Us',
-                'Terms',
-                'Privacy',
-              ]),
+              child: _buildLinkColumn('INFORMATION', infoLinks),
             ),
             SizedBox(
               width: 140,
-              child: _buildLinkColumn('SHOP BY', [
-                'Eye Ware',
-                'Organic',
-                'Pet Goods',
-                'New Arrivals',
-              ]),
+              child: _buildLinkColumn('QUICK LINKS', quickLinks),
             ),
             SizedBox(
               width: 140,
-              child: _buildLinkColumn('SUPPORT', [
-                'Support Center',
-                'How to Order',
-                'Tracking',
-                'FAQ',
-              ]),
+              child: _buildLinkColumn('SUPPORT', supportLinks),
             ),
             SizedBox(
               width: 140,
-              child: _buildLinkColumn('POLICY', [
-                'Happy Return',
-                'Refunds',
-                'Exchange',
-                'Cancellation',
-              ]),
+              child: _buildLinkColumn('POLICY', policyLinks),
             ),
           ],
         ),
@@ -349,18 +328,15 @@ class CustomFooter extends StatelessWidget {
               icon: FontAwesomeIcons.facebookF,
               url: 'https://www.facebook.com/profile.php?id=61573352996622',
             ),
-             _HoverSocialIcon(
+            _HoverSocialIcon(
               icon: FontAwesomeIcons.tiktok,
-              url: 'https://www.twitter.com/yourprofile',
+              url: 'https://www.tiktok.com/@fadhlshop',
             ),
-             _HoverSocialIcon(
+            _HoverSocialIcon(
               icon: FontAwesomeIcons.instagram,
               url: 'https://www.instagram.com/fadhl_shop',
             ),
-             _HoverSocialIcon(
-              icon: FontAwesomeIcons.youtube,
-              url: '', // Fixed typo here
-            ),
+            _HoverSocialIcon(icon: FontAwesomeIcons.youtube, url: ''),
           ],
         ),
       ],
@@ -392,7 +368,8 @@ class CustomFooter extends StatelessWidget {
     return content;
   }
 
-  Widget _buildLinkColumn(String title, List<String> links) {
+  // UPDATED: Now accepts a Map to tie display text directly to GetX routes
+  Widget _buildLinkColumn(String title, Map<String, String> links) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -406,7 +383,9 @@ class CustomFooter extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 28),
-        ...links.map((link) => _HoverLink(text: link)),
+        ...links.entries.map(
+          (entry) => _HoverLink(text: entry.key, route: entry.value),
+        ),
       ],
     );
   }
@@ -484,11 +463,11 @@ class CustomFooter extends StatelessWidget {
 
 class _HoverLink extends StatelessWidget {
   final String text;
+  final String route; // ADDED Route property
 
-  // Localized reactive state for this specific widget instance
   final RxBool _isHovered = false.obs;
 
-  _HoverLink({required this.text});
+  _HoverLink({required this.text, required this.route});
 
   @override
   Widget build(BuildContext context) {
@@ -497,8 +476,12 @@ class _HoverLink extends StatelessWidget {
       onExit: (_) => _isHovered.value = false,
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: () {},
-        // Wrap only the reactive part with Obx
+        onTap: () {
+          // NAVIGATE TO ROUTE ON CLICK
+          if (route.isNotEmpty) {
+            Get.toNamed(route);
+          }
+        },
         child: Obx(
           () => AnimatedContainer(
             duration: const Duration(milliseconds: 250),
@@ -545,7 +528,6 @@ class _HoverSocialIcon extends StatelessWidget {
   final IconData icon;
   final String url;
 
-  // Localized reactive state for this specific widget instance
   final RxBool _isHovered = false.obs;
 
   _HoverSocialIcon({required this.icon, required this.url});
@@ -558,7 +540,6 @@ class _HoverSocialIcon extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () => _launchSocialMedia(url),
-        // Wrap only the reactive part with Obx
         child: Obx(
           () => AnimatedContainer(
             duration: const Duration(milliseconds: 250),

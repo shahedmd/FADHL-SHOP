@@ -7,7 +7,6 @@ import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:cached_network_image/cached_network_image.dart'; // 🚀 Added for Performance
 
 import '../../Admin Panel/Utils/global_colours.dart';
 
@@ -17,7 +16,6 @@ class ProductDetailsScreen extends StatelessWidget {
   final TextEditingController reviewCommentController = TextEditingController();
   final RxInt selectedImageIndex = 0.obs;
   final RxInt quantity = 1.obs;
-  final RxInt selectedTab = 0.obs;
   final RxInt selectedRating = 5.obs;
 
   final Map<int, String> ratingOptions = {
@@ -130,10 +128,11 @@ class ProductDetailsScreen extends StatelessWidget {
                                 : _buildMobileLayout(currentProduct),
                       ),
                     ),
+                    // 🚀 UPDATED: Now uses the new vertical list layout instead of tabs
                     ResponsiveLayout(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: _buildInfoTabsAndContent(currentProduct),
+                        child: _buildProductDetailsList(currentProduct),
                       ),
                     ),
                     ResponsiveLayout(
@@ -185,7 +184,7 @@ class ProductDetailsScreen extends StatelessWidget {
   }
 
   // ==========================================
-  // 1. HIGH-PERFORMANCE IMAGE GALLERY & ZOOM
+  // 1. NATIVE IMAGE GALLERY & ZOOM
   // ==========================================
   Widget _buildImageGallery({
     required bool isDesktop,
@@ -193,7 +192,6 @@ class ProductDetailsScreen extends StatelessWidget {
   }) {
     return Column(
       children: [
-        // MAIN IMAGE WITH ZOOM FEATURE
         MouseRegion(
           cursor: SystemMouseCursors.zoomIn,
           child: GestureDetector(
@@ -218,24 +216,30 @@ class ProductDetailsScreen extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Obx(
-                      () => CachedNetworkImage(
-                        imageUrl:
-                            currentProduct.images.isNotEmpty
-                                ? currentProduct.images[selectedImageIndex
-                                    .value]
-                                : 'https://via.placeholder.com/500',
+                      () => Image.network(
+                        currentProduct.images.isNotEmpty
+                            ? currentProduct.images[selectedImageIndex.value]
+                            : 'https://via.placeholder.com/500',
                         fit: BoxFit.contain,
-                        memCacheWidth: 800, // 🚀 Prevents OutOfMemory crashes
-                        placeholder:
-                            (context, url) => const Center(
-                              child: CircularProgressIndicator(
-                                color: AppColors.primaryGold,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.primaryGold,
+                            ),
+                          );
+                        },
+                        errorBuilder:
+                            (context, error, stackTrace) => const Center(
+                              child: Icon(
+                                Icons.broken_image,
+                                color: Colors.grey,
+                                size: 40,
                               ),
                             ),
                       ),
                     ),
                   ),
-                  // Premium Zoom Indicator
                   Positioned(
                     bottom: 16,
                     right: 16,
@@ -265,7 +269,6 @@ class ProductDetailsScreen extends StatelessWidget {
         ),
         const SizedBox(height: 16),
 
-        // THUMBNAILS ROW
         if (currentProduct.images.isNotEmpty)
           SizedBox(
             height: 70,
@@ -296,11 +299,36 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(6),
-                          child: CachedNetworkImage(
-                            imageUrl: currentProduct.images[index],
+                          child: Image.network(
+                            currentProduct.images[index],
                             fit: BoxFit.cover,
-                            memCacheWidth:
-                                150, // 🚀 Keeps memory super light for thumbnails
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Container(
+                                color: Colors.grey.shade50,
+                                child: const Center(
+                                  child: SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      color: AppColors.primaryGold,
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            errorBuilder:
+                                (context, error, stackTrace) => Container(
+                                  color: Colors.grey.shade100,
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.broken_image,
+                                      color: Colors.grey,
+                                      size: 20,
+                                    ),
+                                  ),
+                                ),
                           ),
                         ),
                       ),
@@ -314,9 +342,6 @@ class ProductDetailsScreen extends StatelessWidget {
     );
   }
 
-  // ==========================================
-  // 🚀 FULLSCREEN ZOOM MODAL
-  // ==========================================
   void _showZoomDialog(String imageUrl) {
     Get.dialog(
       Dialog.fullscreen(
@@ -324,25 +349,30 @@ class ProductDetailsScreen extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            // INTERACTIVE VIEWER FOR PINCH & PAN
             InteractiveViewer(
               panEnabled: true,
               boundaryMargin: const EdgeInsets.all(20),
-              minScale: 1.0, // Standard size
-              maxScale: 4.0, // Allow 400% zoom
+              minScale: 1.0,
+              maxScale: 4.0,
               child: Center(
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
+                child: Image.network(
+                  imageUrl,
                   fit: BoxFit.contain,
-                  placeholder:
-                      (context, url) => const CircularProgressIndicator(
-                        color: AppColors.primaryGold,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const CircularProgressIndicator(
+                      color: AppColors.primaryGold,
+                    );
+                  },
+                  errorBuilder:
+                      (context, error, stackTrace) => const Icon(
+                        Icons.broken_image,
+                        color: Colors.grey,
+                        size: 50,
                       ),
                 ),
               ),
             ),
-
-            // CLOSE BUTTON
             Positioned(
               top: 24,
               right: 24,
@@ -572,13 +602,40 @@ class ProductDetailsScreen extends StatelessWidget {
   }
 
   // ==========================================
-  // 3. TABS & REVIEWS (Remains mostly unchanged)
+  // 3. VERTICAL DETAILS LIST (NO TABS)
   // ==========================================
-  Widget _buildInfoTabsAndContent(ProductModel currentProduct) {
-    final tabs = ['Description', 'Benefits', 'Usage'];
+  Widget _buildProductDetailsList(ProductModel currentProduct) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildDetailSection(
+          'Description',
+          currentProduct.description.isNotEmpty
+              ? currentProduct.description
+              : "No description available.",
+        ),
+        const SizedBox(height: 20),
+        _buildDetailSection(
+          'Benefits',
+          currentProduct.benefits.isNotEmpty
+              ? currentProduct.benefits
+              : "No benefits listed.",
+        ),
+        const SizedBox(height: 20),
+        _buildDetailSection(
+          'Usage',
+          currentProduct.usage.isNotEmpty
+              ? currentProduct.usage
+              : "No usage instructions listed.",
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailSection(String title, String content) {
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(minHeight: 200),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(12),
@@ -587,102 +644,44 @@ class ProductDetailsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
-            ),
-            child: Row(
-              children: List.generate(
-                tabs.length,
-                (index) => Expanded(
-                  child: Obx(() {
-                    final isSelected = selectedTab.value == index;
-                    return InkWell(
-                      onTap: () => selectedTab.value = index,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          color:
-                              isSelected
-                                  ? AppColors.primaryGreen
-                                  : Colors.transparent,
-                          borderRadius:
-                              index == 0
-                                  ? const BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                  )
-                                  : (index == 2
-                                      ? const BorderRadius.only(
-                                        topRight: Radius.circular(12),
-                                      )
-                                      : BorderRadius.zero),
-                        ),
-                        child: Center(
-                          child: Text(
-                            tabs[index],
-                            style: TextStyle(
-                              color:
-                                  isSelected
-                                      ? AppColors.primaryGold
-                                      : Colors.grey.shade600,
-                              fontWeight:
-                                  isSelected
-                                      ? FontWeight.bold
-                                      : FontWeight.w600,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
+          Row(
+            children: [
+              Container(
+                width: 4,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryGold,
+                  borderRadius: BorderRadius.circular(2),
                 ),
               ),
-            ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  color: AppColors.primaryGreen,
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Obx(() {
-              if (selectedTab.value == 0) {
-                return _tabTextContent(
-                  currentProduct.description.isNotEmpty
-                      ? currentProduct.description
-                      : "No description available.",
-                );
-              }
-              if (selectedTab.value == 1) {
-                return _tabTextContent(
-                  currentProduct.benefits.isNotEmpty
-                      ? currentProduct.benefits
-                      : "No benefits listed.",
-                );
-              }
-              if (selectedTab.value == 2) {
-                return _tabTextContent(
-                  currentProduct.usage.isNotEmpty
-                      ? currentProduct.usage
-                      : "No usage instructions listed.",
-                );
-              }
-              return const SizedBox.shrink();
-            }),
+          const SizedBox(height: 16),
+          Text(
+            content,
+            style: const TextStyle(
+              fontSize: 15,
+              color: AppColors.textDark,
+              height: 1.6,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _tabTextContent(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 15,
-        color: AppColors.textDark,
-        height: 1.6,
-      ),
-    );
-  }
-
+  // ==========================================
+  // 4. REVIEWS SECTION
+  // ==========================================
   Widget _buildReviewsSection(ProductModel currentProduct) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

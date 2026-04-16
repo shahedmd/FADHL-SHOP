@@ -8,31 +8,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import '../../Admin Panel/Utils/global_colours.dart';
+import '../../Controllers/shipping_areas_controller.dart';
 
 class CartScreen extends StatelessWidget {
   CartScreen({super.key});
+
   final RxString selectedPayment = 'Cash On Delivery'.obs;
   final RxBool isBillingSameAsShipping = true.obs;
   final RxBool agreedToTerms = false.obs;
 
-  final RxnString selectedDistrict = RxnString();
-  final RxnString selectedThana = RxnString();
-
-  final List<String> districts = [
-    'Dhaka',
-    'Chattogram',
-    'Sylhet',
-    'Khulna',
-    'Rajshahi',
-  ];
-  final List<String> thanas = [
-    'Dhanmondi',
-    'Gulshan',
-    'Mirpur',
-    'Uttara',
-    'Mohammadpur',
-  ];
+  // Initialize the new location controller
+  final LocationController locationController = Get.put(LocationController());
 
   final TextEditingController shippingNameCtrl = TextEditingController();
   final TextEditingController shippingPhoneCtrl = TextEditingController();
@@ -49,14 +36,12 @@ class CartScreen extends StatelessWidget {
   void _autoFillUserData() {
     final authController = Get.find<AuthController>();
     if (authController.firebaseUser.value != null) {
-      // Fetch user data from Firestore in the background
       FirebaseFirestore.instance
           .collection('users')
           .doc(authController.firebaseUser.value!.uid)
           .get()
           .then((doc) {
             if (doc.exists) {
-              // Only fill if the fields are currently empty
               if (shippingNameCtrl.text.isEmpty) {
                 shippingNameCtrl.text = doc.data()?['name'] ?? '';
               }
@@ -75,11 +60,10 @@ class CartScreen extends StatelessWidget {
     final bool isDesktop = screenWidth >= 900;
     final bool isMobile = screenWidth < 600;
 
-    // Trigger the auto-fill magic the moment the screen builds!
     _autoFillUserData();
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight, // Updated to brand background
+      backgroundColor: AppColors.backgroundLight,
       body: Column(
         children: [
           const CustomHeader(),
@@ -106,7 +90,6 @@ class CartScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 40),
-                    // const CustomFooter(), // Optional: Add your footer back if you want
                   ],
                 ),
               );
@@ -222,7 +205,7 @@ class CartScreen extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontSize: isMobile ? 13 : 14,
-                              color: AppColors.textDark, // Updated
+                              color: AppColors.textDark,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -287,7 +270,7 @@ class CartScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: isMobile ? 13 : 14,
-                                  color: AppColors.primaryGold, // Updated
+                                  color: AppColors.primaryGold,
                                 ),
                               ),
                             ],
@@ -373,7 +356,7 @@ class CartScreen extends StatelessWidget {
 
   Widget _buildPhoneField() {
     return TextField(
-      controller: shippingPhoneCtrl, // <--- WIRED TO CONTROLLER
+      controller: shippingPhoneCtrl,
       decoration: InputDecoration(
         hintText: 'Phone Number',
         prefixIcon: Container(
@@ -399,24 +382,44 @@ class CartScreen extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(6),
-          borderSide: const BorderSide(
-            color: AppColors.primaryGold,
-            width: 2,
-          ), // Updated
+          borderSide: const BorderSide(color: AppColors.primaryGold, width: 2),
         ),
       ),
       keyboardType: TextInputType.phone,
     );
   }
 
+  // ==========================================
+  // UPDATED DYNAMIC DROPDOWNS
+  // ==========================================
   Widget _buildDistrictDropdown() {
-    return Obx(
-      () => DropdownButtonFormField<String>(
+    return Obx(() {
+      if (locationController.isLoadingLocations.value) {
+        return Container(
+          height: 48,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: const Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: AppColors.primaryGold,
+              ),
+            ),
+          ),
+        );
+      }
+
+      return DropdownButtonFormField<String>(
         isExpanded: true,
         decoration: _inputDeco('Select District'),
-        value: selectedDistrict.value,
+        value: locationController.selectedDistrict.value,
         items:
-            districts
+            locationController.districts
                 .map(
                   (d) => DropdownMenuItem(
                     value: d,
@@ -424,29 +427,39 @@ class CartScreen extends StatelessWidget {
                   ),
                 )
                 .toList(),
-        onChanged: (val) => selectedDistrict.value = val,
-      ),
-    );
+        onChanged: (val) => locationController.onDistrictChanged(val),
+      );
+    });
   }
 
   Widget _buildThanaDropdown() {
-    return Obx(
-      () => DropdownButtonFormField<String>(
+    return Obx(() {
+      final bool isEnabled =
+          locationController.selectedDistrict.value != null &&
+          locationController.currentThanas.isNotEmpty;
+
+      return DropdownButtonFormField<String>(
         isExpanded: true,
-        decoration: _inputDeco('Select Thana (Optional)'),
-        value: selectedThana.value,
+        decoration: _inputDeco(
+          isEnabled ? 'Select Thana / Area' : 'Select District First',
+        ),
+        value: locationController.selectedThana.value,
         items:
-            thanas
-                .map(
-                  (t) => DropdownMenuItem(
-                    value: t,
-                    child: Text(t, overflow: TextOverflow.ellipsis),
-                  ),
-                )
-                .toList(),
-        onChanged: (val) => selectedThana.value = val,
-      ),
-    );
+            isEnabled
+                ? locationController.currentThanas
+                    .map(
+                      (t) => DropdownMenuItem(
+                        value: t,
+                        child: Text(t, overflow: TextOverflow.ellipsis),
+                      ),
+                    )
+                    .toList()
+                : [],
+        // 🚀 THIS IS THE KEY: We call onThanaChanged instead of just updating the value directly!
+        onChanged:
+            isEnabled ? (val) => locationController.onThanaChanged(val) : null,
+      );
+    });
   }
 
   Widget _buildBillingAddressCard({required bool isMobile}) {
@@ -468,7 +481,7 @@ class CartScreen extends StatelessWidget {
                 children: [
                   Checkbox(
                     value: isBillingSameAsShipping.value,
-                    activeColor: AppColors.primaryGreen, // Updated
+                    activeColor: AppColors.primaryGreen,
                     onChanged: (val) => isBillingSameAsShipping.value = val!,
                   ),
                   const Expanded(
@@ -524,7 +537,6 @@ class CartScreen extends StatelessWidget {
             spacing: 12,
             runSpacing: 12,
             children: [
-              // 🚀 SMART PAYMENT BOXES (Only COD is available!)
               _paymentBox(
                 'Cash On Delivery',
                 FontAwesomeIcons.moneyBillWave,
@@ -565,7 +577,6 @@ class CartScreen extends StatelessWidget {
 
       return InkWell(
         onTap: () {
-          // 🚀 SHOW UNAVAILABLE MESSAGE
           if (!isAvailable) {
             Get.snackbar(
               'Not Available',
@@ -583,18 +594,14 @@ class CartScreen extends StatelessWidget {
           width: isMobile ? double.infinity : 180,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            // Gray out the background if it's not available
             color:
                 isSelected
-                    ? AppColors.primaryGold.withValues(alpha: 0.1) // Updated
+                    ? AppColors.primaryGold.withValues(alpha: 0.1)
                     : (isAvailable
                         ? AppColors.pureWhite
-                        : Colors.grey.shade100), // Updated
+                        : Colors.grey.shade100),
             border: Border.all(
-              color:
-                  isSelected
-                      ? AppColors.primaryGold
-                      : Colors.grey.shade300, // Updated
+              color: isSelected ? AppColors.primaryGold : Colors.grey.shade300,
               width: isSelected ? 2 : 1,
             ),
             borderRadius: BorderRadius.circular(8),
@@ -614,10 +621,7 @@ class CartScreen extends StatelessWidget {
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     fontSize: 13,
                     color:
-                        isAvailable
-                            ? AppColors
-                                .textDark // Updated
-                            : Colors.grey.shade500, // Gray out text
+                        isAvailable ? AppColors.textDark : Colors.grey.shade500,
                   ),
                 ),
               ),
@@ -626,7 +630,7 @@ class CartScreen extends StatelessWidget {
                   Icons.check_circle,
                   color: AppColors.primaryGold,
                   size: 18,
-                ), // Updated
+                ),
             ],
           ),
         ),
@@ -644,7 +648,7 @@ class CartScreen extends StatelessWidget {
             'Have any coupon or gift voucher?',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: AppColors.textDark, // Updated
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 12),
@@ -660,8 +664,8 @@ class CartScreen extends StatelessWidget {
               const SizedBox(width: 10),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryGreen, // Updated
-                  foregroundColor: AppColors.primaryGold, // Updated
+                  backgroundColor: AppColors.primaryGreen,
+                  foregroundColor: AppColors.primaryGold,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
                     vertical: 15,
@@ -679,35 +683,50 @@ class CartScreen extends StatelessWidget {
           Divider(color: Colors.grey.shade200),
           const SizedBox(height: 16),
 
-          _summaryRow('Sub total', controller.subtotal),
-          const SizedBox(height: 12),
-          _summaryRow('Delivery cost', controller.deliveryCharge),
-          const SizedBox(height: 16),
-          Divider(color: Colors.grey.shade200),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Total',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                '৳${controller.grandTotal.toStringAsFixed(0)}',
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.primaryGold, // Updated
+          // 🚀 THE MAGIC FIX: Wrapped Subtotal, Delivery Cost, and Grand Total inside Obx()
+          // so it instantly reacts when the LocationController's price updates!
+          Obx(
+            () => Column(
+              children: [
+                _summaryRow('Sub total', controller.subtotal),
+                const SizedBox(height: 12),
+
+                // This will now dynamically update when district/thana is selected!
+                _summaryRow('Delivery cost', controller.deliveryCharge),
+                const SizedBox(height: 16),
+
+                Divider(color: Colors.grey.shade200),
+                const SizedBox(height: 16),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Total',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '৳${controller.grandTotal.toStringAsFixed(0)}',
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.primaryGold,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           const SizedBox(height: 24),
           _sectionTitle('Special notes (Optional)'),
           const SizedBox(height: 12),
           TextField(
-            controller: notesCtrl, // <--- WIRED TO CONTROLLER
+            controller: notesCtrl,
             maxLines: 2,
             decoration: _inputDeco(
               'Anything we should know?',
@@ -726,7 +745,7 @@ class CartScreen extends StatelessWidget {
                     width: 24,
                     child: Checkbox(
                       value: agreedToTerms.value,
-                      activeColor: AppColors.primaryGreen, // Updated
+                      activeColor: AppColors.primaryGreen,
                       onChanged: (val) => agreedToTerms.value = val!,
                     ),
                   ),
@@ -737,7 +756,7 @@ class CartScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         color: AppColors.textDark.withValues(alpha: 0.8),
-                      ), // Updated
+                      ),
                     ),
                   ),
                 ],
@@ -748,22 +767,22 @@ class CartScreen extends StatelessWidget {
           const SizedBox(height: 24),
 
           // ==========================================
-          // 🚀 THE ULTIMATE PLACE ORDER BUTTON
+          // 🚀 PLACE ORDER BUTTON
           // ==========================================
           SizedBox(
             width: double.infinity,
             height: 55,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryGreen, // Updated
-                foregroundColor: AppColors.primaryGold, // Updated
+                backgroundColor: AppColors.primaryGreen,
+                foregroundColor: AppColors.primaryGold,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
                 elevation: 0,
               ),
               onPressed: () async {
-                // 1. Validation
+                // Validation
                 if (!agreedToTerms.value) {
                   Get.snackbar(
                     'Attention',
@@ -776,7 +795,7 @@ class CartScreen extends StatelessWidget {
                 if (shippingNameCtrl.text.isEmpty ||
                     shippingPhoneCtrl.text.isEmpty ||
                     shippingAddressCtrl.text.isEmpty ||
-                    selectedDistrict.value == null) {
+                    locationController.selectedDistrict.value == null) {
                   Get.snackbar(
                     'Required Fields',
                     'Please fill in your Name, Phone, District, and Address.',
@@ -786,16 +805,15 @@ class CartScreen extends StatelessWidget {
                   return;
                 }
 
-                // 2. Execute Order
+                // Execute Order
                 final orderController = Get.find<OrderController>();
 
-                // 🚀 THE FIX: We capture the returned Order ID!
                 String? generatedOrderId = await orderController
                     .placeWebsiteOrder(
                       name: shippingNameCtrl.text,
                       phone: shippingPhoneCtrl.text,
-                      district: selectedDistrict.value ?? '',
-                      thana: selectedThana.value ?? '',
+                      district: locationController.selectedDistrict.value ?? '',
+                      thana: locationController.selectedThana.value ?? '',
                       address: shippingAddressCtrl.text,
                       billingName:
                           isBillingSameAsShipping.value
@@ -809,14 +827,13 @@ class CartScreen extends StatelessWidget {
                       notes: notesCtrl.text,
                     );
 
-                // 3. Show World-Class Success Dialog with Order ID!
                 if (generatedOrderId != null) {
                   Get.dialog(
                     Dialog(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      backgroundColor: AppColors.pureWhite, // Updated
+                      backgroundColor: AppColors.pureWhite,
                       child: Container(
                         width: 400,
                         padding: const EdgeInsets.all(32.0),
@@ -828,12 +845,12 @@ class CartScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 color: AppColors.primaryGreen.withValues(
                                   alpha: 0.1,
-                                ), // Updated
+                                ),
                                 shape: BoxShape.circle,
                               ),
                               child: const FaIcon(
                                 FontAwesomeIcons.circleCheck,
-                                color: AppColors.primaryGreen, // Updated
+                                color: AppColors.primaryGreen,
                                 size: 45,
                               ),
                             ),
@@ -843,13 +860,10 @@ class CartScreen extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w900,
-                                color:
-                                    AppColors
-                                        .textDark, // Updated to brand dark text
+                                color: AppColors.textDark,
                               ),
                             ),
                             const SizedBox(height: 16),
-
                             Text(
                               'Thank you for shopping with FADHL. Your order has been placed successfully and is being processed.',
                               textAlign: TextAlign.center,
@@ -857,27 +871,24 @@ class CartScreen extends StatelessWidget {
                                 fontSize: 14,
                                 color: AppColors.textDark.withValues(
                                   alpha: 0.8,
-                                ), // Updated
+                                ),
                                 height: 1.5,
                               ),
                             ),
                             const SizedBox(height: 24),
 
-                            // ==========================================
-                            // 🚀 NEW: BEAUTIFUL ORDER ID DISPLAY BOX
-                            // ==========================================
                             Container(
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               decoration: BoxDecoration(
                                 color: AppColors.primaryGold.withValues(
                                   alpha: 0.1,
-                                ), // Updated
+                                ),
                                 borderRadius: BorderRadius.circular(8),
                                 border: Border.all(
                                   color: AppColors.primaryGold.withValues(
                                     alpha: 0.5,
-                                  ), // Updated
+                                  ),
                                   width: 1,
                                 ),
                               ),
@@ -894,11 +905,11 @@ class CartScreen extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    generatedOrderId, // The exact ID from Firebase!
+                                    generatedOrderId,
                                     style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w900,
-                                      color: AppColors.primaryGreen, // Updated
+                                      color: AppColors.primaryGreen,
                                       letterSpacing: 1.5,
                                     ),
                                   ),
@@ -912,19 +923,15 @@ class CartScreen extends StatelessWidget {
                               height: 50,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      AppColors.primaryGreen, // Updated
-                                  foregroundColor:
-                                      AppColors.primaryGold, // Updated
+                                  backgroundColor: AppColors.primaryGreen,
+                                  foregroundColor: AppColors.primaryGold,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                 ),
                                 onPressed: () {
-                                  Navigator.of(
-                                    Get.overlayContext!,
-                                  ).pop(); // Close dialog
-                                  Get.offAllNamed('/'); // Go home
+                                  Navigator.of(Get.overlayContext!).pop();
+                                  Get.offAllNamed('/');
                                 },
                                 child: const Text(
                                   'CONTINUE SHOPPING',
@@ -966,7 +973,7 @@ class CartScreen extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(isMobile ? 16 : 24),
       decoration: BoxDecoration(
-        color: AppColors.pureWhite, // Updated
+        color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.grey.shade200),
       ),
@@ -981,7 +988,7 @@ class CartScreen extends StatelessWidget {
           width: 4,
           height: 18,
           decoration: BoxDecoration(
-            color: AppColors.primaryGold, // Updated
+            color: AppColors.primaryGold,
             borderRadius: BorderRadius.circular(2),
           ),
         ),
@@ -991,7 +998,7 @@ class CartScreen extends StatelessWidget {
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
-            color: AppColors.textDark, // Updated
+            color: AppColors.textDark,
           ),
         ),
       ],
@@ -1004,7 +1011,7 @@ class CartScreen extends StatelessWidget {
     TextEditingController controller,
   ) {
     return TextField(
-      controller: controller, // <--- WIRED UP!
+      controller: controller,
       decoration: _inputDeco(
         hint,
       ).copyWith(prefixIcon: Icon(icon, color: Colors.black38, size: 20)),
@@ -1026,10 +1033,7 @@ class CartScreen extends StatelessWidget {
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(6),
-        borderSide: const BorderSide(
-          color: AppColors.primaryGold,
-          width: 2,
-        ), // Updated
+        borderSide: const BorderSide(color: AppColors.primaryGold, width: 2),
       ),
     );
   }
@@ -1059,13 +1063,13 @@ class CartScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(30),
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withValues(alpha: 0.05), // Updated
+              color: AppColors.primaryGreen.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
             child: FaIcon(
               FontAwesomeIcons.cartShopping,
               size: 60,
-              color: AppColors.primaryGold.withValues(alpha: 0.5), // Updated
+              color: AppColors.primaryGold.withValues(alpha: 0.5),
             ),
           ),
           const SizedBox(height: 24),
@@ -1074,14 +1078,14 @@ class CartScreen extends StatelessWidget {
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
-              color: AppColors.textDark, // Updated
+              color: AppColors.textDark,
             ),
           ),
           const SizedBox(height: 30),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryGreen, // Updated
-              foregroundColor: AppColors.primaryGold, // Updated
+              backgroundColor: AppColors.primaryGreen,
+              foregroundColor: AppColors.primaryGold,
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),

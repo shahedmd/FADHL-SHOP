@@ -1,8 +1,10 @@
 import 'dart:convert'; // Needed for JSON encoding/decoding
+import 'package:fadhl/Controllers/shipping_areas_controller.dart';
 import 'package:fadhl/Models/productmodel.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Wasm-compliant storage
+
 
 // 1. The Cart Item Model
 class CartItem {
@@ -120,7 +122,7 @@ class CartController extends GetxController {
   }
 
   // ==========================================
-  // CALCULATIONS
+  // CALCULATIONS (UPDATED FOR DYNAMIC PRICING)
   // ==========================================
   int get totalItems => cartItems.length;
 
@@ -132,6 +134,17 @@ class CartController extends GetxController {
     return total;
   }
 
-  double get deliveryCharge => subtotal > 0 ? 120.0 : 0.0;
+  // 🚀 THE FIX: NO MORE HARDCODED 120!
+  double get deliveryCharge {
+    // If cart is empty, shipping is 0
+    if (subtotal == 0) return 0.0;
+
+    // Grab the exact charge from LocationController
+    if (Get.isRegistered<LocationController>()) {
+      return Get.find<LocationController>().currentDeliveryCharge.value;
+    }
+    return 0.0;
+  }
+
   double get grandTotal => subtotal + deliveryCharge;
 }

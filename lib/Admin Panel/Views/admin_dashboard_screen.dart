@@ -4,13 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Controllers/authcontroller.dart';
-import '../Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import '../Utils/global_colours.dart';
 import 'Banner/banner_view.dart';
 import 'Customer/customer_view.dart';
 import 'Orders/order_processing_modal.dart';
 import 'Orders/orderview.dart';
 import 'Product/product_view.dart';
+import 'admin_aboutus_view.dart';
 import 'admin_account_view.dart';
+import 'admin_policy_view.dart';
+import 'faq_view.dart';
+import 'shipping_view.dart';
+import 'admin_terms_view.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   AdminDashboardScreen({super.key});
@@ -18,7 +23,6 @@ class AdminDashboardScreen extends StatelessWidget {
   final RxInt _currentIndex = 0.obs;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // 🚀 Initialize Controllers
   final AdminControllerProductmanagement adminProductController = Get.put(
     AdminControllerProductmanagement(),
   );
@@ -39,7 +43,6 @@ class AdminDashboardScreen extends StatelessWidget {
           isDesktop
               ? null
               : Drawer(
-                // 🚀 CHANGED: Mobile Drawer is now Pure White
                 backgroundColor: AppColors.pureWhite,
                 child: _buildSidebarContent(isMobile: true),
               ),
@@ -48,7 +51,6 @@ class AdminDashboardScreen extends StatelessWidget {
           if (isDesktop)
             Container(
               width: 260,
-              // 🚀 CHANGED: Desktop Sidebar is now Pure White with a soft right border
               decoration: BoxDecoration(
                 color: AppColors.pureWhite,
                 border: Border(
@@ -75,9 +77,25 @@ class AdminDashboardScreen extends StatelessWidget {
                         return AdminCustomerView(isDesktop: isDesktop);
                       }
                       if (_currentIndex.value == 3) {
-                        return AdminBannerView(isDesktop: isDesktop,);
+                        return AdminBannerView(isDesktop: isDesktop);
                       }
-                      return AdminManagementView(isDesktop: isDesktop);
+                      if (_currentIndex.value == 4) {
+                        return AdminManagementView(isDesktop: isDesktop);
+                      }
+                      if (_currentIndex.value == 5) {
+                        return AdminShippingAreaView(isDesktop: isDesktop);
+                      }
+                      if (_currentIndex.value == 6) {
+                        return AdminFaqView(isDesktop: isDesktop);
+                      }
+                      if (_currentIndex.value == 7) {
+                        return AdminAboutUsView(isDesktop: isDesktop);
+                      }
+                      if (_currentIndex.value == 8) {
+                        return AdminTermsView(isDesktop: isDesktop);
+                      }
+                      // 🚀 ADDED ROUTE FOR POLICIES (Index 9)
+                      return AdminPolicyView(isDesktop: isDesktop);
                     }),
                   ),
                 ),
@@ -90,9 +108,6 @@ class AdminDashboardScreen extends StatelessWidget {
     );
   }
 
-  // ==========================================
-  // SIDEBAR WIDGETS
-  // ==========================================
   Widget _buildSidebarContent({required bool isMobile}) {
     return Column(
       children: [
@@ -104,7 +119,6 @@ class AdminDashboardScreen extends StatelessWidget {
               (c, e, s) => const Text(
                 'FADHL',
                 style: TextStyle(
-                  // 🚀 CHANGED: Logo text is Green so it pops on the white background
                   color: AppColors.primaryGreen,
                   fontSize: 32,
                   fontWeight: FontWeight.w900,
@@ -116,53 +130,90 @@ class AdminDashboardScreen extends StatelessWidget {
         const Text(
           'ADMIN PANEL',
           style: TextStyle(
-            // 🚀 CHANGED: Subtitle color adjusted for white background
             color: Colors.grey,
             letterSpacing: 2,
             fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(height: 50),
+        const SizedBox(height: 30),
 
-        _sidebarItem(
-          0,
-          FontAwesomeIcons.clipboardList,
-          'Order Management',
-          isMobile,
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                _sidebarItem(
+                  0,
+                  FontAwesomeIcons.clipboardList,
+                  'Order Management',
+                  isMobile,
+                ),
+                _sidebarItem(
+                  1,
+                  FontAwesomeIcons.boxOpen,
+                  'Products Inventory',
+                  isMobile,
+                ),
+                _sidebarItem(2, FontAwesomeIcons.users, 'Customers', isMobile),
+                _sidebarItem(
+                  3,
+                  FontAwesomeIcons.sliders,
+                  'Homepage Banners',
+                  isMobile,
+                ),
+                _sidebarItem(
+                  4,
+                  FontAwesomeIcons.userShield,
+                  'Staff & Admins',
+                  isMobile,
+                ),
+                _sidebarItem(
+                  5,
+                  FontAwesomeIcons.truckFast,
+                  'Shipping Areas',
+                  isMobile,
+                ),
+                _sidebarItem(
+                  6,
+                  FontAwesomeIcons.circleQuestion,
+                  'Manage FAQs',
+                  isMobile,
+                ),
+                _sidebarItem(
+                  7,
+                  FontAwesomeIcons.circleInfo,
+                  'Manage About Us',
+                  isMobile,
+                ),
+                _sidebarItem(
+                  8,
+                  FontAwesomeIcons.fileContract,
+                  'Terms & Conditions',
+                  isMobile,
+                ),
+                // 🚀 ADDED POLICIES TO SIDEBAR
+                _sidebarItem(
+                  9,
+                  FontAwesomeIcons.shieldHalved,
+                  'Manage Policies',
+                  isMobile,
+                ),
+              ],
+            ),
+          ),
         ),
-        _sidebarItem(
-          1,
-          FontAwesomeIcons.boxOpen,
-          'Products Inventory',
-          isMobile,
-        ),
 
-        _sidebarItem(2, FontAwesomeIcons.users, 'Customers', isMobile),
-        _sidebarItem(3, FontAwesomeIcons.sliders, 'Homepage Banners', isMobile),
-        _sidebarItem(
-          4,
-          FontAwesomeIcons.userShield,
-          'Staff & Admins',
-          isMobile,
-        ),
-
-        const Spacer(),
-
-        // 🚀 CHANGED: Divider made darker so it is visible on white
         Divider(color: Colors.grey.shade200, height: 1),
 
         ListTile(
           leading: FaIcon(
             FontAwesomeIcons.store,
-            // 🚀 CHANGED: Icon color adjusted
             color: Colors.grey.shade700,
             size: 20,
           ),
           title: Text(
             'View Store',
             style: TextStyle(
-              // 🚀 CHANGED: Text color adjusted
               color: Colors.grey.shade800,
               fontWeight: FontWeight.bold,
             ),
@@ -197,14 +248,12 @@ class AdminDashboardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isSelected
-                  // 🚀 CHANGED: Selected item has a soft green background
                   ? AppColors.primaryGreen.withValues(alpha: 0.1)
                   : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color:
                 isSelected
-                    // 🚀 CHANGED: Border is a slightly darker green for depth
                     ? AppColors.primaryGreen.withValues(alpha: 0.3)
                     : Colors.transparent,
           ),
@@ -212,14 +261,12 @@ class AdminDashboardScreen extends StatelessWidget {
         child: ListTile(
           leading: FaIcon(
             icon,
-            // 🚀 CHANGED: Icons are green when selected, grey when unselected
             color: isSelected ? AppColors.primaryGreen : Colors.grey.shade600,
             size: 20,
           ),
           title: Text(
             title,
             style: TextStyle(
-              // 🚀 CHANGED: Text is green when selected, dark text when unselected
               color:
                   isSelected
                       ? AppColors.primaryGreen
@@ -236,9 +283,6 @@ class AdminDashboardScreen extends StatelessWidget {
     });
   }
 
-  // ==========================================
-  // TOP HEADER & NOTIFICATIONS (Unchanged)
-  // ==========================================
   Widget _buildTopHeader(bool isDesktop) {
     return Container(
       height: 80,
@@ -266,7 +310,15 @@ class AdminDashboardScreen extends StatelessWidget {
                 String title = 'Order Management';
                 if (_currentIndex.value == 1) title = 'Products Inventory';
                 if (_currentIndex.value == 2) title = 'Customer Insights';
-                if (_currentIndex.value == 3) title = 'Staff & Admins';
+                if (_currentIndex.value == 3) title = 'Banner Controller';
+                if (_currentIndex.value == 4) title = 'Staff & Admins';
+                if (_currentIndex.value == 5) title = 'Shipping Areas';
+                if (_currentIndex.value == 6) title = 'Manage FAQs';
+                if (_currentIndex.value == 7) title = 'Manage About Us';
+                if (_currentIndex.value == 8) title = 'Terms & Conditions';
+                // 🚀 ADDED TITLE FOR POLICIES PAGE
+                if (_currentIndex.value == 9) title = 'Manage Policies';
+
                 return Text(
                   title,
                   style: TextStyle(
@@ -439,35 +491,59 @@ class AdminDashboardScreen extends StatelessWidget {
     );
   }
 
-  // ==========================================
-  // MOBILE BOTTOM NAVIGATION
-  // ==========================================
   Widget _buildMobileBottomNav() {
     return Obx(
       () => BottomNavigationBar(
         currentIndex: _currentIndex.value,
+        type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primaryGreen,
         unselectedItemColor: Colors.grey.shade400,
         backgroundColor: AppColors.pureWhite,
         elevation: 10,
+        selectedFontSize: 9,
+        unselectedFontSize: 9,
         onTap: (index) => _currentIndex.value = index,
         items: const [
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.clipboardList, size: 20),
+            icon: FaIcon(FontAwesomeIcons.clipboardList, size: 16),
             label: 'Orders',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.boxOpen, size: 20),
+            icon: FaIcon(FontAwesomeIcons.boxOpen, size: 16),
             label: 'Products',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.users, size: 20),
-            label: 'Customers',
+            icon: FaIcon(FontAwesomeIcons.users, size: 16),
+            label: 'Users',
           ),
-
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.userShield, size: 20),
+            icon: FaIcon(FontAwesomeIcons.sliders, size: 16),
+            label: 'Banner',
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.userShield, size: 16),
             label: 'Admins',
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.truckFast, size: 16),
+            label: 'Ship',
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.circleQuestion, size: 16),
+            label: 'FAQs',
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.circleInfo, size: 16),
+            label: 'About',
+          ),
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.fileContract, size: 16),
+            label: 'Terms',
+          ),
+          // 🚀 ADDED POLICIES TO MOBILE NAV
+          BottomNavigationBarItem(
+            icon: FaIcon(FontAwesomeIcons.shieldHalved, size: 16),
+            label: 'Policy',
           ),
         ],
       ),

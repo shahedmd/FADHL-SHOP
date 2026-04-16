@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../Admin Panel/Utils/global_colours.dart'; 
+import '../../Admin Panel/Utils/global_colours.dart';
 
 class HeaderUIController extends GetxController {
   final RxBool isMobileSearchActive = false.obs;
@@ -424,7 +424,7 @@ class _CustomHeaderState extends State<CustomHeader> {
             IconButton(
               icon: const FaIcon(
                 FontAwesomeIcons.arrowLeft,
-                color: AppColors.primaryGreen, // Updated
+                color: AppColors.primaryGreen,
                 size: 20,
               ),
               onPressed: () => uiController.closeMobileSearch(controller),
@@ -433,9 +433,7 @@ class _CustomHeaderState extends State<CustomHeader> {
               child: Container(
                 height: 40,
                 decoration: BoxDecoration(
-                  color:
-                      AppColors
-                          .backgroundLight, // Contrast against white header
+                  color: AppColors.backgroundLight,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey.shade300),
                 ),
@@ -479,35 +477,46 @@ class _CustomHeaderState extends State<CustomHeader> {
           IconButton(
             icon: const FaIcon(
               FontAwesomeIcons.barsStaggered,
-              color: AppColors.textDark, // Updated for white background
+              color: AppColors.textDark,
               size: 22,
             ),
             onPressed: () => _showIndependentMobileMenu(),
           ),
+
+          // 🚀 UPDATED: Logo and Company Name side-by-side
           InkWell(
             onTap: () => Get.toNamed('/'),
-            child: Image.asset(
-              'assets/logo.webp',
-              height: 70,
-              cacheHeight: 240,
-              fit: BoxFit.contain,
-              errorBuilder:
-                  (c, e, s) => const Text(
-                    'FADHL',
-                    style: TextStyle(
-                      color: AppColors.primaryGreen, // Updated
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  'assets/logo.webp',
+                  height: 35, // Reduced slightly to fit well inline with text
+                  cacheHeight: 120,
+                  fit: BoxFit.contain,
+                  // If the image fails to load, the Text beside it still shows the brand name
+                  errorBuilder: (c, e, s) => const SizedBox.shrink(),
+                ),
+                const SizedBox(width: 8), // Spacing between logo and text
+                const Text(
+                  'FADHL SHOP',
+                  style: TextStyle(
+                    color: AppColors.primaryGreen,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.5,
                   ),
+                ),
+              ],
             ),
           ),
+
           Row(
             children: [
               IconButton(
                 icon: const FaIcon(
                   FontAwesomeIcons.magnifyingGlass,
-                  color: AppColors.textDark, // Updated
+                  color: AppColors.textDark,
                   size: 20,
                 ),
                 onPressed: () => uiController.isMobileSearchActive.value = true,

@@ -14,9 +14,11 @@ import 'package:get/get.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Views/Pages/Auth/loginui.dart';
 import 'Views/Pages/about_us.dart';
+import 'Views/Pages/policy_view.dart';
+import 'Views/Pages/term_view.dart';
 import 'firebase_options.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
- 
+
 void main() async {
   usePathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
@@ -91,9 +93,18 @@ class MyApp extends StatelessWidget {
 
         GetPage(
           name: '/admin',
-          page:
-              () => AdminDashboardScreen(),
-          middlewares: [AdminMiddleware()], 
+          page: () => AdminDashboardScreen(),
+          middlewares: [AdminMiddleware()],
+          transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/terms',
+          page: () => TermsScreen(),
+          transition: Transition.fadeIn,
+        ),
+        GetPage(
+          name: '/policy',
+          page: () => PolicyScreen(),
           transition: Transition.fadeIn,
         ),
       ],

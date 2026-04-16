@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:cached_network_image/cached_network_image.dart'; // 🚀 ADDED: High-Performance Image Caching
 import '../../../../Models/productmodel.dart';
 import '../../Controllers/admin_product_controller.dart';
 import '../../Utils/global_colours.dart';
@@ -484,40 +483,37 @@ class ProductsView extends StatelessWidget {
     letterSpacing: 0.5,
   );
 
-  // ==========================================
-  // 🚀 HIGH PERFORMANCE PRODUCT IMAGE LOADER
-  // ==========================================
+  // 🚀 THE FIX: Safe, Native Admin Image Loader
   Widget _buildProductImage(ProductModel product, double size) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child:
           product.images.isNotEmpty
-              ? CachedNetworkImage(
-                imageUrl: product.images[0],
+              ? Image.network(
+                product.images[0],
                 width: size,
                 height: size,
                 fit: BoxFit.cover,
-                // 🚀 CRITICAL FIX: Since max size is 80 (mobile), we cache it at 150.
-                // This reduces memory usage per image by 95%!
-                memCacheWidth: 150,
-                fadeInDuration: const Duration(milliseconds: 300),
-                placeholder:
-                    (context, url) => Container(
-                      width: size,
-                      height: size,
-                      color: Colors.grey.shade50,
-                      child: Center(
-                        child: SizedBox(
-                          width: size * 0.4,
-                          height: size * 0.4,
-                          child: const CircularProgressIndicator(
-                            color: AppColors.primaryGold,
-                            strokeWidth: 2,
-                          ),
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    width: size,
+                    height: size,
+                    color: Colors.grey.shade50,
+                    child: Center(
+                      child: SizedBox(
+                        width: size * 0.4,
+                        height: size * 0.4,
+                        child: const CircularProgressIndicator(
+                          color: AppColors.primaryGold,
+                          strokeWidth: 2,
                         ),
                       ),
                     ),
-                errorWidget: (context, url, error) => _buildImageFallback(size),
+                  );
+                },
+                errorBuilder:
+                    (context, error, stackTrace) => _buildImageFallback(size),
               )
               : _buildImageFallback(size),
     );

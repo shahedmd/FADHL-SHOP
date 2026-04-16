@@ -1,18 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../Widgers/Reuseable/responsive_headermenu.dart'; // Adjust path if needed
+import 'package:get/get.dart';
+import '../../Controllers/aboutus_controller.dart';
+import '../../Widgers/Reuseable/responsive_headermenu.dart';
 import '../../Widgers/responsive_layout.dart';
-import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
+import '../../Admin Panel/Utils/global_colours.dart';
 
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
 
+  IconData _getIconFromString(String iconName) {
+    final Map<String, IconData> iconMap = {
+      'truckFast': FontAwesomeIcons.truckFast,
+      'shieldHalved': FontAwesomeIcons.shieldHalved,
+      'handshake': FontAwesomeIcons.handshake,
+      'leaf': FontAwesomeIcons.leaf,
+      'medal': FontAwesomeIcons.medal,
+      'gem': FontAwesomeIcons.gem,
+      'heart': FontAwesomeIcons.solidHeart,
+      'star': FontAwesomeIcons.solidStar,
+    };
+    return iconMap[iconName] ?? FontAwesomeIcons.circleCheck;
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDesktop = MediaQuery.of(context).size.width >= 900;
+    final AboutUsController aboutUsController = Get.put(AboutUsController());
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight, // Updated
+      backgroundColor: AppColors.backgroundLight,
       body: Column(
         children: [
           const CustomHeader(),
@@ -21,10 +38,8 @@ class AboutUsScreen extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // 1. HERO BANNER (Full width green aesthetic)
                   _buildHeroBanner(isDesktop),
 
-                  // 2. OUR STORY SECTION
                   ResponsiveLayout(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -33,12 +48,11 @@ class AboutUsScreen extends StatelessWidget {
                       ),
                       child:
                           isDesktop
-                              ? _buildDesktopStory()
-                              : _buildMobileStory(),
+                              ? _buildDesktopStory(aboutUsController)
+                              : _buildMobileStory(aboutUsController),
                     ),
                   ),
 
-                  // 3. CORE VALUES SECTION
                   ResponsiveLayout(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -52,25 +66,55 @@ class AboutUsScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w900,
-                              color: AppColors.primaryGreen, // Updated
+                              color: AppColors.primaryGreen,
                             ),
+                            textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 10),
                           const Text(
                             'The pillars of our premium service.',
                             style: TextStyle(color: Colors.grey, fontSize: 16),
+                            textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 40),
-                          isDesktop
-                              ? _buildDesktopValues()
-                              : _buildMobileValues(),
+
+                          Obx(() {
+                            if (aboutUsController.isLoading.value) {
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.primaryGold,
+                                ),
+                              );
+                            }
+                            if (aboutUsController.coreValues.isEmpty) {
+                              return const SizedBox();
+                            }
+
+                            return Wrap(
+                              spacing: 24,
+                              runSpacing: 24,
+                              alignment: WrapAlignment.center,
+                              children:
+                                  aboutUsController.coreValues.map((value) {
+                                    return SizedBox(
+                                      width: isDesktop ? 350 : double.infinity,
+                                      child: _valueCard(
+                                        _getIconFromString(
+                                          value['iconName'] ?? '',
+                                        ),
+                                        value['title'] ?? '',
+                                        value['description'] ?? '',
+                                      ),
+                                    );
+                                  }).toList(),
+                            );
+                          }),
                         ],
                       ),
                     ),
                   ),
 
                   const SizedBox(height: 60),
-                  // const CustomFooter(), // Uncomment if you have your massive footer ready!
                 ],
               ),
             ),
@@ -80,9 +124,6 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  // ==========================================
-  // 1. HERO BANNER
-  // ==========================================
   Widget _buildHeroBanner(bool isDesktop) {
     return Container(
       width: double.infinity,
@@ -91,15 +132,14 @@ class AboutUsScreen extends StatelessWidget {
         horizontal: 20,
       ),
       decoration: BoxDecoration(
-        color: AppColors.textDark, // Updated
+        color: AppColors.textDark,
         image: DecorationImage(
           image: const NetworkImage(
             'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?q=80&w=2000&auto=format&fit=crop',
           ),
-          // Abstract luxury dark background
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
-            AppColors.textDark.withValues(alpha: 0.85), // Updated
+            AppColors.textDark.withValues(alpha: 0.85),
             BlendMode.darken,
           ),
         ),
@@ -116,7 +156,7 @@ class AboutUsScreen extends StatelessWidget {
             'Redefining Luxury E-Commerce',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: AppColors.primaryGold, // Updated
+              color: AppColors.primaryGold,
               fontSize: isDesktop ? 42 : 28,
               fontWeight: FontWeight.w900,
               letterSpacing: 1,
@@ -129,7 +169,7 @@ class AboutUsScreen extends StatelessWidget {
               'Providing safe, reliable, and premium goods to every home in Bangladesh.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: AppColors.pureWhite.withValues(alpha: 0.8), // Updated
+                color: AppColors.pureWhite.withValues(alpha: 0.8),
                 fontSize: isDesktop ? 18 : 15,
                 height: 1.5,
               ),
@@ -140,10 +180,7 @@ class AboutUsScreen extends StatelessWidget {
     );
   }
 
-  // ==========================================
-  // 2. OUR STORY (Desktop vs Mobile)
-  // ==========================================
-  Widget _buildDesktopStory() {
+  Widget _buildDesktopStory(AboutUsController controller) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -152,19 +189,22 @@ class AboutUsScreen extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
-              'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1000&auto=format&fit=crop', // Professional office/store image
+              'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1000&auto=format&fit=crop',
               height: 400,
               fit: BoxFit.cover,
             ),
           ),
         ),
         const SizedBox(width: 60),
-        Expanded(flex: 1, child: _storyTextContent(isDesktop: true)),
+        Expanded(
+          flex: 1,
+          child: _storyTextContent(isDesktop: true, controller: controller),
+        ),
       ],
     );
   }
 
-  Widget _buildMobileStory() {
+  Widget _buildMobileStory(AboutUsController controller) {
     return Column(
       children: [
         ClipRRect(
@@ -177,100 +217,49 @@ class AboutUsScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 30),
-        _storyTextContent(isDesktop: false),
+        _storyTextContent(isDesktop: false, controller: controller),
       ],
     );
   }
 
-  Widget _storyTextContent({required bool isDesktop}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Our Story',
-          style: TextStyle(
-            color: AppColors.primaryGold, // Updated
-            fontWeight: FontWeight.bold,
-            letterSpacing: 2,
+  // 🚀 DYNAMIC STORY TEXT CONTENT
+  Widget _storyTextContent({
+    required bool isDesktop,
+    required AboutUsController controller,
+  }) {
+    return Obx(
+      () => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            controller.storyHeading.value,
+            style: const TextStyle(
+              color: AppColors.primaryGold,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 2,
+            ),
           ),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          'A Commitment to Excellence.',
-          style: TextStyle(
-            fontSize: isDesktop ? 36 : 28,
-            fontWeight: FontWeight.w900,
-            color: AppColors.primaryGreen, // Updated
-            height: 1.2,
+          const SizedBox(height: 12),
+          Text(
+            controller.storySubtitle.value,
+            style: TextStyle(
+              fontSize: isDesktop ? 36 : 28,
+              fontWeight: FontWeight.w900,
+              color: AppColors.primaryGreen,
+              height: 1.2,
+            ),
           ),
-        ),
-        const SizedBox(height: 24),
-        const Text(
-          'FADHL was founded with a singular vision: to bridge the gap between premium quality and everyday accessibility in Bangladesh. We noticed a lack of trust in online shopping, so we built a platform where transparency, authenticity, and customer satisfaction are not just promised, they are guaranteed.\n\nFrom 100% pure organic foods to luxury designer eye ware and premium pet goods, every item in our inventory is strictly vetted. When you shop with FADHL, you aren\'t just buying a product; you are investing in peace of mind.',
-          style: TextStyle(
-            fontSize: 16,
-            color: AppColors.textDark, // Updated to brand text color
-            height: 1.8,
+          const SizedBox(height: 24),
+          Text(
+            controller.storyBody.value,
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppColors.textDark,
+              height: 1.8,
+            ),
           ),
-        ),
-      ],
-    );
-  }
-
-  // ==========================================
-  // 3. CORE VALUES (Desktop vs Mobile)
-  // ==========================================
-  Widget _buildDesktopValues() {
-    return Row(
-      children: [
-        Expanded(
-          child: _valueCard(
-            FontAwesomeIcons.truckFast,
-            'FAST',
-            'Lightning-fast delivery across all districts in Bangladesh.',
-          ),
-        ),
-        const SizedBox(width: 24),
-        Expanded(
-          child: _valueCard(
-            FontAwesomeIcons.shieldHalved,
-            'SAFE',
-            '100% authentic products with secure packaging and handling.',
-          ),
-        ),
-        const SizedBox(width: 24),
-        Expanded(
-          child: _valueCard(
-            FontAwesomeIcons.handshake,
-            'RELIABLE',
-            '24/7 dedicated customer support and hassle-free returns.',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMobileValues() {
-    return Column(
-      children: [
-        _valueCard(
-          FontAwesomeIcons.truckFast,
-          'FAST',
-          'Lightning-fast delivery across all districts in Bangladesh.',
-        ),
-        const SizedBox(height: 16),
-        _valueCard(
-          FontAwesomeIcons.shieldHalved,
-          'SAFE',
-          '100% authentic products with secure packaging and handling.',
-        ),
-        const SizedBox(height: 16),
-        _valueCard(
-          FontAwesomeIcons.handshake,
-          'RELIABLE',
-          '24/7 dedicated customer support and hassle-free returns.',
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -278,7 +267,7 @@ class AboutUsScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: AppColors.pureWhite, // Updated
+        color: AppColors.pureWhite,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
         boxShadow: [
@@ -295,14 +284,10 @@ class AboutUsScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withValues(alpha: 0.05), // Updated
+              color: AppColors.primaryGreen.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
-            child: FaIcon(
-              icon,
-              color: AppColors.primaryGold,
-              size: 28,
-            ), // Updated
+            child: FaIcon(icon, color: AppColors.primaryGold, size: 28),
           ),
           const SizedBox(height: 24),
           Text(
@@ -310,14 +295,14 @@ class AboutUsScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w900,
-              color: AppColors.primaryGreen, // Updated
+              color: AppColors.primaryGreen,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             description,
             style: TextStyle(
-              color: AppColors.textDark.withValues(alpha: 0.7), // Updated
+              color: AppColors.textDark.withValues(alpha: 0.7),
               height: 1.5,
               fontSize: 15,
             ),
