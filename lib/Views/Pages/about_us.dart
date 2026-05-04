@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Controllers/aboutus_controller.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
@@ -9,19 +8,19 @@ import '../../Admin Panel/Utils/global_colours.dart';
 class AboutUsScreen extends StatelessWidget {
   const AboutUsScreen({super.key});
 
-  IconData _getIconFromString(String iconName) {
-    final Map<String, IconData> iconMap = {
-      'truckFast': FontAwesomeIcons.truckFast,
-      'shieldHalved': FontAwesomeIcons.shieldHalved,
-      'handshake': FontAwesomeIcons.handshake,
-      'leaf': FontAwesomeIcons.leaf,
-      'medal': FontAwesomeIcons.medal,
-      'gem': FontAwesomeIcons.gem,
-      'heart': FontAwesomeIcons.solidHeart,
-      'star': FontAwesomeIcons.solidStar,
-    };
-    return iconMap[iconName] ?? FontAwesomeIcons.circleCheck;
-  }
+ IconData _getIconFromString(String iconName) {
+  final Map<String, IconData> iconMap = {
+    'truckFast':    Icons.local_shipping,
+    'shieldHalved': Icons.security,
+    'handshake':    Icons.handshake,
+    'leaf':         Icons.eco,
+    'medal':        Icons.military_tech,
+    'gem':          Icons.diamond,
+    'heart':        Icons.favorite,
+    'star':         Icons.star,
+  };
+  return iconMap[iconName] ?? Icons.check_circle;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -287,7 +286,7 @@ class AboutUsScreen extends StatelessWidget {
               color: AppColors.primaryGreen.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
-            child: FaIcon(icon, color: AppColors.primaryGold, size: 28),
+            child: Icon(icon, color: AppColors.primaryGold, size: 28),
           ),
           const SizedBox(height: 24),
           Text(

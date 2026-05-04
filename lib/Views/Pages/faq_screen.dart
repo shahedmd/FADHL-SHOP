@@ -1,6 +1,6 @@
+import 'package:fadhl/Icons/social_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Admin Panel/Utils/global_colours.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
@@ -127,8 +127,8 @@ class FaqScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const FaIcon(
-            FontAwesomeIcons.circleQuestion,
+          const Icon(
+            Icons.help_outline,
             color: AppColors.primaryGold,
             size: 50,
           ),
@@ -436,11 +436,7 @@ class FaqScreen extends StatelessWidget {
             elevation: 0,
           ),
           onPressed: _contactSupport,
-          icon: const FaIcon(
-            FontAwesomeIcons.whatsapp,
-            color: Colors.white,
-            size: 20,
-          ),
+          icon: SocialIcons.whatsapp(size: 20),
           label: const Text(
             'Chat on WhatsApp',
             style: TextStyle(

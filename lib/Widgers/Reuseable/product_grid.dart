@@ -3,7 +3,6 @@ import 'package:fadhl/Controllers/productcontroller.dart';
 import 'package:fadhl/Controllers/wishlist_controller.dart';
 import 'package:fadhl/Models/productmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../Admin Panel/Utils/global_colours.dart';
@@ -251,10 +250,10 @@ class ProductCard extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              child: FaIcon(
+                              child: Icon(
                                 isSaved
-                                    ? FontAwesomeIcons.solidHeart
-                                    : FontAwesomeIcons.heart,
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
                                 color: isSaved ? Colors.redAccent : Colors.grey,
                                 size: isMobile ? 14 : 16,
                               ),

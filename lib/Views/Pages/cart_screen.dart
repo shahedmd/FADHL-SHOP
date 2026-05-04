@@ -6,8 +6,6 @@ import 'package:fadhl/Widgers/Reuseable/responsive_headermenu.dart';
 import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../../Admin Panel/Utils/global_colours.dart';
 import '../../Controllers/shipping_areas_controller.dart';
 
@@ -280,8 +278,8 @@ class CartScreen extends StatelessWidget {
                     ),
 
                     IconButton(
-                      icon: FaIcon(
-                        FontAwesomeIcons.trashCan,
+                      icon: Icon(
+                        Icons.delete,
                         color: Colors.redAccent.shade400,
                         size: 16,
                       ),
@@ -539,21 +537,21 @@ class CartScreen extends StatelessWidget {
             children: [
               _paymentBox(
                 'Cash On Delivery',
-                FontAwesomeIcons.moneyBillWave,
+                Icons.payments,
                 Colors.green,
                 isMobile,
                 isAvailable: true,
               ),
               _paymentBox(
                 'Online Payment',
-                FontAwesomeIcons.creditCard,
+                Icons.credit_card,
                 Colors.blue,
                 isMobile,
                 isAvailable: false,
               ),
               _paymentBox(
                 'Bkash',
-                FontAwesomeIcons.paperPlane,
+                Icons.send,
                 Colors.pink,
                 isMobile,
                 isAvailable: false,
@@ -608,7 +606,7 @@ class CartScreen extends StatelessWidget {
           ),
           child: Row(
             children: [
-              FaIcon(
+              Icon(
                 icon,
                 color: isAvailable ? iconColor : Colors.grey.shade400,
                 size: 20,
@@ -848,8 +846,8 @@ class CartScreen extends StatelessWidget {
                                 ),
                                 shape: BoxShape.circle,
                               ),
-                              child: const FaIcon(
-                                FontAwesomeIcons.circleCheck,
+                              child: const Icon(
+                                Icons.check_circle,
                                 color: AppColors.primaryGreen,
                                 size: 45,
                               ),
@@ -1066,8 +1064,8 @@ class CartScreen extends StatelessWidget {
               color: AppColors.primaryGreen.withValues(alpha: 0.05),
               shape: BoxShape.circle,
             ),
-            child: FaIcon(
-              FontAwesomeIcons.cartShopping,
+            child: Icon(
+              Icons.shopping_cart,
               size: 60,
               color: AppColors.primaryGold.withValues(alpha: 0.5),
             ),
@@ -1092,7 +1090,7 @@ class CartScreen extends StatelessWidget {
               ),
             ),
             onPressed: () => Get.offAllNamed('/'),
-            icon: const FaIcon(FontAwesomeIcons.arrowLeft, size: 16),
+            icon: const Icon(Icons.arrow_back, size: 16),
             label: const Text(
               'Continue Shopping',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),

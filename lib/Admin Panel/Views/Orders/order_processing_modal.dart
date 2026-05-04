@@ -1,6 +1,5 @@
 import 'package:fadhl/Admin%20Panel/Controllers/admin_order_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 // Make sure these paths match your folder structure exactly
@@ -134,8 +133,8 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                 () => PdfInvoiceService.generateAndPreviewPDF(
                                   order,
                                 ),
-                            icon: const FaIcon(
-                              FontAwesomeIcons.solidFilePdf,
+                            icon:  Icon(
+                              Icons.file_copy,
                               size: 18,
                               color: Colors.redAccent,
                             ),
@@ -262,8 +261,8 @@ void openOrderProcessingModal(Map<String, dynamic> order) {
                                     const SizedBox(height: 8),
                                     Row(
                                       children: [
-                                        const FaIcon(
-                                          FontAwesomeIcons.phone,
+                                        const Icon(
+                                          Icons.phone,
                                           size: 14,
                                           color: Colors.black54,
                                         ),

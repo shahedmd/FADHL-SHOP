@@ -1,13 +1,18 @@
 import 'dart:async';
-
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:js_interop';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// ✅ Zero-cost Audio via JS interop — no package needed
+@JS('Audio')
+extension type Audio._(JSObject _) implements JSObject {
+  external factory Audio(String src);
+  external JSPromise play();
+}
+
 class AdminOrderManagementController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   final RxList<Map<String, dynamic>> pendingOrders =
       <Map<String, dynamic>>[].obs;
@@ -16,7 +21,6 @@ class AdminOrderManagementController extends GetxController {
   final RxList<Map<String, dynamic>> tableOrders = <Map<String, dynamic>>[].obs;
   final RxBool isLoadingTable = true.obs;
 
-  // Filter Observable
   final RxString currentFilter = 'All'.obs;
 
   final int _limit = 20;
@@ -76,7 +80,7 @@ class AdminOrderManagementController extends GetxController {
   @override
   void onClose() {
     closeAllStreams();
-    _audioPlayer.dispose();
+    // ✅ No _audioPlayer.dispose() needed anymore
     super.onClose();
   }
 
@@ -147,26 +151,24 @@ class AdminOrderManagementController extends GetxController {
         });
   }
 
-  void _playOrderSound() async {
+  // ✅ Replaced audioplayers with dart:js_interop — zero bundle cost
+  void _playOrderSound() {
     try {
-      await _audioPlayer.play(
-        UrlSource(
-          'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3',
-        ),
+      final audio = Audio(
+        'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3',
       );
+      audio.play();
     } catch (e) {
       debugPrint("Sound error: $e");
     }
   }
 
-  // 🚀 Set the filter and immediately refresh the table
   void setFilter(String filter) {
     if (currentFilter.value == filter) return;
     currentFilter.value = filter;
     fetchOrders(isRefresh: true);
   }
 
-  // 🚀 Dynamically creates the query based on your EXACT DB SCHEMA
   Query _buildBaseQuery() {
     Query query = _firestore.collection('Orders');
 
@@ -176,7 +178,6 @@ class AdminOrderManagementController extends GetxController {
       } else if (currentFilter.value == 'Website') {
         query = query.where('source', isEqualTo: 'Website Checkout');
       } else if (currentFilter.value == 'Pending') {
-        // Collects BOTH website pending and WhatsApp pending
         query = query.where('status', whereIn: _pendingKeywords);
       } else {
         query = query.where('status', isEqualTo: currentFilter.value);
@@ -255,7 +256,7 @@ class AdminOrderManagementController extends GetxController {
     }
     try {
       isLoadingTable.value = true;
-      currentFilter.value = 'All'; // Reset filter so search overrides it
+      currentFilter.value = 'All';
 
       QuerySnapshot snapshot =
           await _firestore
@@ -352,7 +353,6 @@ class AdminOrderManagementController extends GetxController {
               .where('orderId', isEqualTo: orderId)
               .get();
       for (var doc in snap.docs) {
-        // Updates BOTH so it merges WhatsApp and Website order structures naturally
         await doc.reference.update({
           'orderstatus': newStatus,
           'status': newStatus,
@@ -378,7 +378,6 @@ class AdminOrderManagementController extends GetxController {
               .where('orderId', isEqualTo: orderId)
               .get();
       for (var doc in snap.docs) {
-        // 🚀 Handled the 'adminfeedback' vs 'adminFeedback' database naming conflict safely
         await doc.reference.update({
           'adminfeedback': feedback,
           'adminFeedback': feedback,
@@ -396,7 +395,6 @@ class AdminOrderManagementController extends GetxController {
     }
   }
 
-  // 🚀 NEW: Update Customer Name & Phone (For WhatsApp Orders)
   Future<void> updateCustomerDetails(
     String orderId,
     String newName,
@@ -414,7 +412,6 @@ class AdminOrderManagementController extends GetxController {
           'customerPhone': newPhone,
         });
       }
-      // Update the table locally so the UI updates instantly
       int index = tableOrders.indexWhere((o) => o['orderId'] == orderId);
       if (index != -1) {
         tableOrders[index]['customerName'] = newName;
@@ -436,7 +433,6 @@ class AdminOrderManagementController extends GetxController {
     }
   }
 
-  // 🚀 NEW: Update Order Addresses
   Future<void> updateOrderAddresses(
     String orderId,
     String newShipping,
@@ -449,13 +445,11 @@ class AdminOrderManagementController extends GetxController {
               .where('orderId', isEqualTo: orderId)
               .get();
       for (var doc in snap.docs) {
-        // This will create 'billingAddress' if it didn't exist before (like in WhatsApp orders)
         await doc.reference.update({
           'shippingAddress': newShipping,
           'billingAddress': newBilling,
         });
       }
-      // Update the table locally
       int index = tableOrders.indexWhere((o) => o['orderId'] == orderId);
       if (index != -1) {
         tableOrders[index]['shippingAddress'] = newShipping;

@@ -1,5 +1,5 @@
+import 'package:fadhl/Icons/social_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Admin Panel/Utils/global_colours.dart';
@@ -55,8 +55,8 @@ class CustomFooter extends StatelessWidget {
   static const Map<String, String> infoLinks = {
     'About Us': '/about',
     'Login / Register': '/auth',
-    'Terms & Conditions': '/terms', // Add route when built
-    'Privacy Policy': '/policy', // Add route when built
+    'Terms & Conditions': '/terms',
+    'Privacy Policy': '/policy',
   };
 
   static const Map<String, String> quickLinks = {
@@ -303,19 +303,16 @@ class CustomFooter extends StatelessWidget {
         const SizedBox(height: 36),
 
         // Contact Details
-        _iconText(
-          FontAwesomeIcons.locationDot,
-          'Supermarket, Munshiganj Sadar-1500',
-        ),
+        _iconText(Icons.location_on, 'Supermarket, Munshiganj Sadar-1500'),
         const SizedBox(height: 16),
         _iconText(
-          FontAwesomeIcons.phone,
+          Icons.phone,
           '+880 96997 340925',
           onTap: () => makePhoneCall('+88096997340925'),
         ),
         const SizedBox(height: 16),
         _iconText(
-          FontAwesomeIcons.envelope,
+          Icons.email,
           'fadhlshop013@gmail.com',
           onTap: () => sendEmail("fadhlshop013@gmail.com"),
         ),
@@ -325,18 +322,18 @@ class CustomFooter extends StatelessWidget {
         Row(
           children: [
             _HoverSocialIcon(
-              icon: FontAwesomeIcons.facebookF,
+              socialIcon: SocialIcons.facebook,
               url: 'https://www.facebook.com/profile.php?id=61573352996622',
             ),
             _HoverSocialIcon(
-              icon: FontAwesomeIcons.tiktok,
+              socialIcon: SocialIcons.tiktok,
               url: 'https://www.tiktok.com/@fadhlshop',
             ),
             _HoverSocialIcon(
-              icon: FontAwesomeIcons.instagram,
+              socialIcon: SocialIcons.instagram,
               url: 'https://www.instagram.com/fadhl_shop',
             ),
-            _HoverSocialIcon(icon: FontAwesomeIcons.youtube, url: ''),
+            _HoverSocialIcon(socialIcon: SocialIcons.youtube, url: ''),
           ],
         ),
       ],
@@ -346,7 +343,7 @@ class CustomFooter extends StatelessWidget {
   Widget _iconText(IconData icon, String text, {VoidCallback? onTap}) {
     Widget content = Row(
       children: [
-        FaIcon(icon, color: AppColors.primaryGold, size: 16),
+        Icon(icon, color: AppColors.primaryGold, size: 16),
         const SizedBox(width: 16),
         Text(
           text,
@@ -368,7 +365,6 @@ class CustomFooter extends StatelessWidget {
     return content;
   }
 
-  // UPDATED: Now accepts a Map to tie display text directly to GetX routes
   Widget _buildLinkColumn(String title, Map<String, String> links) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,41 +425,52 @@ class CustomFooter extends StatelessWidget {
   }
 
   List<Widget> _buildPaymentIcons() {
+    // Using text labels as Material Icons has no branded payment card icons.
+    // Replace with Image.asset() if you have local payment logo assets.
     return [
-      FaIcon(
-        FontAwesomeIcons.ccVisa,
-        color: Colors.white.withValues(alpha: 0.4),
-        size: 32,
-      ),
+      _PaymentLabel('VISA'),
       const SizedBox(width: 20),
-      FaIcon(
-        FontAwesomeIcons.ccMastercard,
-        color: Colors.white.withValues(alpha: 0.4),
-        size: 32,
-      ),
+      _PaymentLabel('MC'),
       const SizedBox(width: 20),
-      FaIcon(
-        FontAwesomeIcons.ccAmex,
-        color: Colors.white.withValues(alpha: 0.4),
-        size: 32,
-      ),
+      _PaymentLabel('AMEX'),
       const SizedBox(width: 20),
-      FaIcon(
-        FontAwesomeIcons.ccStripe,
-        color: Colors.white.withValues(alpha: 0.4),
-        size: 32,
-      ),
+      _PaymentLabel('STRIPE'),
     ];
   }
 }
 
+class _PaymentLabel extends StatelessWidget {
+  final String label;
+  const _PaymentLabel(this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: Colors.white.withValues(alpha: 0.4),
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1.0,
+        ),
+      ),
+    );
+  }
+}
+
 // ==========================================
-// INTERACTIVE COMPONENTS (Refactored to GetX)
+// INTERACTIVE COMPONENTS
 // ==========================================
 
 class _HoverLink extends StatelessWidget {
   final String text;
-  final String route; // ADDED Route property
+  final String route;
 
   final RxBool _isHovered = false.obs;
 
@@ -477,7 +484,6 @@ class _HoverLink extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {
-          // NAVIGATE TO ROUTE ON CLICK
           if (route.isNotEmpty) {
             Get.toNamed(route);
           }
@@ -494,10 +500,10 @@ class _HoverLink extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (_isHovered.value) ...[
-                  const FaIcon(
-                    FontAwesomeIcons.angleRight,
+                  Icon(
+                    Icons.chevron_right,
                     color: AppColors.primaryGold,
-                    size: 12,
+                    size: 16,
                   ),
                   const SizedBox(width: 8),
                 ],
@@ -525,12 +531,14 @@ class _HoverLink extends StatelessWidget {
 }
 
 class _HoverSocialIcon extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final Widget Function({double size, Color color})? socialIcon;
   final String url;
 
   final RxBool _isHovered = false.obs;
 
-  _HoverSocialIcon({required this.icon, required this.url});
+  _HoverSocialIcon({this.icon, this.socialIcon, required this.url})
+    : assert(icon != null || socialIcon != null);
 
   @override
   Widget build(BuildContext context) {
@@ -554,12 +562,23 @@ class _HoverSocialIcon extends StatelessWidget {
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: FaIcon(
-                icon,
-                color:
-                    _isHovered.value ? AppColors.textDark : AppColors.pureWhite,
-                size: 18,
-              ),
+              child:
+                  socialIcon != null
+                      ? socialIcon!(
+                        size: 18,
+                        color:
+                            _isHovered.value
+                                ? AppColors.textDark
+                                : AppColors.pureWhite,
+                      )
+                      : Icon(
+                        icon,
+                        color:
+                            _isHovered.value
+                                ? AppColors.textDark
+                                : AppColors.pureWhite,
+                        size: 18,
+                      ),
             ),
           ),
         ),

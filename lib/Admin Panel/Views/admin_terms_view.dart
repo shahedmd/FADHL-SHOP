@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controllers/admin_term_controller.dart';
 import '../Utils/global_colours.dart';
 
@@ -110,8 +109,8 @@ class AdminTermsView extends StatelessWidget {
                     backgroundColor: AppColors.primaryGold.withValues(
                       alpha: 0.2,
                     ),
-                    child: const FaIcon(
-                      FontAwesomeIcons.fileContract,
+                    child: const Icon(
+                      Icons.file_copy,
                       color: AppColors.primaryGreen,
                       size: 18,
                     ),

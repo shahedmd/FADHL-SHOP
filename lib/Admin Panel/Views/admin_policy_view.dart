@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controllers/admin_policy_controller.dart';
 import '../Utils/global_colours.dart';
 
@@ -110,8 +109,8 @@ class AdminPolicyView extends StatelessWidget {
                     backgroundColor: AppColors.primaryGold.withValues(
                       alpha: 0.2,
                     ),
-                    child: const FaIcon(
-                      FontAwesomeIcons.shieldHalved,
+                    child: const Icon(
+                      Icons.shield,
                       color: AppColors.primaryGreen,
                       size: 18,
                     ),

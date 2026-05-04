@@ -9,14 +9,12 @@ import 'package:get/get.dart';
 class InitialBinding extends Bindings {
   @override
   void dependencies() {
-    // Auth is the only thing that MUST be permanent and instant
-    Get.put<AuthController>(AuthController(), permanent: true);
-
-    // Lazy load everything else so it doesn't freeze the app on load/login
-    Get.lazyPut<CartController>(() => CartController(), fenix: true);
-    Get.lazyPut<BannerController>(() => BannerController(), fenix: true);
+    // ✅ All lazy — nothing runs until first needed
+    Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
     Get.lazyPut<ProductController>(() => ProductController(), fenix: true);
+    Get.lazyPut<BannerController>(() => BannerController(), fenix: true);
+    Get.lazyPut<CartController>(() => CartController(), fenix: true);
     Get.lazyPut<OrderController>(() => OrderController(), fenix: true);
-    Get.lazyPut<WishlistController>(()=> WishlistController(), fenix: true);
+    Get.lazyPut<WishlistController>(() => WishlistController(), fenix: true);
   }
 }

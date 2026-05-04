@@ -1,7 +1,6 @@
 import 'package:fadhl/Controllers/productcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
@@ -10,14 +9,10 @@ class CategorySelector extends StatelessWidget {
   // Helper function to smartly assign icons based on category name
   IconData _getCategoryIcon(String categoryName) {
     final name = categoryName.toLowerCase();
-    if (name.contains('eye')) return FontAwesomeIcons.glasses;
-    if (name.contains('organic') || name.contains('food')) {
-      return FontAwesomeIcons.leaf;
-    }
-    if (name.contains('pet') || name.contains('cat')) {
-      return FontAwesomeIcons.paw;
-    }
-    return FontAwesomeIcons.borderAll; // Default icon for 'All'
+    if (name.contains('eye')) return Icons.visibility;
+    if (name.contains('organic') || name.contains('food')) return Icons.eco;
+    if (name.contains('pet') || name.contains('cat')) return Icons.pets;
+    return Icons.grid_view; // Default icon for 'All'
   }
 
   @override
@@ -98,7 +93,7 @@ class CategorySelector extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              FaIcon(
+                              Icon(
                                 _getCategoryIcon(category),
                                 size: 16,
                                 color:

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
 import '../../Widgers/responsive_layout.dart';
@@ -142,11 +141,7 @@ class TermsScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const FaIcon(
-            FontAwesomeIcons.fileContract,
-            color: AppColors.primaryGold,
-            size: 50,
-          ),
+          const Icon(Icons.description, color: AppColors.primaryGold, size: 50),
           const SizedBox(height: 20),
           Text(
             'Terms & Conditions',

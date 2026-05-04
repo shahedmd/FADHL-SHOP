@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
 import '../../Widgers/responsive_layout.dart';
@@ -156,8 +155,8 @@ class PolicyScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const FaIcon(
-            FontAwesomeIcons.shieldHalved,
+          const Icon(
+            Icons.shield,
             color: AppColors.primaryGold,
             size: 50,
           ),

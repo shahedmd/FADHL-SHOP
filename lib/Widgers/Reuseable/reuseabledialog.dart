@@ -1,6 +1,5 @@
 import 'package:fadhl/Controllers/order_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
@@ -17,10 +16,10 @@ void showTrackOrderDialog() {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const FaIcon(
-              FontAwesomeIcons.magnifyingGlassLocation,
+            const Icon(
+              Icons.travel_explore,
               size: 40,
-              color: AppColors.primaryGreen, // Updated
+              color: AppColors.primaryGreen,
             ),
             const SizedBox(height: 24),
             const Text(

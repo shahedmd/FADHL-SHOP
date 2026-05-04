@@ -5,7 +5,6 @@ import 'package:fadhl/Widgers/Reuseable/responsive_headermenu.dart';
 import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
@@ -136,9 +135,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: AppColors.primaryGreen.withValues(
               alpha: 0.1,
             ), // Updated
-            child: const FaIcon(
-              FontAwesomeIcons.solidUser,
-              color: AppColors.primaryGold, // Updated
+            child: const Icon(
+              Icons.person,
+              color: AppColors.primaryGold,
               size: 35,
             ),
           ),
@@ -403,11 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: Column(
         children: [
           const SizedBox(height: 40),
-          FaIcon(
-            FontAwesomeIcons.boxOpen,
-            size: 60,
-            color: Colors.grey.shade300,
-          ),
+          Icon(Icons.inventory_2, size: 60, color: Colors.grey.shade300),
           const SizedBox(height: 16),
           const Text(
             "You haven't placed any orders yet.",

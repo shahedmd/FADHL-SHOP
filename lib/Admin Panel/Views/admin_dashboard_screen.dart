@@ -2,7 +2,6 @@ import 'package:fadhl/Admin%20Panel/Controllers/admin_order_controller.dart';
 import 'package:fadhl/Admin%20Panel/Controllers/admin_product_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Controllers/authcontroller.dart';
 import '../Utils/global_colours.dart';
 import 'Banner/banner_view.dart';
@@ -142,62 +141,46 @@ class AdminDashboardScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                _sidebarItem(
-                  0,
-                  FontAwesomeIcons.clipboardList,
-                  'Order Management',
-                  isMobile,
-                ),
+                _sidebarItem(0, Icons.assignment, 'Order Management', isMobile),
                 _sidebarItem(
                   1,
-                  FontAwesomeIcons.boxOpen,
+                  Icons.inventory_2,
                   'Products Inventory',
                   isMobile,
                 ),
-                _sidebarItem(2, FontAwesomeIcons.users, 'Customers', isMobile),
+                _sidebarItem(2, Icons.group, 'Customers', isMobile),
                 _sidebarItem(
                   3,
-                  FontAwesomeIcons.sliders,
+                  Icons.view_carousel,
                   'Homepage Banners',
                   isMobile,
                 ),
                 _sidebarItem(
                   4,
-                  FontAwesomeIcons.userShield,
+                  Icons.admin_panel_settings,
                   'Staff & Admins',
                   isMobile,
                 ),
                 _sidebarItem(
                   5,
-                  FontAwesomeIcons.truckFast,
+                  Icons.local_shipping,
                   'Shipping Areas',
                   isMobile,
                 ),
-                _sidebarItem(
-                  6,
-                  FontAwesomeIcons.circleQuestion,
-                  'Manage FAQs',
-                  isMobile,
-                ),
+                _sidebarItem(6, Icons.help_outline, 'Manage FAQs', isMobile),
                 _sidebarItem(
                   7,
-                  FontAwesomeIcons.circleInfo,
+                  Icons.info_outline,
                   'Manage About Us',
                   isMobile,
                 ),
                 _sidebarItem(
                   8,
-                  FontAwesomeIcons.fileContract,
+                  Icons.description,
                   'Terms & Conditions',
                   isMobile,
                 ),
-                // 🚀 ADDED POLICIES TO SIDEBAR
-                _sidebarItem(
-                  9,
-                  FontAwesomeIcons.shieldHalved,
-                  'Manage Policies',
-                  isMobile,
-                ),
+                _sidebarItem(9, Icons.security, 'Manage Policies', isMobile),
               ],
             ),
           ),
@@ -206,8 +189,8 @@ class AdminDashboardScreen extends StatelessWidget {
         Divider(color: Colors.grey.shade200, height: 1),
 
         ListTile(
-          leading: FaIcon(
-            FontAwesomeIcons.store,
+          leading: Icon(
+            Icons.storefront,
             color: Colors.grey.shade700,
             size: 20,
           ),
@@ -221,11 +204,7 @@ class AdminDashboardScreen extends StatelessWidget {
           onTap: () => Get.offAllNamed('/'),
         ),
         ListTile(
-          leading: const FaIcon(
-            FontAwesomeIcons.arrowRightFromBracket,
-            color: Colors.redAccent,
-            size: 20,
-          ),
+          leading: const Icon(Icons.logout, color: Colors.redAccent, size: 20),
           title: const Text(
             'Logout',
             style: TextStyle(
@@ -259,7 +238,7 @@ class AdminDashboardScreen extends StatelessWidget {
           ),
         ),
         child: ListTile(
-          leading: FaIcon(
+          leading: Icon(
             icon,
             color: isSelected ? AppColors.primaryGreen : Colors.grey.shade600,
             size: 20,
@@ -298,10 +277,7 @@ class AdminDashboardScreen extends StatelessWidget {
             children: [
               if (!isDesktop) ...[
                 IconButton(
-                  icon: const FaIcon(
-                    FontAwesomeIcons.barsStaggered,
-                    color: AppColors.primaryGreen,
-                  ),
+                  icon: Icon(Icons.sort, color: AppColors.primaryGreen),
                   onPressed: () => _scaffoldKey.currentState!.openDrawer(),
                 ),
                 const SizedBox(width: 12),
@@ -336,8 +312,8 @@ class AdminDashboardScreen extends StatelessWidget {
               SizedBox(width: isDesktop ? 24 : 16),
               CircleAvatar(
                 backgroundColor: AppColors.primaryGold.withValues(alpha: 0.2),
-                child: const FaIcon(
-                  FontAwesomeIcons.solidUser,
+                child: const Icon(
+                  Icons.verified_user,
                   color: AppColors.primaryGold,
                   size: 18,
                 ),
@@ -369,8 +345,8 @@ class AdminDashboardScreen extends StatelessWidget {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
-                FaIcon(
-                  FontAwesomeIcons.bell,
+                Icon(
+                  Icons.notifications,
                   color: Colors.grey.shade600,
                   size: 24,
                 ),
@@ -449,8 +425,8 @@ class AdminDashboardScreen extends StatelessWidget {
                                   backgroundColor: Colors.orange.withValues(
                                     alpha: 0.1,
                                   ),
-                                  child: const FaIcon(
-                                    FontAwesomeIcons.clock,
+                                  child: const Icon(
+                                    Icons.lock_clock,
                                     color: Colors.orange,
                                     size: 16,
                                   ),
@@ -505,44 +481,47 @@ class AdminDashboardScreen extends StatelessWidget {
         onTap: (index) => _currentIndex.value = index,
         items: const [
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.clipboardList, size: 16),
+            icon: Icon(Icons.assignment, size: 16), // Replaced clipboardList
             label: 'Orders',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.boxOpen, size: 16),
+            icon: Icon(Icons.inventory_2, size: 16), // Replaced boxOpen
             label: 'Products',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.users, size: 16),
+            icon: Icon(Icons.people, size: 16), // Replaced users
             label: 'Users',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.sliders, size: 16),
+            icon: Icon(Icons.tune, size: 16), // Replaced sliders
             label: 'Banner',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.userShield, size: 16),
+            icon: Icon(
+              Icons.admin_panel_settings,
+              size: 16,
+            ), // Replaced userShield
             label: 'Admins',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.truckFast, size: 16),
+            icon: Icon(Icons.local_shipping, size: 16), // Replaced truckFast
             label: 'Ship',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.circleQuestion, size: 16),
+            icon: Icon(Icons.help_outline, size: 16), // Replaced circleQuestion
             label: 'FAQs',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.circleInfo, size: 16),
+            icon: Icon(Icons.info_outline, size: 16), // Replaced circleInfo
             label: 'About',
           ),
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.fileContract, size: 16),
+            icon: Icon(Icons.description, size: 16), // Replaced fileContract
             label: 'Terms',
           ),
           // 🚀 ADDED POLICIES TO MOBILE NAV
           BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.shieldHalved, size: 16),
+            icon: Icon(Icons.policy, size: 16), // Replaced shieldHalved
             label: 'Policy',
           ),
         ],

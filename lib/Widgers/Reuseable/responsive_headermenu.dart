@@ -5,7 +5,6 @@ import 'package:fadhl/Widgers/Reuseable/responsive_bottomnavbar.dart';
 import 'package:fadhl/Widgers/Reuseable/reuseabledialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../Admin Panel/Utils/global_colours.dart';
 
@@ -74,9 +73,7 @@ class _CustomHeaderState extends State<CustomHeader> {
         color: AppColors.pureWhite,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(
-              alpha: 0.05,
-            ), // Softer shadow for white bg
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 15,
             offset: const Offset(0, 4),
           ),
@@ -112,15 +109,14 @@ class _CustomHeaderState extends State<CustomHeader> {
             height: 100,
             cacheHeight: 240,
             fit: BoxFit.contain,
-            errorBuilder:
-                (context, error, stackTrace) => const Text(
-                  'FADHL',
-                  style: TextStyle(
-                    color: AppColors.primaryGreen, // Contrast against white bg
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+            errorBuilder: (context, error, stackTrace) => const Text(
+              'FADHL',
+              style: TextStyle(
+                color: AppColors.primaryGreen,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
         const SizedBox(width: 40),
@@ -129,12 +125,9 @@ class _CustomHeaderState extends State<CustomHeader> {
           child: Container(
             height: 48,
             decoration: BoxDecoration(
-              color:
-                  AppColors.backgroundLight, // Slightly off-white for contrast
+              color: AppColors.backgroundLight,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.grey.shade300,
-              ), // Added border to frame it
+              border: Border.all(color: Colors.grey.shade300),
             ),
             child: Row(
               children: [
@@ -155,9 +148,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                         fontSize: 14,
                       ),
                       border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                      ),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                     ),
                   ),
                 ),
@@ -167,15 +158,15 @@ class _CustomHeaderState extends State<CustomHeader> {
                     width: 60,
                     height: 48,
                     decoration: const BoxDecoration(
-                      color: AppColors.primaryGreen, // Green search button
+                      color: AppColors.primaryGreen,
                       borderRadius: BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomRight: Radius.circular(8),
                       ),
                     ),
                     child: const Center(
-                      child: FaIcon(
-                        FontAwesomeIcons.magnifyingGlass,
+                      child: Icon(
+                        Icons.search,
                         color: AppColors.pureWhite,
                         size: 18,
                       ),
@@ -193,15 +184,14 @@ class _CustomHeaderState extends State<CustomHeader> {
         InkWell(
           onTap: showTrackOrderDialog,
           child: _HoverTextButton(
-            icon: FontAwesomeIcons.truckFast,
+            icon: Icons.local_shipping,
             text: 'Track Order',
-            defaultColor: AppColors.textDark, // Dark text on white bg
-            hoverColor: AppColors.primaryGreen, // Hover turns green
+            defaultColor: AppColors.textDark,
+            hoverColor: AppColors.primaryGreen,
           ),
         ),
         const SizedBox(width: 24),
 
-        // DYNAMIC LOGIN / USER NAME
         Obx(() {
           final bool isLoggedIn = authController.firebaseUser.value != null;
           final userData = authController.userData.value;
@@ -212,9 +202,9 @@ class _CustomHeaderState extends State<CustomHeader> {
             return InkWell(
               onTap: () => Get.toNamed('/auth'),
               child: _HoverTextButton(
-                icon: FontAwesomeIcons.user,
+                icon: Icons.person_outline,
                 text: 'Login',
-                defaultColor: AppColors.textDark, // Dark text on white bg
+                defaultColor: AppColors.textDark,
                 hoverColor: AppColors.primaryGreen,
               ),
             );
@@ -257,7 +247,7 @@ class _CustomHeaderState extends State<CustomHeader> {
             }
           },
           child: _HoverTextButton(
-            icon: FontAwesomeIcons.solidUser,
+            icon: Icons.person,
             text: 'My Account',
             defaultColor: AppColors.textDark,
             hoverColor: AppColors.primaryGreen,
@@ -280,42 +270,42 @@ class _CustomHeaderState extends State<CustomHeader> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MenuItemButton(
+                onPressed: () => Get.toNamed('/profile'),
                 child: _menuItemText(
-                  FontAwesomeIcons.clipboardList,
+                  Icons.assignment,
                   'My Orders',
                   AppColors.textDark,
                 ),
-                onPressed: () => Get.toNamed('/profile'),
               ),
               MenuItemButton(
+                onPressed: () => Get.toNamed('/wishlist'),
                 child: _menuItemText(
-                  FontAwesomeIcons.solidHeart,
+                  Icons.favorite,
                   'Wishlist',
                   Colors.pinkAccent,
                 ),
-                onPressed: () => Get.toNamed('/wishlist'),
               ),
 
               if (userData != null && userData['isAdmin'] == true) ...[
                 const Divider(height: 1),
                 MenuItemButton(
-                  child: _menuItemText(
-                    FontAwesomeIcons.screwdriverWrench,
-                    'Admin Panel',
-                    AppColors.primaryGreen, // Updated
-                  ),
                   onPressed: () => Get.offAllNamed('/admin'),
+                  child: _menuItemText(
+                    Icons.build,
+                    'Admin Panel',
+                    AppColors.primaryGreen,
+                  ),
                 ),
               ],
 
               const Divider(height: 1),
               MenuItemButton(
+                onPressed: () => authController.logout(),
                 child: _menuItemText(
-                  FontAwesomeIcons.arrowRightFromBracket,
+                  Icons.logout,
                   'Logout',
                   Colors.redAccent,
                 ),
-                onPressed: () => authController.logout(),
               ),
             ],
           ),
@@ -348,7 +338,7 @@ class _CustomHeaderState extends State<CustomHeader> {
             }
           },
           child: _HoverTextButton(
-            icon: FontAwesomeIcons.headset,
+            icon: Icons.headset_mic,
             text: 'Contact',
             defaultColor: AppColors.textDark,
             hoverColor: AppColors.primaryGreen,
@@ -371,38 +361,36 @@ class _CustomHeaderState extends State<CustomHeader> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MenuItemButton(
+                onPressed: () => Get.toNamed('/about'),
                 child: _menuItemText(
-                  FontAwesomeIcons.circleInfo,
+                  Icons.info_outline,
                   'About Us',
                   AppColors.textDark,
                 ),
-                onPressed: () => Get.toNamed('/about'),
               ),
               MenuItemButton(
+                onPressed: () => makePhoneCall('88096977340925'),
                 child: _menuItemText(
-                  FontAwesomeIcons.phone,
+                  Icons.phone,
                   'Phone: +88096977340925',
                   AppColors.textDark,
                 ),
-                onPressed: () {
-                  makePhoneCall('88096977340925');
-                },
               ),
               MenuItemButton(
                 onPressed: _contactSupport,
                 child: _menuItemText(
-                  FontAwesomeIcons.whatsapp,
+                  Icons.chat,
                   'WhatsApp',
                   Colors.green,
                 ),
               ),
               MenuItemButton(
+                onPressed: () => Get.toNamed('/faq'),
                 child: _menuItemText(
-                  FontAwesomeIcons.circleQuestion,
+                  Icons.help_outline,
                   'FAQs',
                   AppColors.textDark,
                 ),
-                onPressed: () => Get.toNamed('/faq'),
               ),
             ],
           ),
@@ -422,8 +410,8 @@ class _CustomHeaderState extends State<CustomHeader> {
         return Row(
           children: [
             IconButton(
-              icon: const FaIcon(
-                FontAwesomeIcons.arrowLeft,
+              icon: const Icon(
+                Icons.arrow_back,
                 color: AppColors.primaryGreen,
                 size: 20,
               ),
@@ -453,8 +441,8 @@ class _CustomHeaderState extends State<CustomHeader> {
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.only(left: 16),
                     suffixIcon: IconButton(
-                      icon: const FaIcon(
-                        FontAwesomeIcons.xmark,
+                      icon: const Icon(
+                        Icons.close,
                         color: Colors.grey,
                         size: 16,
                       ),
@@ -475,15 +463,14 @@ class _CustomHeaderState extends State<CustomHeader> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: const FaIcon(
-              FontAwesomeIcons.barsStaggered,
+            icon: const Icon(
+              Icons.sort,
               color: AppColors.textDark,
               size: 22,
             ),
             onPressed: () => _showIndependentMobileMenu(),
           ),
 
-          // 🚀 UPDATED: Logo and Company Name side-by-side
           InkWell(
             onTap: () => Get.toNamed('/'),
             child: Row(
@@ -491,13 +478,12 @@ class _CustomHeaderState extends State<CustomHeader> {
               children: [
                 Image.asset(
                   'assets/logo.webp',
-                  height: 35, // Reduced slightly to fit well inline with text
+                  height: 35,
                   cacheHeight: 120,
                   fit: BoxFit.contain,
-                  // If the image fails to load, the Text beside it still shows the brand name
                   errorBuilder: (c, e, s) => const SizedBox.shrink(),
                 ),
-                const SizedBox(width: 8), // Spacing between logo and text
+                const SizedBox(width: 8),
                 const Text(
                   'FADHL SHOP',
                   style: TextStyle(
@@ -514,8 +500,8 @@ class _CustomHeaderState extends State<CustomHeader> {
           Row(
             children: [
               IconButton(
-                icon: const FaIcon(
-                  FontAwesomeIcons.magnifyingGlass,
+                icon: const Icon(
+                  Icons.search,
                   color: AppColors.textDark,
                   size: 20,
                 ),
@@ -541,7 +527,7 @@ class _CustomHeaderState extends State<CustomHeader> {
           child: Container(
             width: 280,
             height: double.infinity,
-            color: AppColors.pureWhite, // 🚀 Fully clean light theme drawer!
+            color: AppColors.pureWhite,
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
@@ -571,7 +557,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                       const Text(
                         'FADHL',
                         style: TextStyle(
-                          color: AppColors.primaryGreen, // Updated
+                          color: AppColors.primaryGreen,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 2,
@@ -589,7 +575,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                     return Column(
                       children: [
                         _mobileMenuLink(
-                          FontAwesomeIcons.solidHeart,
+                          Icons.favorite,
                           'Wishlist',
                           () {
                             Get.back();
@@ -597,7 +583,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                           },
                         ),
                         _mobileMenuLink(
-                          FontAwesomeIcons.clipboardList,
+                          Icons.assignment,
                           'My Orders',
                           () {
                             Get.back();
@@ -606,7 +592,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                         ),
                         if (userData != null && userData['isAdmin'] == true)
                           _mobileMenuLink(
-                            FontAwesomeIcons.screwdriverWrench,
+                            Icons.build,
                             'Admin Panel',
                             () {
                               Get.back();
@@ -614,7 +600,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                             },
                           ),
                         _mobileMenuLink(
-                          FontAwesomeIcons.arrowRightFromBracket,
+                          Icons.logout,
                           'Logout',
                           () {
                             Get.back();
@@ -626,7 +612,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                     );
                   } else {
                     return _mobileMenuLink(
-                      FontAwesomeIcons.user,
+                      Icons.person_outline,
                       'Login / Register',
                       () {
                         Get.back();
@@ -636,11 +622,11 @@ class _CustomHeaderState extends State<CustomHeader> {
                   }
                 }),
                 Divider(color: Colors.grey.shade200, height: 30),
-                _mobileMenuLink(FontAwesomeIcons.truckFast, 'Track Order', () {
+                _mobileMenuLink(Icons.local_shipping, 'Track Order', () {
                   Get.back();
                   showTrackOrderDialog();
                 }),
-                _mobileMenuLink(FontAwesomeIcons.boxOpen, 'All Products', () {
+                _mobileMenuLink(Icons.inventory_2, 'All Products', () {
                   Get.back();
                   Get.toNamed('/');
                 }),
@@ -657,21 +643,21 @@ class _CustomHeaderState extends State<CustomHeader> {
                   ),
                 ),
                 _mobileMenuLink(
-                  FontAwesomeIcons.whatsapp,
+                  Icons.chat,
                   'WhatsApp Support',
                   () => _contactSupport(),
                   iconColor: Colors.green,
                 ),
                 _mobileMenuLink(
-                  FontAwesomeIcons.phone,
+                  Icons.phone,
                   'Call Us',
                   () => makePhoneCall('+88096977340925'),
                 ),
-                _mobileMenuLink(FontAwesomeIcons.circleInfo, 'About Us', () {
+                _mobileMenuLink(Icons.info_outline, 'About Us', () {
                   Get.back();
                   Get.toNamed('/about');
                 }),
-                _mobileMenuLink(FontAwesomeIcons.circleQuestion, 'FAQS', () {
+                _mobileMenuLink(Icons.help_outline, 'FAQs', () {
                   Get.toNamed('/faq');
                 }),
               ],
@@ -693,15 +679,15 @@ class _CustomHeaderState extends State<CustomHeader> {
     Color? iconColor,
   }) {
     return ListTile(
-      leading: FaIcon(
+      leading: Icon(
         icon,
-        color: iconColor ?? AppColors.primaryGreen, // Default to green
+        color: iconColor ?? AppColors.primaryGreen,
         size: 18,
       ),
       title: Text(
         text,
         style: const TextStyle(
-          color: AppColors.textDark, // Dark text on white bg
+          color: AppColors.textDark,
           fontSize: 15,
         ),
       ),
@@ -720,12 +706,12 @@ class _CustomHeaderState extends State<CustomHeader> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.primaryGreen.withValues(alpha: 0.1), // Updated
+              color: AppColors.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const FaIcon(
-              FontAwesomeIcons.bagShopping,
-              color: AppColors.primaryGreen, // Updated
+            child: const Icon(
+              Icons.shopping_bag,
+              color: AppColors.primaryGreen,
               size: 20,
             ),
           ),
@@ -738,7 +724,7 @@ class _CustomHeaderState extends State<CustomHeader> {
                 color: Colors.redAccent,
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.pureWhite, // Matched to white header bg
+                  color: AppColors.pureWhite,
                   width: 2,
                 ),
               ),
@@ -764,7 +750,7 @@ class _CustomHeaderState extends State<CustomHeader> {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: Row(
         children: [
-          FaIcon(icon, size: 16, color: color),
+          Icon(icon, size: 16, color: color),
           const SizedBox(width: 12),
           Text(
             text,
@@ -777,12 +763,12 @@ class _CustomHeaderState extends State<CustomHeader> {
 }
 
 // ==========================================
-// 🚀 4. GETX ANIMATED HOVER BUTTON (Stateless is fine here)
+// 4. ANIMATED HOVER BUTTON
 // ==========================================
 class _HoverTextButton extends StatelessWidget {
   final IconData icon;
   final String text;
-  final Color defaultColor; // Added default state color
+  final Color defaultColor;
   final Color hoverColor;
   final bool hasDropdown;
 
@@ -803,15 +789,14 @@ class _HoverTextButton extends StatelessWidget {
       onEnter: (_) => isHovered.value = true,
       onExit: (_) => isHovered.value = false,
       child: Obx(() {
-        final color =
-            isHovered.value ? hoverColor : defaultColor; // Uses passed colors
+        final color = isHovered.value ? hoverColor : defaultColor;
 
         return AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           padding: const EdgeInsets.symmetric(vertical: 8),
           child: Row(
             children: [
-              FaIcon(icon, color: color, size: 16),
+              Icon(icon, color: color, size: 16),
               const SizedBox(width: 8),
               Text(
                 text,
@@ -824,7 +809,7 @@ class _HoverTextButton extends StatelessWidget {
               ),
               if (hasDropdown) ...[
                 const SizedBox(width: 6),
-                FaIcon(FontAwesomeIcons.chevronDown, color: color, size: 12),
+                Icon(Icons.keyboard_arrow_down, color: color, size: 16),
               ],
             ],
           ),

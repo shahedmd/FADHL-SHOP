@@ -2,8 +2,7 @@ import 'package:fadhl/Controllers/banner_controller.dart';
 import 'package:fadhl/Controllers/productcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../Admin Panel/Utils/global_colours.dart'; 
+import '../../Admin Panel/Utils/global_colours.dart';
 
 class PromoCarousel extends StatelessWidget {
   const PromoCarousel({super.key});
@@ -155,8 +154,8 @@ class PromoCarousel extends StatelessWidget {
                                       );
                                     }
                                   },
-                                  icon: FaIcon(
-                                    FontAwesomeIcons.arrowRight,
+                                  icon: Icon(
+                                    Icons.arrow_forward,
                                     size: isDesktop ? 18 : 14,
                                   ),
                                   label: Text(

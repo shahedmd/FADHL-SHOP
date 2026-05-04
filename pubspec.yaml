@@ -30,26 +30,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_web_plugins:      # <--- ADD THIS EXACTLY LIKE THIS
-    sdk: flutter            # <--- ADD THIS EXACTLY LIKE THIS
+  flutter_web_plugins:
+    sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   firebase_core: ^4.6.0
-  get: ^4.7.3
+  firebase_auth: ^6.3.0
+  firebase_storage: ^13.2.0
   cloud_firestore: ^6.2.0
-  font_awesome_flutter: ^10.9.1
+  get: ^4.7.3
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.3
-  firebase_auth: ^6.3.0
   intl: ^0.20.2
-  pdf: ^3.11.3
-  printing: ^5.14.3
-  audioplayers: ^6.6.0
-  firebase_storage: ^13.2.0
-  image_picker: ^1.2.1
   cached_network_image: ^3.4.1
+  image_picker: ^1.2.1
+  flutter_svg: ^2.2.2
 
 dev_dependencies:
   flutter_test:

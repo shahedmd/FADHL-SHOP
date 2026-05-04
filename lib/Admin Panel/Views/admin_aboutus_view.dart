@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controllers/admin_about_us_controller.dart';
 import '../Utils/global_colours.dart';
 
@@ -11,36 +10,28 @@ class AdminAboutUsView extends StatelessWidget {
   final List<Map<String, dynamic>> availableIcons = [
     {
       'name': 'truckFast',
-      'icon': FontAwesomeIcons.truckFast,
+      'icon': Icons.local_shipping_outlined,
       'label': 'Fast Delivery',
     },
     {
       'name': 'shieldHalved',
-      'icon': FontAwesomeIcons.shieldHalved,
+      'icon': Icons.shield_outlined,
       'label': 'Safe / Shield',
     },
     {
       'name': 'handshake',
-      'icon': FontAwesomeIcons.handshake,
+      'icon': Icons.handshake_outlined,
       'label': 'Reliable / Trust',
     },
+    {'name': 'leaf', 'icon': Icons.eco_outlined, 'label': 'Organic / Nature'},
     {
-      'name': 'leaf',
-      'icon': FontAwesomeIcons.leaf,
-      'label': 'Organic / Nature',
+      'name': 'medal',
+      'icon': Icons.military_tech_outlined,
+      'label': 'Medal / Award',
     },
-    {'name': 'medal', 'icon': FontAwesomeIcons.medal, 'label': 'Medal / Award'},
-    {'name': 'gem', 'icon': FontAwesomeIcons.gem, 'label': 'Premium / Gem'},
-    {
-      'name': 'heart',
-      'icon': FontAwesomeIcons.solidHeart,
-      'label': 'Heart / Care',
-    },
-    {
-      'name': 'star',
-      'icon': FontAwesomeIcons.solidStar,
-      'label': 'Star / Top Rated',
-    },
+    {'name': 'gem', 'icon': Icons.diamond_outlined, 'label': 'Premium / Gem'},
+    {'name': 'heart', 'icon': Icons.favorite, 'label': 'Heart / Care'},
+    {'name': 'star', 'icon': Icons.star, 'label': 'Star / Top Rated'},
   ];
 
   IconData _getIconData(String iconName) {
@@ -168,7 +159,7 @@ class AdminAboutUsView extends StatelessWidget {
                     backgroundColor: AppColors.primaryGold.withValues(
                       alpha: 0.2,
                     ),
-                    child: FaIcon(
+                    child: Icon(
                       _getIconData(value['iconName'] ?? ''),
                       color: AppColors.primaryGreen,
                       size: 20,
@@ -237,8 +228,8 @@ class AdminAboutUsView extends StatelessWidget {
               ),
               IconButton(
                 onPressed: () => _openEditStoryDialog(controller),
-                icon: const FaIcon(
-                  FontAwesomeIcons.penToSquare,
+                icon: const Icon(
+                  Icons.edit_square,
                   color: AppColors.primaryGold,
                 ),
                 tooltip: 'Edit Story',
@@ -411,7 +402,7 @@ class AdminAboutUsView extends StatelessWidget {
                           value: iconMap['name'],
                           child: Row(
                             children: [
-                              FaIcon(
+                              Icon(
                                 iconMap['icon'],
                                 size: 16,
                                 color: AppColors.primaryGreen,

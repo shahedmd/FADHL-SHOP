@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 import '../../Controllers/wishlist_controller.dart';
 import '../../Widgers/Reuseable/responsive_headermenu.dart';
@@ -38,8 +37,8 @@ class WishlistScreen extends StatelessWidget {
                           color: Colors.redAccent.withValues(alpha: 0.05),
                           shape: BoxShape.circle,
                         ),
-                        child: FaIcon(
-                          FontAwesomeIcons.heartCrack,
+                        child: Icon(
+                          Icons.heart_broken,
                           size: 60,
                           color: Colors.redAccent.withValues(alpha: 0.5),
                         ),
@@ -76,10 +75,7 @@ class WishlistScreen extends StatelessWidget {
                           ),
                         ),
                         onPressed: () => Get.offAllNamed('/'), // Go back home
-                        icon: const FaIcon(
-                          FontAwesomeIcons.arrowLeft,
-                          size: 16,
-                        ),
+                        icon: Icon(Icons.arrow_back, size: 16),
                         label: const Text(
                           'Explore Products',
                           style: TextStyle(

@@ -1,7 +1,6 @@
 import 'package:fadhl/Controllers/authcontroller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../Controllers/admin_management_controller.dart';
 import '../Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
@@ -110,11 +109,9 @@ class AdminManagementView extends StatelessWidget {
                     backgroundColor: AppColors.primaryGold.withValues(
                       alpha: 0.2,
                     ), // Updated
-                    child: const FaIcon(
-                      FontAwesomeIcons.userShield,
-                      color:
-                          AppColors
-                              .primaryGreen, // Updated for better contrast against gold
+                    child: const Icon(
+                      Icons.verified_user,
+                      color: AppColors.primaryGreen,
                       size: 20,
                     ),
                   ),

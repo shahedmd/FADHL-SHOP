@@ -1,12 +1,12 @@
 import 'package:fadhl/Controllers/authcontroller.dart';
 import 'package:fadhl/Controllers/cartcontroller.dart';
 import 'package:fadhl/Controllers/productcontroller.dart';
+import 'package:fadhl/Icons/social_icons.dart';
 import 'package:fadhl/Models/productmodel.dart';
 import 'package:fadhl/Widgers/Reuseable/responsive_headermenu.dart';
 import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../Admin Panel/Utils/global_colours.dart';
 
@@ -564,11 +564,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     final pc = Get.find<ProductController>();
                     pc.orderViaWhatsApp(currentProduct, quantity.value);
                   },
-                  icon: const FaIcon(
-                    FontAwesomeIcons.whatsapp,
-                    color: Colors.white,
-                    size: 18,
-                  ),
+                  icon: SocialIcons.whatsapp(size: 20),
                   label: const Text(
                     'WhatsApp',
                     style: TextStyle(
@@ -724,8 +720,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                 backgroundColor: AppColors.primaryGreen
                                     .withValues(alpha: 0.1),
                                 radius: 18,
-                                child: const FaIcon(
-                                  FontAwesomeIcons.solidUser,
+                                child: const Icon(
+                                  Icons.person,
                                   color: AppColors.primaryGold,
                                   size: 16,
                                 ),
@@ -784,11 +780,7 @@ class ProductDetailsScreen extends StatelessWidget {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  FaIcon(
-                    FontAwesomeIcons.lock,
-                    size: 40,
-                    color: Colors.grey.shade400,
-                  ),
+                  Icon(Icons.lock, size: 40, color: Colors.grey.shade400),
                   const SizedBox(height: 16),
                   const Text(
                     'Join the FADHL Family',

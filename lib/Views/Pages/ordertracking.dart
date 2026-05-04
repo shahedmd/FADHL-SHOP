@@ -4,7 +4,6 @@ import 'package:fadhl/Widgers/Reuseable/responsive_headermenu.dart';
 import 'package:fadhl/Widgers/responsive_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../Admin Panel/Utils/global_colours.dart'; // Ensure AppColors is inside this file
 
 class OrderTrackingScreen extends StatelessWidget {
@@ -49,10 +48,10 @@ class OrderTrackingScreen extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const FaIcon(
-                                  FontAwesomeIcons.arrowLeft,
+                                const Icon(
+                                  Icons.arrow_back,
                                   size: 16,
-                                  color: AppColors.primaryGreen, // Updated
+                                  color: AppColors.primaryGreen,
                                 ),
                                 const SizedBox(width: 8),
                                 const Text(
@@ -172,29 +171,29 @@ class OrderTrackingScreen extends StatelessWidget {
                                     _infoBlock(
                                       'Customer',
                                       order.customerName,
-                                      FontAwesomeIcons.solidUser,
+                                      Icons.person,
                                     ),
                                     _infoBlock(
                                       'Phone',
                                       order.customerPhone,
-                                      FontAwesomeIcons.phone,
+                                      Icons.phone,
                                     ),
                                     _infoBlock(
                                       'Order Date',
                                       order.createdAt != null
                                           ? "${order.createdAt!.day}/${order.createdAt!.month}/${order.createdAt!.year}"
                                           : "N/A",
-                                      FontAwesomeIcons.calendarDay,
+                                      Icons.calendar_today,
                                     ),
                                     _infoBlock(
                                       'Payment Method',
                                       order.paymentMethod,
-                                      FontAwesomeIcons.creditCard,
+                                      Icons.credit_card,
                                     ),
                                     _infoBlock(
                                       'Order Source',
                                       order.source,
-                                      FontAwesomeIcons.globe,
+                                      Icons.language,
                                     ),
                                   ],
                                 ),
@@ -202,9 +201,8 @@ class OrderTrackingScreen extends StatelessWidget {
                                 _infoBlock(
                                   'Shipping Address',
                                   order.shippingAddress,
-                                  FontAwesomeIcons.locationDot,
+                                  Icons.location_on,
                                 ),
-
                                 // --- ADMIN FEEDBACK (If any) ---
                                 if (order.adminFeedback != 'No Feedback' &&
                                     order.adminFeedback.isNotEmpty) ...[
@@ -392,7 +390,7 @@ class OrderTrackingScreen extends StatelessWidget {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FaIcon(icon, size: 12, color: AppColors.primaryGold), // Updated
+            Icon(icon, size: 12, color: AppColors.primaryGold), // Updated
             const SizedBox(width: 6),
             Text(
               title.toUpperCase(),

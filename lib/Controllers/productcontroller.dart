@@ -1,13 +1,18 @@
 import 'package:fadhl/Controllers/order_controller.dart';
 import 'package:fadhl/Models/productmodel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 
+import '../Icons/social_icons.dart';
+
 class ProductController extends GetxController {
+  final int pageSize = 12;
+  DocumentSnapshot? lastProductDoc;
+  final RxBool hasMoreProducts = true.obs;
+
   final RxList<ProductModel> products = <ProductModel>[].obs;
   final RxBool isLoading = true.obs;
 
@@ -24,36 +29,46 @@ class ProductController extends GetxController {
     fetchProducts();
   }
 
-  Future<void> fetchProducts() async {
+  Future<void> fetchProducts({bool refresh = false}) async {
     try {
-      isLoading.value = true;
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('Products').get();
-
-      products.assignAll(
-        snapshot.docs.map((doc) {
-          return ProductModel.fromMap(
-            doc.data() as Map<String, dynamic>,
-            doc.id,
-          );
-        }).toList(),
-      );
-
-      final Set<String> uniqueCategories = {'All'};
-      for (var product in products) {
-        if (product.category.isNotEmpty) {
-          uniqueCategories.add(product.category);
-        }
+      if (refresh) {
+        isLoading.value = true;
+        products.clear();
+        lastProductDoc = null;
+        hasMoreProducts.value = true;
       }
-      categories.assignAll(uniqueCategories.toList());
-    } catch (e) {
-      debugPrint("Error fetching products: $e");
-      Get.snackbar(
-        'Error',
-        'Could not load products. Check your internet connection.',
-      );
+
+      Query query = FirebaseFirestore.instance
+          .collection('Products')
+          .limit(pageSize);
+
+      if (lastProductDoc != null) {
+        query = query.startAfterDocument(lastProductDoc!);
+      }
+
+      final snapshot = await query.get();
+
+      if (snapshot.docs.isNotEmpty) {
+        lastProductDoc = snapshot.docs.last;
+        products.addAll(
+          snapshot.docs.map((doc) {
+            return ProductModel.fromMap(
+              doc.data() as Map<String, dynamic>,
+              doc.id,
+            );
+          }),
+        );
+      }
+
+      hasMoreProducts.value = snapshot.docs.length == pageSize;
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void loadMore() {
+    if (hasMoreProducts.value) {
+      fetchProducts();
     }
   }
 
@@ -75,11 +90,6 @@ class ProductController extends GetxController {
     return filteredProducts.take(visibleProductCount.value).toList();
   }
 
-  // 🔥 3. Load More Action
-  void loadMore() {
-    visibleProductCount.value += 12; // Load 12 more products when clicked
-  }
-
   // 🔥 4. Update Methods (Reset view count when user filters)
   void updateSearch(String query) {
     searchQuery.value = query.toLowerCase();
@@ -90,8 +100,6 @@ class ProductController extends GetxController {
     selectedCategory.value = category;
     visibleProductCount.value = 12; // Reset pagination
   }
-
-
 
   Future<void> orderViaWhatsApp(ProductModel product, int quantity) async {
     Get.dialog(
@@ -171,11 +179,7 @@ class ProductController extends GetxController {
                     color: const Color(0xFF25D366).withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const FaIcon(
-                    FontAwesomeIcons.whatsapp,
-                    color: Color(0xFF25D366),
-                    size: 45,
-                  ),
+                  child: SocialIcons.whatsapp(size: 28),
                 ),
                 const SizedBox(height: 24),
                 const Text(
@@ -252,7 +256,6 @@ class ProductController extends GetxController {
     }
   }
 
- 
   Future<bool> submitReview({
     required String productId,
     required int rating,

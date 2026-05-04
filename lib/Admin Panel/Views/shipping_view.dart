@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../Controllers/shipping_controller.dart';
 import '../Utils/global_colours.dart';
 
@@ -127,8 +125,8 @@ class AdminShippingAreaView extends StatelessWidget {
                     backgroundColor: AppColors.primaryGold.withValues(
                       alpha: 0.2,
                     ),
-                    child: const FaIcon(
-                      FontAwesomeIcons.mapLocationDot,
+                    child: const Icon(
+                      Icons.location_city,
                       color: AppColors.primaryGreen,
                       size: 18,
                     ),
